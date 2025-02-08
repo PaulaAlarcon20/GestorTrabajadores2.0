@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `gestionturnos`.`administradorservicio` (
   `Contraseña` VARCHAR(255) NOT NULL,
   `PermisosEspeciales` TEXT NULL DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  UNIQUE INDEX `Email` (`Email` ASC) VISIBLE)
+  UNIQUE INDEX `Email` (`Email` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `gestionturnos`.`trabajadorsanitario` (
   `PreferenciasHorarias` TEXT NULL DEFAULT NULL,
   `DisponibilidadHorasExtras` TINYINT(1) NULL DEFAULT 0,
   PRIMARY KEY (`ID`),
-  UNIQUE INDEX `Email` (`Email` ASC) VISIBLE)
+  UNIQUE INDEX `Email` (`Email` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `gestionturnos`.`jornada` (
   `Estado` ENUM('Disponible', 'Ocupada') NOT NULL,
   `TrabajadorID` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  INDEX `TrabajadorID` (`TrabajadorID` ASC) VISIBLE,
+  INDEX `TrabajadorID` (`TrabajadorID` ASC),
   CONSTRAINT `jornada_ibfk_1`
     FOREIGN KEY (`TrabajadorID`)
     REFERENCES `gestionturnos`.`trabajadorsanitario` (`ID`))
@@ -87,9 +87,9 @@ CREATE TABLE IF NOT EXISTS `gestionturnos`.`cambioturno` (
   `FechaSolicitud` DATE NOT NULL,
   `EstadoCambio` ENUM('Pendiente', 'Aceptado', 'Rechazado') NOT NULL,
   PRIMARY KEY (`ID`),
-  INDEX `TrabajadorSolicitanteID` (`TrabajadorSolicitanteID` ASC) VISIBLE,
-  INDEX `TrabajadorAceptanteID` (`TrabajadorAceptanteID` ASC) VISIBLE,
-  INDEX `JornadaID` (`JornadaID` ASC) VISIBLE,
+  INDEX `TrabajadorSolicitanteID` (`TrabajadorSolicitanteID` ASC),
+  INDEX `TrabajadorAceptanteID` (`TrabajadorAceptanteID` ASC),
+  INDEX `JornadaID` (`JornadaID` ASC),
   CONSTRAINT `cambioturno_ibfk_1`
     FOREIGN KEY (`TrabajadorSolicitanteID`)
     REFERENCES `gestionturnos`.`trabajadorsanitario` (`ID`),
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `gestionturnos`.`vehiculo` (
   `PlazasDisponibles` TINYINT(4) NOT NULL,
   `PropietarioID` INT(11) NOT NULL,
   PRIMARY KEY (`ID`),
-  INDEX `PropietarioID` (`PropietarioID` ASC) VISIBLE,
+  INDEX `PropietarioID` (`PropietarioID` ASC),
   CONSTRAINT `vehiculo_ibfk_1`
     FOREIGN KEY (`PropietarioID`)
     REFERENCES `gestionturnos`.`trabajadorsanitario` (`ID`))
@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `gestionturnos`.`viaje` (
   `VehiculoID` INT(11) NOT NULL,
   `PlazasOcupadas` TINYINT(4) NULL DEFAULT 0,
   PRIMARY KEY (`ID`),
-  INDEX `VehiculoID` (`VehiculoID` ASC) VISIBLE,
+  INDEX `VehiculoID` (`VehiculoID` ASC),
   CONSTRAINT `viaje_ibfk_1`
     FOREIGN KEY (`VehiculoID`)
     REFERENCES `gestionturnos`.`vehiculo` (`ID`))
