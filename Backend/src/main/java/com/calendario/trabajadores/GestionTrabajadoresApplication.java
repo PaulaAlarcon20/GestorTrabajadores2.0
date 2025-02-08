@@ -1,4 +1,4 @@
-package com.calendario.trabajadores.gestion_trabajadores;
+package com.calendario.trabajadores;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

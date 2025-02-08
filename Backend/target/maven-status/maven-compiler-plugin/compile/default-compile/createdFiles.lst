@@ -1,0 +1,8 @@
+com\calendario\trabajadores\controllers\LoginController.class
+com\calendario\trabajadores\GestionTrabajadoresApplication.class
+com\calendario\trabajadores\repository\IAdminRepository.class
+com\calendario\trabajadores\model\AdministradorServicio.class
+com\calendario\trabajadores\model\TrabajadorSanitario.class
+com\calendario\trabajadores\adminservice\AdminService.class
+com\calendario\trabajadores\model\login\LoginModel.class
+com\calendario\trabajadores\model\Puesto.class
