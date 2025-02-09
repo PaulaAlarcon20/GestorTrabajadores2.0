@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:front_end_gui/config/theme/app_theme.dart';
+import 'package:front_end_gui/views/RegisterView_screen.dart';
 
-/// Fichero principal de la aplicación
+
+/// Fichero principal de la aplicación que contiene nuestra aplicación
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -9,14 +12,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme(selectionColor: 2).theme(),
       title: 'Turn App',
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('App Turn App'),
-        ),
-        body: const Center(
-          child: Text('Proyecto final de grado'),
-        ),
+        ///appBar: AppBar(//title: const Text('Nuevo usuario'),),
+        body: 
+          RegisterView()
+          // añadir vista
+       
       ),
     );
   }
