@@ -7,9 +7,8 @@ import java.util.Optional;
 
 @Repository
 //UsuarioRepository hereda de JpaRepository que es una interfaz de Spring Data JPA, que proporciona las operaciones CRUD para la entidad AdministradorServicio
-public interface IAdminRepository extends JpaRepository<Usuario, Long> {
+public interface IUsuarioRepository extends JpaRepository<Usuario, Long> {
     //Métodos de consulta
     //Método para buscar un AdministradorServicio por su correo electrónico
     Optional<Usuario> findUsuarioByEmail(String email);
-
 }

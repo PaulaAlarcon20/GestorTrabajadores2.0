@@ -1,8 +1,10 @@
+com\calendario\trabajadores\repository\IUsuarioRepository.class
+com\calendario\trabajadores\controllers\AccountController.class
+com\calendario\trabajadores\model\errorresponse\ErrorResponse.class
+com\calendario\trabajadores\model\login\LoginRequest.class
 com\calendario\trabajadores\controllers\LoginController.class
 com\calendario\trabajadores\GestionTrabajadoresApplication.class
-com\calendario\trabajadores\repository\IAdminRepository.class
-com\calendario\trabajadores\model\AdministradorServicio.class
-com\calendario\trabajadores\model\TrabajadorSanitario.class
-com\calendario\trabajadores\adminservice\AdminService.class
-com\calendario\trabajadores\model\login\LoginModel.class
+com\calendario\trabajadores\model\login\LoginResponse.class
 com\calendario\trabajadores\model\Puesto.class
+com\calendario\trabajadores\model\Usuario.class
+com\calendario\trabajadores\userservice\UserService.class

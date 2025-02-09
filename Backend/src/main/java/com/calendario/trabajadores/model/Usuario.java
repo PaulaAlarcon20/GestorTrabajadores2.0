@@ -34,4 +34,8 @@ public class Usuario {
     public String localidad;
     public String preferenciasHorarias;
     public Boolean disponibilidadHorasExtras;
+    @Column(nullable = false)
+    public String rol;
+
+
 }

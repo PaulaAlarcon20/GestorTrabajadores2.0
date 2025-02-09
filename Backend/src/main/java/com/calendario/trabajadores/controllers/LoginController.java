@@ -1,6 +1,6 @@
 package com.calendario.trabajadores.controllers;
 
-import com.calendario.trabajadores.adminservice.AdminService;
+import com.calendario.trabajadores.userservice.UserService;
 import com.calendario.trabajadores.model.Usuario;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.model.login.LoginRequest;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @Tag(name = "Login", description = "Endpoints para el login de los usuarios")
 public class LoginController {
     @Autowired
-    private AdminService adminService;
+    private UserService userService;
     //Endpoints
     @Operation(summary = "Login de usuario", description = "Endpoint para el login de usuario")
     @PostMapping("/login")
@@ -32,10 +32,11 @@ public class LoginController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "401", description = "Credenciales inválidas",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    })
+    }
+    )
     //RequestParam especifica que son parámetros de la request
     public ResponseEntity<?> login(@RequestBody LoginRequest loginModel) {
-        Optional<Usuario> usuario = adminService.login(loginModel.username, loginModel.password);
+        Optional<Usuario> usuario = userService.login(loginModel.username, loginModel.password);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Login incorrecto"));
