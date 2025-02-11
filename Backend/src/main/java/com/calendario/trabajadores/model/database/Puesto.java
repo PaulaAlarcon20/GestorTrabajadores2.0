@@ -1,4 +1,4 @@
-package com.calendario.trabajadores.model;
+package com.calendario.trabajadores.model.database;
 
 public enum Puesto {
     MEDICO,

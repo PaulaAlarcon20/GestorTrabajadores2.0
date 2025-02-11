@@ -1,16 +1,24 @@
 package com.calendario.trabajadores.userservice;
 
-import com.calendario.trabajadores.model.Usuario;
-import com.calendario.trabajadores.repository.IUsuarioRepository;
+import com.calendario.trabajadores.model.database.Usuario;
+import com.calendario.trabajadores.model.dto.UsuarioDTO;
+import com.calendario.trabajadores.model.dto.VehiculoDTO;
+import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
+
+    private final IUsuarioRepository userRepository;
+
     @Autowired
-    private IUsuarioRepository userRepository;
+    public UserService(IUsuarioRepository userRepository){
+        this.userRepository = userRepository;
+    }
 
     public Optional<Usuario> login(String username, String password){
         Optional<Usuario> usuario = userRepository.findUsuarioByEmail(username);
@@ -32,5 +40,16 @@ public class UserService {
         else {
          return Optional.empty();
         }
+    }
+    public List<Usuario> usuariosConVehiculosActivos(){
+        return userRepository.findUsuariosWithActiveVehiculos();
+    }
+
+    public List<UsuarioDTO> usuariosConVehiculosActivosDTO(){
+        return userRepository.findUsuariosWithTheirActiveVehiculos();
+    }
+
+    public List<VehiculoDTO> vehiculosByUsuario(String email){
+        return userRepository.findVehiculosByUsuario(email);
     }
 }

@@ -1,8 +1,11 @@
-package com.calendario.trabajadores.model;
+package com.calendario.trabajadores.model.database;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 //Utilizo lombok para no tener que escribir los getters y setters
@@ -36,6 +39,8 @@ public class Usuario {
     public Boolean disponibilidadHorasExtras;
     @Column(nullable = false)
     public String rol;
-
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY,orphanRemoval = false)
+    @JsonManagedReference
+    public List<Vehiculo> vehiculos;
 
 }

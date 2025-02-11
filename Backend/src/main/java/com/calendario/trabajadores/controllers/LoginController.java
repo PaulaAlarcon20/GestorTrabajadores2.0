@@ -1,7 +1,7 @@
 package com.calendario.trabajadores.controllers;
 
 import com.calendario.trabajadores.userservice.UserService;
-import com.calendario.trabajadores.model.Usuario;
+import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.model.login.LoginRequest;
 import io.swagger.v3.oas.annotations.Operation;
