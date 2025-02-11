@@ -42,5 +42,9 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY,orphanRemoval = false)
     @JsonManagedReference
     public List<Vehiculo> vehiculos;
+    @OneToMany(mappedBy = "conductor", fetch = FetchType.LAZY,orphanRemoval = false)
+    public List<Viaje> viajes;
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY,orphanRemoval = false)
+    public List<UsuarioViaje> usuarioViajes;
 
 }

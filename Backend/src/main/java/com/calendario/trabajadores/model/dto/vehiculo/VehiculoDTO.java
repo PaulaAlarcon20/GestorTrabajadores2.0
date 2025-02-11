@@ -1,8 +1,6 @@
-package com.calendario.trabajadores.model.dto;
+package com.calendario.trabajadores.model.dto.vehiculo;
 
-import com.calendario.trabajadores.model.database.Usuario;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
 
 public class VehiculoDTO {
 

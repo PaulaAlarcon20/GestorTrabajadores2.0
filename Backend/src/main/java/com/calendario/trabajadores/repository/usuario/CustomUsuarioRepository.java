@@ -1,8 +1,8 @@
 package com.calendario.trabajadores.repository.usuario;
 
 import com.calendario.trabajadores.model.database.Usuario;
-import com.calendario.trabajadores.model.dto.UsuarioDTO;
-import com.calendario.trabajadores.model.dto.VehiculoDTO;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
+import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;

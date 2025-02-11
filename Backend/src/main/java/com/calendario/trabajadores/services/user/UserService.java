@@ -1,8 +1,8 @@
-package com.calendario.trabajadores.userservice;
+package com.calendario.trabajadores.services.user;
 
 import com.calendario.trabajadores.model.database.Usuario;
-import com.calendario.trabajadores.model.dto.UsuarioDTO;
-import com.calendario.trabajadores.model.dto.VehiculoDTO;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
+import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

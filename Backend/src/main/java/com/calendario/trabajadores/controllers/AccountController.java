@@ -2,7 +2,7 @@ package com.calendario.trabajadores.controllers;
 
 import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
-import com.calendario.trabajadores.userservice.UserService;
+import com.calendario.trabajadores.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

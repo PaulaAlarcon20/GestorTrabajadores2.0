@@ -2,8 +2,8 @@ package com.calendario.trabajadores.repository.usuario;
 
 import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.database.Vehiculo;
-import com.calendario.trabajadores.model.dto.UsuarioDTO;
-import com.calendario.trabajadores.model.dto.VehiculoDTO;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
+import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;

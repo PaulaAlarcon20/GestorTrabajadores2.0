@@ -1,9 +1,6 @@
-package com.calendario.trabajadores.model.dto;
+package com.calendario.trabajadores.model.dto.usuario;
 
-import com.calendario.trabajadores.model.database.Puesto;
-import com.calendario.trabajadores.model.database.Vehiculo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
 
 import java.util.List;
 
