@@ -47,4 +47,6 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY,orphanRemoval = false)
     public List<UsuarioViaje> usuarioViajes;
 
+    public boolean activo;
+
 }

@@ -63,4 +63,73 @@ public class UserService {
     public List<VehiculoDTO> vehiculosByUsuario(String email){
         return userRepository.findVehiculosByUsuario(email);
     }
+
+    //Metodo para editar un usuario
+    public Optional<UsuarioDTO> editUsuario(UsuarioDTO model){
+        var usuario = userRepository.findById(model.id);
+        if (usuario.isEmpty()){
+            return Optional.empty();
+        }
+        Usuario temp = usuario.get();
+        temp.nombre = model.nombre;
+        temp.apellido1 = model.apellido1;
+        temp.apellido2 = model.apellido2;
+        temp.email = model.email;
+        userRepository.save(temp);
+        return Optional.of(model);
+    }
+
+    //Metodo para borrar un usuario
+    public Optional<UsuarioDTO> softDelete(Long id){
+        var usuario = userRepository.findById(id);
+        if (usuario.isEmpty()){
+            return Optional.empty();
+        }
+        Usuario temp = usuario.get();
+        temp.activo = false;
+        userRepository.save(temp);
+        return Optional.of(new UsuarioDTO(temp.id,temp.nombre,temp.apellido1,temp.apellido2,temp.email,null,temp.activo));
+    }
+
+    //Metodo para reactivar a un usuario
+    public Optional<UsuarioDTO> reactivar(Long id){
+        var usuario = userRepository.findById(id);
+        if (usuario.isEmpty()){
+            return Optional.empty();
+        }
+        Usuario temp = usuario.get();
+        temp.activo = true;
+        userRepository.save(temp);
+        return Optional.of(new UsuarioDTO(temp.id,temp.nombre,temp.apellido1,temp.apellido2,temp.email,null,temp.activo));
+    }
+
+    //En lugar de tener varios metodos para encontrar según los parametros que tenga, creamos un método que
+    //sea capaz de devolvernos una lista de usuarios según los parametros que le pasemos
+    public Optional<List<UsuarioDTO>> listar(Optional<Boolean> activo){
+        if (activo.isEmpty()){ //si no se pasa el parametro activo, devolvemos todos los usuarios
+            var lista = userRepository.findAll();
+            return Optional.of(lista.stream().map(usuario -> new UsuarioDTO(
+                    usuario.id,
+                    usuario.nombre,
+                    usuario.apellido1,
+                    usuario.apellido2,
+                    usuario.email,
+                    null,
+                    usuario.activo
+            )).toList());
+        }
+        if (activo.get()){ //si se pasa el parametro activo, devolvemos solo los usuarios activos o no activos
+            return Optional.of(userRepository.findByActivo("activo",true).stream().map(usuario -> new UsuarioDTO(
+                    usuario.id,
+                    usuario.nombre,
+                    usuario.apellido1,
+                    usuario.apellido2,
+                    usuario.email,
+                    null,
+                    usuario.activo
+            )).toList());
+        }else{
+            return Optional.empty();
+        }
+    }
 }

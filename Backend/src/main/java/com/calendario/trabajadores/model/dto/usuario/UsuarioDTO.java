@@ -18,12 +18,15 @@ public class UsuarioDTO {
 
     public List<VehiculoDTO> vehiculos;
 
-    public UsuarioDTO(Long id, String nombre, String apellido1, String apellido2, String email, List<VehiculoDTO> vehiculos) {
+    public boolean activo;
+
+    public UsuarioDTO(Long id, String nombre, String apellido1, String apellido2, String email, List<VehiculoDTO> vehiculos, boolean activo) {
         this.id = id;
         this.nombre = nombre;
         this.apellido1 = apellido1;
         this.apellido2 = apellido2;
         this.email = email;
         this.vehiculos = vehiculos;
+        this.activo = activo;
     }
 }

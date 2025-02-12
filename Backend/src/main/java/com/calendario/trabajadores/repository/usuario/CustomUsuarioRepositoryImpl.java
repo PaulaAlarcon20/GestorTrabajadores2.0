@@ -48,7 +48,8 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
                         //Expresion lambda para filtrar los vehiculos activos
                         .filter(v -> v.activo)
                         .map(v -> new VehiculoDTO(v.id, v.modeloCoche, v.matricula, v.activo))
-                        .toList()
+                        .toList(),
+                u.activo
         )).toList();
     }
     //Para obtener una lista de vehiculos activos de un usuario
