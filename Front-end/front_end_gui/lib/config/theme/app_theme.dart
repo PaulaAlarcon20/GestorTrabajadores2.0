@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
   List<Color> colorThemes = [
     Colors.white,
     Colors.black,
-    Colors.greenAccent
+    const Color.fromARGB(255, 34, 33, 33)
+
   ];
+
+
+
 
 
 class AppTheme {
