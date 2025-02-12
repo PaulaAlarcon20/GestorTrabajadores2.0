@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front_end_gui/views/widgets/Custom_Text_FormField.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 /// Pantalla creada para mostrar al usuario el login a la aplicación
 /// Vista formada por widget con orden en forma de columna, en el cual se le
@@ -45,6 +47,27 @@ class _RegisterFormState extends State<RegisterForm> {
   String email = "";
   String password = "";
 
+  // Función que realiza la petición POST al backend para el login (en proceso)
+  Future<void> login() async {
+    final url = Uri.parse('http://localhost:8080/login'); // Replace with your backend URL
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'username': email, 'password': password}),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        print('Login successful: $responseData'); // Handle success (e.g., save token, navigate)
+      } else {
+        print('Login failed: ${response.body}'); // Handle failure
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +112,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
               final isValid = _formKey.currentState!.validate();
               if (!isValid) return;
+              login();
 
               print('$email, $password');
             },
