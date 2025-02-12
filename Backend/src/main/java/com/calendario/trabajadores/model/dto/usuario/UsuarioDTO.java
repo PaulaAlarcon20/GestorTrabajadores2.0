@@ -1,9 +1,10 @@
 package com.calendario.trabajadores.model.dto.usuario;
 
 import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
-
+@NoArgsConstructor
 public class UsuarioDTO {
 
     public Long id;

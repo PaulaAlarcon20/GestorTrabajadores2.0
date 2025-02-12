@@ -1,5 +1,6 @@
 package com.calendario.trabajadores.controllers;
 
+import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
 import com.calendario.trabajadores.services.user.UserService;
 import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin //Permite peticiones desde cualquier origen
 @Tag(name = "Login", description = "Endpoints para el login de los usuarios")
 public class LoginController {
     @Autowired
@@ -29,14 +31,14 @@ public class LoginController {
     @PostMapping("/login")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario logueado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDTO.class))),
             @ApiResponse(responseCode = "401", description = "Credenciales inválidas",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
     //RequestParam especifica que son parámetros de la request
     public ResponseEntity<?> login(@RequestBody LoginRequest loginModel) {
-        Optional<Usuario> usuario = userService.login(loginModel.username, loginModel.password);
+        Optional<UsuarioDTO> usuario = userService.login(loginModel.username, loginModel.password);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Login incorrecto"));

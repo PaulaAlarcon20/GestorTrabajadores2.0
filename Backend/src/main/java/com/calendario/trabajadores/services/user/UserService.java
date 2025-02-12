@@ -20,14 +20,25 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Optional<Usuario> login(String username, String password){
+    public Optional<UsuarioDTO> login(String username, String password){
         Optional<Usuario> usuario = userRepository.findUsuarioByEmail(username);
         System.out.println("llamando a la base de datos");
         if(usuario.isEmpty()){
             return Optional.empty();
         }
         boolean passWordCorrecta = usuario.get().contraseña.equals(password);
-        return passWordCorrecta ? usuario : Optional.empty();
+        if (passWordCorrecta){
+            UsuarioDTO tempDTO = new UsuarioDTO();
+            //mapeamos los datos del usuario a un DTO
+            tempDTO.id = usuario.get().id;
+            tempDTO.nombre = usuario.get().nombre;
+            tempDTO.apellido1 = usuario.get().apellido1;
+            tempDTO.apellido2 = usuario.get().apellido2;
+            tempDTO.email = usuario.get().email;
+            return Optional.of(tempDTO);
+        }else{
+            return Optional.empty();
+        }
     }
     public Optional<Usuario> crearUsuario(Usuario usuario){
 
