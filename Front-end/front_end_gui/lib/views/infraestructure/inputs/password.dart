@@ -14,6 +14,7 @@ class PasswordInput extends FormzInput<String, passwordInputError> {
     if (isValid || isPure ) return null;
     if(displayError == passwordInputError.empty ) return 'Campo requerido';
     // En el futuro implementar validadión núm caracteres especiales
+    return  null;
   }
 
   // Lugar donde se procede a la lógica de validaciones

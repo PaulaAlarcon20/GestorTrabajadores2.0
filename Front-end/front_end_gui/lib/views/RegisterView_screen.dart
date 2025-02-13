@@ -24,14 +24,26 @@ class RegisterView extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                SizedBox(height: 90),
-                //FlutterLogo(size: 40),
-                Image.asset(
-                  'assets/images/IconsApp.png',
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
+                SizedBox(height: 80),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: Colors.black,
+                    )
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(
+                      'assets/images/imagen1.jpg',
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                      
+                    ),
+                  ),
                 ),
+                SizedBox(height: 5),
                 RegisterForm(),
                 SizedBox(height: 20),
                
