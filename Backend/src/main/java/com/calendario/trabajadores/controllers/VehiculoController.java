@@ -2,8 +2,10 @@ package com.calendario.trabajadores.controllers;
 
 import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
 import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
+import com.calendario.trabajadores.services.vehiculo.VehiculoService;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
@@ -17,28 +19,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+import java.util.Optional;
+
 
 @RestController
 @Tag(name = "Vehiculo", description = "Endpoints para vehiculo")
 public class VehiculoController {
     @Autowired
+    private VehiculoService vehiculoService;
+    @Autowired
     private UserService userService;
 
-    @Operation(summary = "Listar usuarios con vehiculos", description = "Endpoint para listar usuarios con vehiculos")
-    @GetMapping("/listUsuarios")
+    public VehiculoController(VehiculoService vehiculoService, UserService userService) {
+        this.vehiculoService = vehiculoService;
+        this.userService = userService;
+    }
+
+    //Crear un vehículo
+    @Operation(summary = "Creación de vehiculo", description = "Endpoint para crear un vehiculo")
+    @PostMapping("/vehiculo/crear")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista creada",
-                    content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Usuario.class)))),
+            @ApiResponse(responseCode = "200", description = "Vehiculo creado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = VehiculoDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    }
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))}
     )
-
-    public ResponseEntity<?> listaActivos () {
-        return ResponseEntity.ok(userService.usuariosConVehiculosActivos());
+    public ResponseEntity<?> CrearVehiculo(@RequestBody VehiculoDTO input) {
+        Optional<VehiculoDTO> respuestaServicio = vehiculoService.crearVehiculo(input);
+        if (respuestaServicio.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "el vehiculo ya existe"));
+        }
+        return ResponseEntity.ok(respuestaServicio.get());
     }
-
-    @Operation(summary = "Listar usuarios con vehiculos", description = "Endpoint para listar usuariosDTO con vehiculos")
+    @Operation(summary = "Listar usuarios con vehiculos activos", description = "Endpoint para listar usuariosDTO con vehiculos activos")
     @GetMapping("/listUsuariosDTO")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista creada",
@@ -47,7 +62,7 @@ public class VehiculoController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
-    public ResponseEntity<?> listaActivosDTO () {
+    public ResponseEntity<?> listaActivosDTO() {
         return ResponseEntity.ok(userService.usuariosConVehiculosActivosDTO());
     }
 
@@ -60,7 +75,7 @@ public class VehiculoController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
-    public ResponseEntity<?> listVehiculosByUserDTO (@RequestParam String email) {
+    public ResponseEntity<?> listVehiculosByUserDTO(@RequestParam String email) {
         return ResponseEntity.ok(userService.vehiculosByUsuario(email));
     }
 }

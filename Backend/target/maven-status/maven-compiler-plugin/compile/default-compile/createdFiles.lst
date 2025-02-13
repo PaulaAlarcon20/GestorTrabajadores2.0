@@ -1,9 +1,12 @@
-com\calendario\trabajadores\repository\vehiculo\VehiculoRepository.class
+com\calendario\trabajadores\repository\vehiculo\CustomVehiculoRepositoryImpl.class
 com\calendario\trabajadores\model\database\EstadoViaje.class
+com\calendario\trabajadores\repository\vehiculo\CustomVehiculoRepository.class
 com\calendario\trabajadores\repository\viaje\CustomViajeRepository.class
 com\calendario\trabajadores\repository\usuario\IUsuarioRepository.class
+com\calendario\trabajadores\services\vehiculo\VehiculoService.class
 com\calendario\trabajadores\model\database\Viaje.class
 com\calendario\trabajadores\repository\usuario\CustomUsuarioRepository.class
+com\calendario\trabajadores\repository\vehiculo\IVehiculoRepository.class
 com\calendario\trabajadores\repository\usuario\CustomUsuarioRepositoryImpl.class
 com\calendario\trabajadores\model\dto\viaje\ViajeDTO.class
 com\calendario\trabajadores\services\user\UserService.class

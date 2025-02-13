@@ -14,11 +14,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -134,13 +132,15 @@ public class UserController {
     }
     )
 
-    public ResponseEntity<?> listarAll(@RequestParam(value = "activo") Optional<Boolean> activo) {
-        Optional<UsuarioDTO> usuario = userService.listar(activo);
+    public ResponseEntity<?> listAll (@RequestParam(value = "activo") Optional<Boolean> activo) {
+        Optional<List<UsuarioDTO>>usuario = userService.listar(activo);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "el usuario no existe"));
+                    .body(Map.of("error", "..."));
         }
         return ResponseEntity.ok(usuario.get());
     }
+
+
 
 }

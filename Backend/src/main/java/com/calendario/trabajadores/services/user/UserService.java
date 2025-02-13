@@ -12,14 +12,16 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    //Inyeccion de dependencias
 
     private final IUsuarioRepository userRepository;
-
+    //Contructor de UserService
     @Autowired
     public UserService(IUsuarioRepository userRepository){
+
         this.userRepository = userRepository;
     }
-
+    //Metodo para hacer login
     public Optional<UsuarioDTO> login(String username, String password){
         Optional<Usuario> usuario = userRepository.findUsuarioByEmail(username);
         System.out.println("llamando a la base de datos");
@@ -40,8 +42,9 @@ public class UserService {
             return Optional.empty();
         }
     }
+    //Metodo para crear un usuario
     public Optional<Usuario> crearUsuario(Usuario usuario){
-
+        //buscamos si el usuario ya existe
         var userExists = userRepository.findUsuarioByEmail(usuario.email);
         if (userExists.isEmpty()){
             //si el usuario no existe, lo creamos
@@ -118,8 +121,9 @@ public class UserService {
                     usuario.activo
             )).toList());
         }
-        if (activo.get()){ //si se pasa el parametro activo, devolvemos solo los usuarios activos o no activos
-            return Optional.of(userRepository.findByActivo("activo",true).stream().map(usuario -> new UsuarioDTO(
+        else if(activo.get()){ //si se pasa el parametro activo y es true, devolvemos los usuarios activos
+            var lista = userRepository.findByActivo(true);
+            return Optional.of(lista.stream().map(usuario -> new UsuarioDTO(
                     usuario.id,
                     usuario.nombre,
                     usuario.apellido1,
@@ -129,7 +133,16 @@ public class UserService {
                     usuario.activo
             )).toList());
         }else{
-            return Optional.empty();
+            var lista = userRepository.findByActivo(false); //si se pasa el parametro activo y es false, devolvemos los usuarios inactivos
+            return Optional.of(lista.stream().map(usuario -> new UsuarioDTO(
+                    usuario.id,
+                    usuario.nombre,
+                    usuario.apellido1,
+                    usuario.apellido2,
+                    usuario.email,
+                    null,
+                    usuario.activo
+            )).toList());
         }
     }
 }

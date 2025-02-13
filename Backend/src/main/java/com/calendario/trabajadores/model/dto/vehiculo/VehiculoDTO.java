@@ -1,6 +1,9 @@
 package com.calendario.trabajadores.model.dto.vehiculo;
 
 import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 
 public class VehiculoDTO {
 

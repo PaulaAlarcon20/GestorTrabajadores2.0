@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface CustomUsuarioRepository {
     //Métodos de consulta
+
     //Método para buscar un AdministradorServicio por su correo electrónico
     Optional<Usuario> findUsuarioByEmail(String email);
     //Devolvemos una lista de usuarios que tengan vehiculos activos
