@@ -1,10 +1,11 @@
 package com.calendario.trabajadores.services.vehiculo;
 
+import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.database.Vehiculo;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
 import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
 import com.calendario.trabajadores.repository.vehiculo.IVehiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class VehiculoService {
         //busco el vehiculoModel por matricula para saber si existe
         var vehiculoExists = vehiculoRepository.findVehiculoByMatricula(input.matricula);
         //si existe devolvemos un error
-        if (vehiculoExists==null){
+        if (vehiculoExists.isPresent()){
             return Optional.empty();
         }
         //si no existe creamos el vehiculoModel model
@@ -33,7 +34,10 @@ public class VehiculoService {
         vehiculoModel.matricula = input.matricula;
         vehiculoModel.modeloCoche = input.modeloCoche;
         vehiculoModel.activo = input.activo;
+        vehiculoModel.usuario = new Usuario();
+        vehiculoModel.usuario.id = input.usuario.id;
         //guardamos el vehiculoModel en la base de datos
+        vehiculoModel.plazas = input.plazas;
         Vehiculo v_guardado = vehiculoRepository.save(vehiculoModel);
 
         //mapeamos los datos del vehiculoModel a un DTO
@@ -43,6 +47,9 @@ public class VehiculoService {
         vehiculoDTOResponse.matricula = v_guardado.matricula;
         vehiculoDTOResponse.modeloCoche = v_guardado.modeloCoche;
         vehiculoDTOResponse.activo = v_guardado.activo;
+        vehiculoDTOResponse.plazas = v_guardado.plazas;
+        vehiculoDTOResponse.usuario = new UsuarioDTO();
+        vehiculoDTOResponse.usuario.id = v_guardado.usuario.id;
         return Optional.of(vehiculoDTOResponse);
     }
 }

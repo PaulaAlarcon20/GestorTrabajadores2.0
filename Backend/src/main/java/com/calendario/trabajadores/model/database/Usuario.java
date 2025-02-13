@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,7 +33,7 @@ public class Usuario {
     public String telefono;
     public String centroTrabajo;
   
-    public Puesto puesto;  
+    public Puesto puesto;
     
     public String localidad;
     public String preferenciasHorarias;
@@ -41,12 +42,11 @@ public class Usuario {
     public String rol;
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY,orphanRemoval = false)
     @JsonManagedReference
-    public List<Vehiculo> vehiculos;
+    public List<Vehiculo> vehiculos = new ArrayList();
     @OneToMany(mappedBy = "conductor", fetch = FetchType.LAZY,orphanRemoval = false)
-    public List<Viaje> viajes;
+    public List<Viaje> viajes = new ArrayList();
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY,orphanRemoval = false)
-    public List<UsuarioViaje> usuarioViajes;
-
+    public List<UsuarioViaje> usuarioViajes = new ArrayList<>();
     public boolean activo;
 
 }

@@ -16,7 +16,7 @@ public class CustomVehiculoRepositoryImpl implements CustomVehiculoRepository {
     @Override
     public List<Vehiculo> listarVehiculosUsuario(Long usuarioId) {
         List<Vehiculo> vehiculos = entityManager.createQuery(
-                "SELECT v FROM vehiculos v JOIN FETCH v.usuario u WHERE u.id = :usuario_id",
+                "SELECT v FROM Vehiculo v JOIN FETCH v.usuario u WHERE u.id = :usuario_id",
                 Vehiculo.class
         ).setParameter("usuario_id", usuarioId).getResultList();
         return vehiculos;

@@ -19,6 +19,7 @@ public class Vehiculo {
     public Long id;
 
     public String modeloCoche;
+    @Column(name = "matricula")
     public String matricula;
     public int plazas;
     @ManyToOne(fetch = FetchType.LAZY)
