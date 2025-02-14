@@ -6,9 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class GestionTrabajadoresApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		SpringApplication.run(GestionTrabajadoresApplication.class, args);
-	}
+        SpringApplication.run(GestionTrabajadoresApplication.class, args);
+    }
 
 }

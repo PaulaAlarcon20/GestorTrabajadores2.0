@@ -22,7 +22,6 @@ public class CustomVehiculoRepositoryImpl implements CustomVehiculoRepository {
         return vehiculos;
     }
 
-    //Obtener vehiculo por matricula
 
 
 

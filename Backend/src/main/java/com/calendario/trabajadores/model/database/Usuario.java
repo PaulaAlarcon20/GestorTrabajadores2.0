@@ -18,7 +18,6 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-    
     // Campo obligatorio
     @Column(nullable = false)
     public String nombre;
@@ -29,23 +28,20 @@ public class Usuario {
     public String email;
     @Column(nullable = false)
     public String contraseña;
-
     public String telefono;
     public String centroTrabajo;
-  
     public Puesto puesto;
-    
     public String localidad;
     public String preferenciasHorarias;
     public Boolean disponibilidadHorasExtras;
     @Column(nullable = false)
     public String rol;
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY,orphanRemoval = false)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, orphanRemoval = false)
     @JsonManagedReference
     public List<Vehiculo> vehiculos = new ArrayList();
-    @OneToMany(mappedBy = "conductor", fetch = FetchType.LAZY,orphanRemoval = false)
+    @OneToMany(mappedBy = "conductor", fetch = FetchType.LAZY, orphanRemoval = false)
     public List<Viaje> viajes = new ArrayList();
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY,orphanRemoval = false)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, orphanRemoval = false)
     public List<UsuarioViaje> usuarioViajes = new ArrayList<>();
     public boolean activo;
 

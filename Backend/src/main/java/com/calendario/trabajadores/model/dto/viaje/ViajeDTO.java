@@ -16,8 +16,8 @@ public class ViajeDTO {
     public Date fechaSalida;
 
     public Date horaSalida;
-
-    public int plazas;
+    //Integer y no int para poder ser null*******
+    public Integer plazas;
 
 
 }

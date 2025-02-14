@@ -8,12 +8,13 @@ import lombok.NoArgsConstructor;
 public class VehiculoDTO {
 
     public Long id;
-
     public String modeloCoche;
     public String matricula;
-    public int plazas;
+    //Integer y no int para que pueda ser null
+    public Integer plazas;
     public UsuarioDTO usuario;
-    public boolean activo;
+    //Boolean y no boolean para que pueda ser null
+    public Boolean activo;
 
     public VehiculoDTO(Long id, String modeloCoche, String matricula, boolean activo) {
         this.id = id;

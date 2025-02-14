@@ -26,7 +26,9 @@ import java.util.Optional;
 public class LoginController {
     @Autowired
     private UserService userService;
+
     //Endpoints
+    //Login de usuario
     @Operation(summary = "Login de usuario", description = "Endpoint para el login de usuario")
     @PostMapping("/login")
     @ApiResponses(value = {
@@ -42,6 +44,25 @@ public class LoginController {
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Login incorrecto"));
+        }
+        return ResponseEntity.ok(usuario.get());
+    }
+
+    //Logout de usuario (revisar, no desarollado en el servicio)****
+    @Operation(summary = "Logout de usuario", description = "Endpoint para el logout de usuario")
+    @PostMapping("/logout")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cerrada sesión",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Credenciales inválidas",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    }
+    )
+    public ResponseEntity<?> logout(@RequestBody LoginRequest loginModel) {
+        Optional<UsuarioDTO> usuario = userService.logout(loginModel.username, loginModel.password);
+        if (usuario.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Logout incorrecto"));
         }
         return ResponseEntity.ok(usuario.get());
     }

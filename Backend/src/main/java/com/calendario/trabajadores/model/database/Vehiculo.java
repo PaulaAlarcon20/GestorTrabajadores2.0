@@ -17,7 +17,6 @@ public class Vehiculo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-
     public String modeloCoche;
     @Column(name = "matricula")
     public String matricula;

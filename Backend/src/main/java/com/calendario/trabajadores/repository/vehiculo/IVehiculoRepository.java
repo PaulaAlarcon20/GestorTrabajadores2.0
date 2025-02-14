@@ -10,7 +10,9 @@ import java.util.Optional;
 
 @Repository
 public interface IVehiculoRepository extends JpaRepository<Vehiculo, Long>, CustomVehiculoRepository {
-
+    //Encontrar vehiculo por matricula
     @Query("SELECT v FROM Vehiculo v WHERE v.matricula = :p")
     Optional<Vehiculo> findVehiculoByMatricula(@Param("p")String matricula);
+
+
 }

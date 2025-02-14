@@ -36,7 +36,7 @@ public class VehiculoController {
         this.userService = userService;
     }
 
-    //Crear un vehículo
+    //Crear un vehículo (WORKS)
     @Operation(summary = "Creación de vehiculo", description = "Endpoint para crear un vehiculo")
     @PostMapping("/vehiculo/crear")
     @ApiResponses(value = {
@@ -53,8 +53,46 @@ public class VehiculoController {
         }
         return ResponseEntity.ok(respuestaServicio.get());
     }
+
+    //Editar los datos de un vehiculo (no revisado)*****
+    @Operation(summary = "Editar vehiculo", description = "Endpoint para editar un vehiculo")
+    @PostMapping("/vehiculo/editar")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vehiculo editado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = VehiculoDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))}
+    )
+    public ResponseEntity<?> editarVehiculo(@RequestBody VehiculoDTO input) {
+        Optional<VehiculoDTO> respuestaServicio = vehiculoService.modificarVehiculo(input);
+        if (respuestaServicio.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "error al editar al vehiculo"));
+        }
+        return ResponseEntity.ok(respuestaServicio.get());
+    }
+
+    //Eliminar un vehículo (sofdelete)(no revisado)*****
+    @Operation(summary = "Eliminar vehiculo", description = "Endpoint para eliminar un vehiculo")
+    @PostMapping("/vehiculo/eliminar")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "vehiculo eliminado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = VehiculoDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))}
+    )
+    public ResponseEntity<?> eliminarVehiculo(@RequestBody Long id) {
+        Optional<VehiculoDTO> respuestaServicio = vehiculoService.eliminarVehiculo(id);
+        if (respuestaServicio.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "error al eliminar al vehiculo"));
+        }
+        return ResponseEntity.ok(respuestaServicio.get());
+    }
+
+    //Listar usuariosDTO con vehiculos activos****** (no revisado)
     @Operation(summary = "Listar usuarios con vehiculos activos", description = "Endpoint para listar usuariosDTO con vehiculos activos")
-    @GetMapping("/listUsuariosDTO")
+    @GetMapping("/UsuariosDTO/vehiculosActivos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista creada",
                     content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UsuarioDTO.class)))),
@@ -66,8 +104,9 @@ public class VehiculoController {
         return ResponseEntity.ok(userService.usuariosConVehiculosActivosDTO());
     }
 
+    //Listar todos los vehiculos de un usuarioDTO******* (no revisado)
     @Operation(summary = "Listar usuarios con vehiculos", description = "Endpoint para listar vehiculos de un usuarioDTO")
-    @GetMapping("/listVehiculosByUserDTO")
+    @GetMapping("/UsuariosDTO/vehiculosAll")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista creada",
                     content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = VehiculoDTO.class)))),
@@ -78,4 +117,5 @@ public class VehiculoController {
     public ResponseEntity<?> listVehiculosByUserDTO(@RequestParam String email) {
         return ResponseEntity.ok(userService.vehiculosByUsuario(email));
     }
+
 }

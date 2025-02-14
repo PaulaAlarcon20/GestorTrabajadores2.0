@@ -26,6 +26,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    //Endpoints
+    //Crear usuario
     @Operation(summary = "Creación de usuario", description = "Endpoint para crear un usuario")
     @PostMapping("/creation")
     @ApiResponses(value = {
@@ -35,7 +37,7 @@ public class UserController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
-    public ResponseEntity<?> create (@RequestBody Usuario usuarioModel) {
+    public ResponseEntity<?> create(@RequestBody Usuario usuarioModel) {
         //Forzamos que el usuario registrado sea un usuario normal (capa extra de seguridad)
         usuarioModel.rol = "user";
         Optional<Usuario> usuario = userService.crearUsuario(usuarioModel);
@@ -46,10 +48,9 @@ public class UserController {
         return ResponseEntity.ok(usuario.get());
     }
 
-
-
+    //Crear usuario admin
     @Operation(summary = "Creación de admin", description = "Endpoint para crear un admin")
-    @PostMapping("/adminCreation")
+    @PostMapping("/admin/creation")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Admin creado",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
@@ -68,6 +69,7 @@ public class UserController {
         return ResponseEntity.ok(usuario.get());
     }
 
+    //Editar datos de usuario
     @Operation(summary = "Editar datos de usuario", description = "Endpoint para editar datos de usuario")
     @PostMapping("/editUser")
     @ApiResponses(value = {
@@ -86,6 +88,7 @@ public class UserController {
         return ResponseEntity.ok(usuario.get());
     }
 
+    //Dar de baja usuario
     @Operation(summary = "dar de baja usuario", description = "Endpoint para dar de baja usuario")
     @PostMapping("/deactivateUser")
     @ApiResponses(value = {
@@ -104,6 +107,7 @@ public class UserController {
         return ResponseEntity.ok(usuario.get());
     }
 
+    //Reactivar usuario
     @Operation(summary = "reactivar usuario", description = "Endpoint para reactivar usuario")
     @PostMapping("/reactivateUser")
     @ApiResponses(value = {
@@ -122,6 +126,7 @@ public class UserController {
         return ResponseEntity.ok(usuario.get());
     }
 
+    //Listar usuarios
     @Operation(summary = "listar usuarios", description = "Endpoint para listar todos los usuarios")
     @PostMapping("/listAll")
     @ApiResponses(value = {
@@ -131,16 +136,12 @@ public class UserController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
-
-    public ResponseEntity<?> listAll (@RequestParam(value = "activo") Optional<Boolean> activo) {
-        Optional<List<UsuarioDTO>>usuario = userService.listar(activo);
+    public ResponseEntity<?> listAll(@RequestParam(value = "activo") Optional<Boolean> activo) {
+        Optional<List<UsuarioDTO>> usuario = userService.listar(activo);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "..."));
         }
         return ResponseEntity.ok(usuario.get());
     }
-
-
-
 }

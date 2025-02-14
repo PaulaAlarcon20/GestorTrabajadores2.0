@@ -1,4 +1,5 @@
 package com.calendario.trabajadores.model.database;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,17 +20,13 @@ public class Viaje {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-
     public Date fecha;
     public Date hora;
-
     public String origen;
     public String destino;
-
     public int plazas;
     @Enumerated(EnumType.STRING)
     public EstadoViaje estado;
-
     @ManyToOne(fetch = FetchType.LAZY) //Relacion de muchos a uno
     @JoinColumn(name = "usuario_id", nullable = false) //Un usuario!!! (no conductor) por viaje, no puede ser nulo
     public Usuario conductor;
