@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: AppTheme(selectionColor: 0).theme(),
+      theme: AppTheme(selectionColor: 1).theme(),
       title: 'Turn App',
       home: Scaffold(
         ///appBar: AppBar(//title: const Text('Nuevo usuario'),),

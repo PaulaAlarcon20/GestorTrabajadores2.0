@@ -15,6 +15,7 @@ class GmailInput extends FormzInput<String, gmailInputError> {
     if(displayError == gmailInputError.empty) return 'Campo requerido';
     if(displayError == gmailInputError.invalidFormat) return 'Dirección no valida';
 
+    return null;
   }
   // Lugar donde se procede a la lógica de validaciones
   @override
