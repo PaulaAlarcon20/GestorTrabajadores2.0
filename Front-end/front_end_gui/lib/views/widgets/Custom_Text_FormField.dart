@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 /// * Validación de variables
 class CustomTextFormfield extends StatelessWidget {
 
+  final IconData? prefixIcon;
   final String? label;
   final String? hintText;
   final String? erroreMessage;
@@ -16,35 +17,60 @@ class CustomTextFormfield extends StatelessWidget {
   final Function(String)? onChanged;
   final String? Function(String?)? validator;
 
-  const CustomTextFormfield({super.key, this.label, this.hintText, this.erroreMessage, this.onChanged, this.validator,  required this.obscureText});
+
+
+  const CustomTextFormfield({
+    super.key, 
+    this.label, 
+    this.hintText, 
+    this.erroreMessage, 
+    this.onChanged, 
+    this.validator,  
+    required this.obscureText,  
+    this.prefixIcon
+  });
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    
+    final colors = Theme.of(context).colorScheme;
 
-  final colors = Theme.of(context).colorScheme;
-  final border = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(10)
-  );
-
-
-    return TextFormField(
-      onChanged: onChanged,
+    final bool mododark = Theme.of(context).brightness == Brightness.light;
+    print('Esta en modo: $mododark');
   
-      validator: validator,
-      obscureText:  obscureText,
+    return TextFormField(
+        onChanged: onChanged,
+        validator: validator,
+        obscureText:  obscureText,
 
-      decoration: InputDecoration(
+        style: TextStyle( 
+          color: mododark ? Colors.white : Colors.black,
+          fontSize: screenWidth * 0.05),
 
-        enabledBorder:  border,
-        focusedBorder: border.copyWith(borderSide: BorderSide(color: colors.primary)),
-        errorBorder: border.copyWith(borderSide: BorderSide(color: Colors.red.shade800)),
-        focusedErrorBorder: border.copyWith(borderSide: BorderSide(color: Colors.red.shade800)),
-        
+        decoration: InputDecoration(      
+        border: InputBorder.none,
+        prefixIcon: prefixIcon != null 
+          ? Icon(
+            prefixIcon,
+            color: mododark ? Colors.white : Colors.black
+            ) 
+          : null,
         isDense: true,
         label: label != null ? Text(label!) : null,
+        labelStyle: TextStyle(
+          fontSize: 19
+        ),
         hintText: hintText,
+        hintStyle: TextStyle(
+          color: Colors.amber
+        ),
         errorText: erroreMessage,
-        focusColor: colors.primary
+        errorStyle: TextStyle(
+          fontSize: 15
+        ),
+        focusColor: colors.primary,
       ),
     );
   }
