@@ -11,10 +11,14 @@ import org.mapstruct.Mapping;
 public interface IUserMapper {
     //Mapeo de los atributos de la clase Usuario a los atributos de la clase UsuarioDTO
     CrearEditarUsuarioResponse userToCreateEditResponse(Usuario userDB);
+
     //Mapeo de los atributos de la clase CrearUsuarioRequest a los atributos de la clase Usuario
     @Mapping(source = "password", target = "contraseña")
     Usuario createRequestToUser(CrearUsuarioRequest request);
 
+    //Mapeo de los atributos de la clase EditarUsuarioRequest a los atributos de la clase Usuario
     @Mapping(source = "password", target = "contraseña")
     Usuario editRequestToUser(EditarUsuarioRequest request);
+
+
 }
