@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.transaction.TransactionUsageException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +37,12 @@ public class Usuario {
     public Boolean disponibilidadHorasExtras;
     @Column(nullable = false)
     public String rol;
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, orphanRemoval = false)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     public List<Vehiculo> vehiculos = new ArrayList();
-    @OneToMany(mappedBy = "conductor", fetch = FetchType.LAZY, orphanRemoval = false)
+    @OneToMany(mappedBy = "conductor", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
     public List<Viaje> viajes = new ArrayList();
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, orphanRemoval = false)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
     public List<UsuarioViaje> usuarioViajes = new ArrayList<>();
     public boolean activo;
-
 }

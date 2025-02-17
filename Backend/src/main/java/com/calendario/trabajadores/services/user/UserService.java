@@ -155,4 +155,20 @@ public class UserService {
         return Optional.empty();
 
     }
+    //Metodo para borrar un usuario
+    public Optional<UsuarioDTO> borrar(Long id) {
+        var usuario = userRepository.findById(id);
+        if (usuario.isEmpty()) {
+            return Optional.empty();
+        }
+        userRepository.delete(usuario.get());
+        return Optional.of(new UsuarioDTO(
+                usuario.get().id,
+                usuario.get().nombre,
+                usuario.get().apellido1,
+                usuario.get().apellido2,
+                usuario.get().email,
+                null,
+                usuario.get().activo));
+    }
 }

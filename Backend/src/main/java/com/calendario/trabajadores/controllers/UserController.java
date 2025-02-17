@@ -29,7 +29,7 @@ public class UserController {
     //Endpoints
     //Crear usuario
     @Operation(summary = "Creación de usuario", description = "Endpoint para crear un usuario")
-    @PostMapping("/creation")
+    @PostMapping("/user/create")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario creado",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
@@ -50,7 +50,7 @@ public class UserController {
 
     //Crear usuario admin
     @Operation(summary = "Creación de admin", description = "Endpoint para crear un admin")
-    @PostMapping("/admin/creation")
+    @PostMapping("/user/adminCreate")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Admin creado",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
@@ -71,7 +71,7 @@ public class UserController {
 
     //Editar datos de usuario
     @Operation(summary = "Editar datos de usuario", description = "Endpoint para editar datos de usuario")
-    @PostMapping("/editUser")
+    @PostMapping("/user/edit")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "user modificado",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDTO.class))),
@@ -90,7 +90,7 @@ public class UserController {
 
     //Dar de baja usuario
     @Operation(summary = "dar de baja usuario", description = "Endpoint para dar de baja usuario")
-    @PostMapping("/deactivateUser")
+    @PostMapping("/user/deactivate")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "user desactivado",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDTO.class))),
@@ -109,7 +109,7 @@ public class UserController {
 
     //Reactivar usuario
     @Operation(summary = "reactivar usuario", description = "Endpoint para reactivar usuario")
-    @PostMapping("/reactivateUser")
+    @PostMapping("/user/reactivate")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "user reactivated",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDTO.class))),
@@ -128,7 +128,7 @@ public class UserController {
 
     //Listar usuarios
     @Operation(summary = "listar usuarios", description = "Endpoint para listar todos los usuarios")
-    @PostMapping("/listAll")
+    @GetMapping("/user/list")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "user reactivated",
                     content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UsuarioDTO.class)))),
@@ -144,4 +144,23 @@ public class UserController {
         }
         return ResponseEntity.ok(usuario.get());
     }
+    //Borrado total usuario
+    @Operation(summary = "borrar usuario", description = "Endpoint para borrar usuario")
+    @DeleteMapping("/user/delete")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "borrar usuario",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    }
+    )
+    public ResponseEntity<?> borrarUsuario(@RequestParam Long id) {
+        Optional<UsuarioDTO> usuario = userService.borrar(id);
+        if (usuario.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "el usuario no existe"));
+        }
+        return ResponseEntity.ok(usuario.get());
+    }
+
 }
