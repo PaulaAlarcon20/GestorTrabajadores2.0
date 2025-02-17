@@ -9,6 +9,7 @@ import org.springframework.transaction.TransactionUsageException;
 import java.util.ArrayList;
 import java.util.List;
 
+//Entity es una anotación que indica que la clase es una entidad de la base de datos
 @Entity
 //Utilizo lombok para no tener que escribir los getters y setters
 @Getter

@@ -1,6 +1,8 @@
 package com.calendario.trabajadores.controllers;
 
 import com.calendario.trabajadores.model.database.Usuario;
+import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioRequest;
+import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioResponse;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.services.user.UserService;
@@ -32,15 +34,15 @@ public class UserController {
     @PostMapping("/user/create")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario creado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearUsuarioResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
-    public ResponseEntity<?> create(@RequestBody Usuario usuarioModel) {
+    public ResponseEntity<?> create(@RequestBody CrearUsuarioRequest request) {
         //Forzamos que el usuario registrado sea un usuario normal (capa extra de seguridad)
-        usuarioModel.rol = "user";
-        Optional<Usuario> usuario = userService.crearUsuario(usuarioModel);
+        request.rol = "user";
+        Optional<Usuario> usuario = userService.crearUsuario(request);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "el usuario ya existe"));

@@ -1,6 +1,8 @@
 package com.calendario.trabajadores.services.user;
 
 import com.calendario.trabajadores.model.database.Usuario;
+import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioRequest;
+import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioResponse;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
 import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
@@ -46,18 +48,44 @@ public class UserService {
     }
 
     //Metodo para crear un usuario
-    public Optional<Usuario> crearUsuario(Usuario usuario) {
-        //buscamos si el usuario ya existe
-        var userExists = userRepository.findUsuarioByEmail(usuario.email);
-        if (userExists.isEmpty()) {
-            //si el usuario no existe, lo creamos
-            var resultado = userRepository.save(usuario);
-            return Optional.of(resultado);
-        }//si el usuario ya existe devolvemos un error
-        else {
+    public Optional<CrearUsuarioResponse> crearUsuario(CrearUsuarioRequest request) {
+        //Buscar por email si el usuario ya existe
+        var usuarioEsxists = userRepository.findUsuarioByEmail(request.getEmail());
+        if (usuarioEsxists.isPresent()) {
+            //Si el usuario ya existe devolvemos un Optional vacio
             return Optional.empty();
         }
+        //Si no existe, creamos un nuevo usuario
+        Usuario usuario = new Usuario();
+        usuario.setNombre(request.getNombre());
+        usuario.setApellido1(request.getApellido1());
+        usuario.setApellido2(request.getApellido2());
+        usuario.setEmail(request.getEmail());
+        //TODO: Encriptar la contraseña antes de guardarla
+        usuario.setContraseña(request.getPassword());
+        //El usuario por defecto estará: activo, por eso no está en CrearUSuarioRequest
+        usuario.setActivo(true);
+        //Guardamos el usuario en la base de datos
+        Usuario usuarioSaved = userRepository.save(usuario);
+        //Creamos el Response DTO con los datos del usuario que guardamos
+        CrearUsuarioResponse response = new CrearUsuarioResponse(
+                usuarioSaved.getId(),
+                usuarioSaved.getNombre(),
+                usuarioSaved.getApellido1(),
+                usuarioSaved.getApellido2(),
+                usuarioSaved.getEmail(),
+                usuarioSaved.getTelefono()
+                usuarioSaved.getCentroTrabajo(),
+                usuarioSaved.getPuesto(),
+                usuarioSaved.getLocalidad(),
+                usuarioSaved.getPreferenciasHorarias(),
+                usuarioSaved.getDisponibilidadHorasExtras(),
+                usuarioSaved.getRol(),
+                usuarioSaved.isActivo()
+        );
+        return Optional.of(response);
     }
+
 
     public List<Usuario> usuariosConVehiculosActivos() {
         return userRepository.findUsuariosWithActiveVehiculos();
@@ -155,6 +183,7 @@ public class UserService {
         return Optional.empty();
 
     }
+
     //Metodo para borrar un usuario
     public Optional<UsuarioDTO> borrar(Long id) {
         var usuario = userRepository.findById(id);
