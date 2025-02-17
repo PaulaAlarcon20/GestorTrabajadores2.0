@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CrearUsuarioResponse {
+public class CrearEditarUsuarioResponse {
 
     public Long id;
     public String nombre;

@@ -1,16 +1,18 @@
 package com.calendario.trabajadores.model.dto.usuario;
 
 import com.calendario.trabajadores.model.database.Puesto;
-import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
-public class CrearUsuarioRequest {
+public class EditarUsuarioRequest {
     //Atributos
+    public Long id;
     public String nombre;
     public String apellido1;
     public String apellido2;
@@ -24,6 +26,4 @@ public class CrearUsuarioRequest {
     public String preferenciasHorarias;
     public Boolean disponibilidadHorasExtras;
     public String rol;
-
 }
-
