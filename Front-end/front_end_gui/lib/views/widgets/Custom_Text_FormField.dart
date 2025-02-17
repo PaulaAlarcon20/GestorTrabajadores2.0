@@ -45,7 +45,7 @@ class CustomTextFormfield extends StatelessWidget {
         validator: validator,
         obscureText:  obscureText,
 
-        style: TextStyle( 
+        style: TextStyle(  // Estilos caja input
           color: mododark ? Colors.white : Colors.black,
           fontSize: screenWidth * 0.05),
 

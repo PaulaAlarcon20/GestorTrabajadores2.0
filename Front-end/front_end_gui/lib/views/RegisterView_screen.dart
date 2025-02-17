@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end_gui/views/cubit/RegisterCubit.dart';
 import 'package:front_end_gui/views/infraestructure/inputs/gmail.dart';
 import 'package:front_end_gui/views/widgets/Custom_Text_FormField.dart';
+import 'package:front_end_gui/views/widgets/SignUp_screen.dart';
 
 /// Pantalla creada para mostrar al usuario el login a la aplicación
 /// Vista formada por widget con orden en forma de columna, en el cual se le
@@ -74,10 +75,13 @@ class RegisterForm extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+
     final registerCubit = context.watch<RegisterCubit>(); // Escucha los cambio sy se reconstruye automaticamente
     final email = registerCubit.state.email;
     final password = registerCubit.state.password;
     final isLoading = registerCubit.state.formStatus == FormStatus.validating;
+    //final bool mododark = Theme.of(context).brightness == Brightness.light;
+    final bool modoDark = Theme.of(context).brightness == Brightness.dark;
     
     return Form(
 
@@ -118,16 +122,41 @@ class RegisterForm extends StatelessWidget {
             width: screenWidth * 0.5,
             
             child: FilledButton.tonalIcon(
-              onPressed: () {
-
-                registerCubit.onSubmit();
-              },
+              onPressed: null,
+              // Si el estado del formulario es validado, la variable booleana es true
+              //onPressed: () {registerCubit.onSubmit();},
               //icon:  const Icon(Icons.save),
               label: isLoading
                 ? const CircularProgressIndicator(color: Colors.white, strokeWidth: 2.0, strokeAlign: BorderSide.strokeAlignInside,) 
                 :  Text('Iniciar sesión', style: TextStyle( fontSize: screenWidth * 0.045)),
               ),
-          )
+          ),
+
+          SizedBox(height: screenWidth * 0.02 ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  
+                  context,
+                  MaterialPageRoute(builder: (context) => SignupForm())
+                );
+              },
+              child: Text(
+              '¿No tienes cuenta? Registrate', 
+              style: TextStyle(
+                color: modoDark ? Colors.black : Colors.white,
+                fontSize: screenHeight * 0.02,
+                decoration:  TextDecoration.underline,
+                decorationThickness: 1,
+                decorationColor: modoDark ? Colors.black : Colors.white
+                
+                
+              ),),
+            )
+          ),
+
         ],
       ));
   }
