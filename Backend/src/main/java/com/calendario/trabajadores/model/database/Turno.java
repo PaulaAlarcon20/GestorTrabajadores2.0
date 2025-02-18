@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -19,14 +20,12 @@ public class Turno {
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false) //Revisar lo de usuario id**
     public Usuario usuario;
-    /*@ManyToOne
-    @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;*/
-    @Column(nullable = false)
-    private ZonedDateTime horaInicio;
 
     @Column(nullable = false)
-    private ZonedDateTime horaFin;
+    private Date horaInicio;
+
+    @Column(nullable = false)
+    private Date horaFin;
 
     //Estado del turno
     @Enumerated(EnumType.STRING)
@@ -37,12 +36,11 @@ public class Turno {
     @Column(nullable = false)
     public PeticionTurno peticionTurno;
     //Puede ir una nota asociada a la petición de cambio de turno
-    @Column(columnDefinition = "TEXT") // text si es largo el texto asociado?¿?¿
     public String notasPeticion;
     // Constructor para asignar zona horaria por defecto
     public Turno() {
-        this.horaInicio = ZonedDateTime.now(ZoneId.of("Europe/Madrid"));
-        this.horaFin = ZonedDateTime.now(ZoneId.of("Europe/Madrid")).plusHours(8); // Ejemplo: turno de 8 horas
+        this.horaInicio = new Date();
+        this.horaFin = new Date();
     }
 }
 

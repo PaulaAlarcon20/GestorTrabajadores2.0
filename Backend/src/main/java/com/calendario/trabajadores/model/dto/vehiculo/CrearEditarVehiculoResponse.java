@@ -1,6 +1,6 @@
 package com.calendario.trabajadores.model.dto.vehiculo;
 
-import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ public class CrearEditarVehiculoResponse {
     public String matricula;
     //Integer y no int para que pueda ser null
     public Integer plazas;
-    public UsuarioDTO usuario;
+    public UsuarioVehiculosResponse usuario;
     //Boolean y no boolean para que pueda ser null
     public Boolean activo;
 }

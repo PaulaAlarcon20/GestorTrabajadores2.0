@@ -1,8 +1,7 @@
 package com.calendario.trabajadores.controllers;
 
-import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
 import com.calendario.trabajadores.services.user.UserService;
-import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.model.login.LoginRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,18 +28,19 @@ public class LoginController {
 
     //Endpoints
     //Login de usuario
+    //TODO: Añadir cookies de sesion
     @Operation(summary = "Login de usuario", description = "Endpoint para el login de usuario")
     @PostMapping("/login")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario logueado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDTO.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioVehiculosResponse.class))),
             @ApiResponse(responseCode = "401", description = "Credenciales inválidas",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
     //RequestParam especifica que son parámetros de la request
     public ResponseEntity<?> login(@RequestBody LoginRequest loginModel) {
-        Optional<UsuarioDTO> usuario = userService.login(loginModel.username, loginModel.password);
+        Optional<UsuarioVehiculosResponse> usuario = userService.login(loginModel.username, loginModel.password);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Login incorrecto"));
@@ -48,18 +48,19 @@ public class LoginController {
         return ResponseEntity.ok(usuario.get());
     }
 
-    //Logout de usuario (revisar, no desarollado en el servicio)****
+    //Logout de usuario
+    //TODO: logout
     @Operation(summary = "Logout de usuario", description = "Endpoint para el logout de usuario")
     @PostMapping("/logout")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cerrada sesión",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDTO.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioVehiculosResponse.class))),
             @ApiResponse(responseCode = "401", description = "Credenciales inválidas",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
     public ResponseEntity<?> logout(@RequestBody LoginRequest loginModel) {
-        Optional<UsuarioDTO> usuario = userService.logout(loginModel.username, loginModel.password);
+        Optional<UsuarioVehiculosResponse> usuario = userService.logout(loginModel.username, loginModel.password);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Logout incorrecto"));

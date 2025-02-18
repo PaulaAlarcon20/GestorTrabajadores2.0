@@ -3,7 +3,8 @@ package com.calendario.trabajadores.controllers;
 import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioRequest;
 import com.calendario.trabajadores.model.dto.usuario.CrearEditarUsuarioResponse;
 import com.calendario.trabajadores.model.dto.usuario.EditarUsuarioRequest;
-import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
+import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -185,6 +186,21 @@ public class UserController {
         return ResponseEntity.ok(usuario.get());
     }
 
+
+    //Listar usuarios con vehiculos (OK)
+    @Operation(summary = "Listar usuarios con vehiculos", description = "Endpoint para listar usuarios con vehiculos")
+    @GetMapping("/user/vehiculos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista creada",
+                    content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UsuarioVehiculosResponse.class)))),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    }
+    )
+    public ResponseEntity<?> listarUsuariosVehiculos(@RequestParam(value = "activo") Optional<Boolean> activo) {
+        return ResponseEntity.ok(userService.listarUsuariosVehiculos(activo));
+    }
+
     //Borrado total usuario (Uso solo para admin! Para usuarios normales usar bajaUsuario (SoftDelete) (O.K)
     @Operation(summary = "borrar usuario", description = "Endpoint para borrar usuario")
     @DeleteMapping("/user/delete")
@@ -203,5 +219,6 @@ public class UserController {
         }
         return ResponseEntity.ok(usuario.get());
     }
+
 
 }

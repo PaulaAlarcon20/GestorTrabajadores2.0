@@ -5,7 +5,7 @@ import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioRequest;
 import com.calendario.trabajadores.model.dto.usuario.CrearEditarUsuarioResponse;
 import com.calendario.trabajadores.model.dto.usuario.EditarUsuarioRequest;
-import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class UserService {
     }
 
     //Metodo para hacer login
-    public Optional<UsuarioDTO> login(String username, String password) {
+    public Optional<UsuarioVehiculosResponse> login(String username, String password) {
         Optional<Usuario> usuario = userRepository.findUsuarioByEmail(username);
         System.out.println("llamando a la base de datos");
         if (usuario.isEmpty()) {
@@ -36,7 +36,7 @@ public class UserService {
         }
         boolean passWordCorrecta = usuario.get().contraseña.equals(password);
         if (passWordCorrecta) {
-            UsuarioDTO tempDTO = new UsuarioDTO();
+            UsuarioVehiculosResponse tempDTO = new UsuarioVehiculosResponse();
             //mapeamos los datos del usuario a un DTO
             tempDTO.id = usuario.get().id;
             tempDTO.nombre = usuario.get().nombre;
@@ -50,14 +50,14 @@ public class UserService {
     }
 
     //Metodo para hacer logout (revisar!!!)******
-    public Optional<UsuarioDTO> logout(String username, String password) {
+    public Optional<UsuarioVehiculosResponse> logout(String username, String password) {
         Optional<Usuario> usuario = userRepository.findUsuarioByEmail(username);
         if (usuario.isEmpty()) {
             return Optional.empty();
         }
         boolean passWordCorrecta = usuario.get().contraseña.equals(password);
         if (passWordCorrecta) {
-            UsuarioDTO tempDTO = new UsuarioDTO();
+            UsuarioVehiculosResponse tempDTO = new UsuarioVehiculosResponse();
             tempDTO.id = usuario.get().id;
             tempDTO.nombre = usuario.get().nombre;
             tempDTO.apellido1 = usuario.get().apellido1;
@@ -192,19 +192,19 @@ public class UserService {
         userRepository.delete(usuario.get());
         return Optional.of(userMapper.userToCreateEditResponse(usuario.get()));
     }
-    /*Metodo para obtener todos los usuarios con vehiculos activos (Revisar)
-    public Optional<List<CrearEditarUsuarioResponse>> usuariosConVehiculosActivos() {
-        var lista = userRepository.findUsuariosWithTheirActiveVehiculos();
-        var list = lista.stream().map(usuario -> userMapper.userToCreateEditResponse(usuario)).toList();
-        return Optional.of(list);
+
+    public List<UsuarioVehiculosResponse> listarUsuariosVehiculos(Optional<Boolean> activo) {
+        //primero compruebo si es null
+        if (activo.isEmpty()) {
+            //Evitar una dependencia circular (findAll)
+            var lista = userRepository.findAllUsuariosVehiculos();
+            return lista;
+        } else {
+            //sabemos que no esta vacío
+            var lista = userRepository.findAllUsuariosVehiculosFiltrados(activo.get());
+            return lista;
+
+        }
+
     }
-    //Metodo para obtener solo los vehiculos activos de un usuario (Revisar)
-    public List<UsuarioDTO> usuariosConVehiculosActivosDTO() {
-        return userRepository.findUsuariosWithTheirActiveVehiculos();
-    }
-    //Metodo para obtener todos los vehiculos de un usuario (Revisar)
-    public List<VehiculoDTO> vehiculosByUsuario(String email) {
-        return userRepository.findVehiculosByUsuario(email);
-    }
-    */
 }

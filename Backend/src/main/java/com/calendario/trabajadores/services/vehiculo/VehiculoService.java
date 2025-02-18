@@ -1,9 +1,11 @@
 package com.calendario.trabajadores.services.vehiculo;
 
+import com.calendario.trabajadores.mappings.IVehiculoMapper;
 import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.database.Vehiculo;
-import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
-import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
+import com.calendario.trabajadores.model.dto.vehiculo.CrearEditarVehiculoResponse;
+import com.calendario.trabajadores.model.dto.vehiculo.CrearVehiculoRequest;
+import com.calendario.trabajadores.model.dto.vehiculo.EditarVehiculoRequest;
 import com.calendario.trabajadores.repository.vehiculo.IVehiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,115 +16,68 @@ import java.util.Optional;
 public class VehiculoService {
     //Inyeccion de dependencias
     private final IVehiculoRepository vehiculoRepository;
+    private final IVehiculoMapper vehiculoMapper;
 
     //Constructor de VehiculoService
     @Autowired
-    public VehiculoService(IVehiculoRepository vehiculoRepository) {
+    public VehiculoService(IVehiculoRepository vehiculoRepository, IVehiculoMapper vehiculoMapper) {
+
         this.vehiculoRepository = vehiculoRepository;
+        this.vehiculoMapper = vehiculoMapper;
     }
 
     //Crear un vehiculo (WORKS)
-    public Optional<VehiculoDTO> crearVehiculo(VehiculoDTO input) {
+    public Optional<CrearEditarVehiculoResponse> crearVehiculo(CrearVehiculoRequest request) {
         //busco el vehiculoModel por matricula para saber si existe
-        var vehiculoExists = vehiculoRepository.findVehiculoByMatricula(input.matricula);
+        var vehiculoExists = vehiculoRepository.findVehiculoByMatricula(request.matricula);
         //si existe devolvemos un error
         if (vehiculoExists.isPresent()) {
             return Optional.empty();
         }
-        //si no existe creamos el vehiculoModel model
-        Vehiculo vehiculoModel = new Vehiculo();
-        vehiculoModel.matricula = input.matricula;
-        vehiculoModel.modeloCoche = input.modeloCoche;
-        vehiculoModel.activo = input.activo;
-        vehiculoModel.usuario = new Usuario();
-        vehiculoModel.usuario.id = input.usuario.id;
-        //guardamos el vehiculoModel en la base de datos
-        vehiculoModel.plazas = input.plazas;
-        Vehiculo v_guardado = vehiculoRepository.save(vehiculoModel);
+        //si no existe creamos el vehiculoModel
+        Vehiculo vehiculoModel = vehiculoMapper.createRequestToVehiculo(request);
 
-        //mapeamos los datos del vehiculoModel a un DTO
-        //uso del lombok para crear el constructor vacio
-        VehiculoDTO vehiculoDTOResponse = new VehiculoDTO();
-        vehiculoDTOResponse.id = v_guardado.id;
-        vehiculoDTOResponse.matricula = v_guardado.matricula;
-        vehiculoDTOResponse.modeloCoche = v_guardado.modeloCoche;
-        vehiculoDTOResponse.activo = v_guardado.activo;
-        vehiculoDTOResponse.plazas = v_guardado.plazas;
-        vehiculoDTOResponse.usuario = new UsuarioDTO();
-        vehiculoDTOResponse.usuario.id = v_guardado.usuario.id;
-        return Optional.of(vehiculoDTOResponse);
+        //guardamos el vehiculoModel en la base de datos
+        Vehiculo v_guardado = vehiculoRepository.save(vehiculoModel);
+        var response = vehiculoMapper.vehiculoToCreateEditResponse(v_guardado);
+        return Optional.of(response);
     }
 
-    //Metodo para modificar un vehiculo ********************** (revisar!!!)
-    public Optional<VehiculoDTO> modificarVehiculo(VehiculoDTO input) {
-        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findById(input.id);
+    //Metodo para modificar un vehiculo (.OK))
+    public Optional<CrearEditarVehiculoResponse> modificarVehiculo(EditarVehiculoRequest request) {
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findById(request.id);
         if (vehiculoOptional.isEmpty()) {
             return Optional.empty();
         }
         Vehiculo vehiculoModel = vehiculoOptional.get();
-        // Actualizamos los datos que no son nulos
-        if (input.matricula != null) {
-            vehiculoModel.matricula = input.matricula;
+        // Validaciones
+        if (!request.getMatricula().isBlank()) {
+            vehiculoModel.setMatricula(request.getMatricula());
         }
-        if (input.modeloCoche != null) {
-            vehiculoModel.modeloCoche = input.modeloCoche;
+        if (!request.modeloCoche.isBlank()) {
+            vehiculoModel.setModeloCoche(request.getModeloCoche());
         }
-        if (input.activo != null) {
-            vehiculoModel.activo = input.activo;
+        if (request.activo != null) {
+            vehiculoModel.setActivo(request.getActivo());
         }
-        if (input.plazas != null) {
-            vehiculoModel.plazas = input.plazas;
+        if (request.plazas != 0) {
+            vehiculoModel.setPlazas(request.getPlazas());
         }
-        if (input.usuario != null && input.usuario.id != null) {
-            Usuario usuario = new Usuario();
-            usuario.id = input.usuario.id;
-            vehiculoModel.usuario = usuario;
+        //Creo un usuario vacio con el id del request
+        if (request.getIdUsuario() != 0) {
+            Usuario tempUser = new Usuario();
+            tempUser.setId(request.getIdUsuario());
+            //El ID que he conseguido con el get se lo paso a tempUser
+            //Igualo tempUser con el usuario de vehiculoModel
+            vehiculoModel.usuario = tempUser;
         }
         Vehiculo v_actualizado = vehiculoRepository.save(vehiculoModel);
-        VehiculoDTO vehiculoDTOResponse = new VehiculoDTO();
-        vehiculoDTOResponse.id = v_actualizado.id;
-        vehiculoDTOResponse.matricula = v_actualizado.matricula;
-        vehiculoDTOResponse.modeloCoche = v_actualizado.modeloCoche;
-        vehiculoDTOResponse.activo = v_actualizado.activo;
-        vehiculoDTOResponse.plazas = v_actualizado.plazas;
-        vehiculoDTOResponse.usuario = new UsuarioDTO();
-        vehiculoDTOResponse.usuario.id = v_actualizado.usuario.id;
 
-        return Optional.of(vehiculoDTOResponse);
+        return Optional.of(vehiculoMapper.vehiculoToCreateEditResponse(v_actualizado));
     }
 
-    //Metodo modificar sin usar tantos if*****
-    /*public Optional<VehiculoDTO> modificarVehiculo(VehiculoDTO input) {
-        return vehiculoRepository.findById(input.id)
-                .map(vehiculo -> {
-                    Optional.ofNullable(input.matricula).ifPresent(valor -> vehiculo.matricula = valor);
-                    Optional.ofNullable(input.modeloCoche).ifPresent(valor -> vehiculo.modeloCoche = valor);
-                    Optional.ofNullable(input.activo).ifPresent(valor -> vehiculo.activo = valor);
-                    Optional.ofNullable(input.plazas).ifPresent(valor -> vehiculo.plazas = valor);
-                    Optional.ofNullable(input.usuario)
-                            .map(usuario -> usuario.id)
-                            .ifPresent(id -> {
-                                Usuario usuario = new Usuario();
-                                usuario.id = id;
-                                vehiculo.usuario = usuario;
-                            });
-
-                    Vehiculo v_actualizado = vehiculoRepository.save(vehiculo);
-
-                    return new VehiculoDTO(
-                            v_actualizado.id,
-                            v_actualizado.matricula,
-                            v_actualizado.modeloCoche,
-                            v_actualizado.activo,
-                            v_actualizado.plazas,
-                            new UsuarioDTO(v_actualizado.usuario.id)
-                    );
-                });
-    }
-    */
-
-    //Metodo para eliminar un vehiculo (activo = false) ***********************
-    public Optional<VehiculoDTO> eliminarVehiculo(Long id) {
+    //Metodo para desactivar un vehiculo (activo = false) (O.K)
+    public Optional<CrearEditarVehiculoResponse> toggleVehiculo(Long id) {
         // Buscar el vehículo por ID
         Optional<Vehiculo> vehiculoOpt = vehiculoRepository.findById(id);
         // Si no existe, devuelve vacío
@@ -130,24 +85,19 @@ public class VehiculoService {
             return Optional.empty();
         }
         // Cambiar el estado a inactivo
-        Vehiculo vehiculo = vehiculoOpt.get();
-        vehiculo.activo = false;
+        Vehiculo tempV = vehiculoOpt.get();
+        // Cambiar el estado del vehículo
+        tempV.setActivo(!tempV.getActivo());
 
         // Guardar cambios en la base de datos
-        Vehiculo v_actualizado = vehiculoRepository.save(vehiculo);
+        Vehiculo v_actualizado = vehiculoRepository.save(tempV);
 
         // Mapear a DTO para devolverlo
-        VehiculoDTO vehiculoDTOResponse = new VehiculoDTO();
-        vehiculoDTOResponse.id = v_actualizado.id;
-        vehiculoDTOResponse.matricula = v_actualizado.matricula;
-        vehiculoDTOResponse.modeloCoche = v_actualizado.modeloCoche;
-        vehiculoDTOResponse.activo = v_actualizado.activo; // pasa de true a false
-        vehiculoDTOResponse.plazas = v_actualizado.plazas;
-        vehiculoDTOResponse.usuario = new UsuarioDTO();
-        vehiculoDTOResponse.usuario.id = v_actualizado.usuario.id;
+        var response = vehiculoMapper.vehiculoToCreateEditResponse(v_actualizado);
 
-        return Optional.of(vehiculoDTOResponse);
+        return Optional.of(response);
     }
+
 
 }
 

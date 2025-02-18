@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface IUserMapper {
-    //Mapeo de los atributos de la clase Usuario a los atributos de la clase UsuarioDTO
+    //Mapeo de los atributos de la clase Usuario a los atributos de la clase UsuarioVehiculosResponse
     CrearEditarUsuarioResponse userToCreateEditResponse(Usuario userDB);
 
     //Mapeo de los atributos de la clase CrearUsuarioRequest a los atributos de la clase Usuario
