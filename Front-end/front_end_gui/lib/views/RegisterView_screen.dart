@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end_gui/views/cubit/RegisterCubit.dart';
-import 'package:front_end_gui/views/infraestructure/inputs/gmail.dart';
 import 'package:front_end_gui/views/widgets/Custom_Text_FormField.dart';
-import 'package:front_end_gui/views/widgets/SignUp_screen.dart';
+import 'package:front_end_gui/views/SignUp_screen.dart';
+import 'package:front_end_gui/views/Home_screen.dart';
 
 /// Pantalla creada para mostrar al usuario el login a la aplicación
 /// Vista formada por widget con orden en forma de columna, en el cual se le
@@ -82,6 +82,7 @@ class RegisterForm extends StatelessWidget {
     final isLoading = registerCubit.state.formStatus == FormStatus.validating;
     //final bool mododark = Theme.of(context).brightness == Brightness.light;
     final bool modoDark = Theme.of(context).brightness == Brightness.dark;
+    final bool stateForm = registerCubit.state.isValid == true; 
     
     return Form(
 
@@ -122,9 +123,16 @@ class RegisterForm extends StatelessWidget {
             width: screenWidth * 0.5,
             
             child: FilledButton.tonalIcon(
-              onPressed: null,
-              // Si el estado del formulario es validado, la variable booleana es true
-              //onPressed: () {registerCubit.onSubmit();},
+              onPressed: stateForm
+                ? () {
+                  registerCubit.onSubmit();
+                  print('ENTRA AQUÍ 1');
+                  Navigator.pushReplacement(
+                    context, 
+                    MaterialPageRoute(builder: (context) => HomeScreen()));
+                  }
+                : null,
+
               //icon:  const Icon(Icons.save),
               label: isLoading
                 ? const CircularProgressIndicator(color: Colors.white, strokeWidth: 2.0, strokeAlign: BorderSide.strokeAlignInside,) 

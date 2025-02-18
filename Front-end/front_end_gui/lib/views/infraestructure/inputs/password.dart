@@ -21,7 +21,7 @@ class PasswordInput extends FormzInput<String, passwordInputError> {
   @override
   passwordInputError? validator(String value) {
     if (value.isEmpty || value.trim().isEmpty) return passwordInputError.empty;
-    if (value.length < 8) return passwordInputError.length;
+    if (value.length < 5) return passwordInputError.length;
     // Caracteres especiales
 
     return null;

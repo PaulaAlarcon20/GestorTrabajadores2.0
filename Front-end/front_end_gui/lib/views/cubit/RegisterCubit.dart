@@ -17,6 +17,7 @@ class RegisterCubit extends Cubit<RegisterState> {
 
   // Métodos en el cubic de las variables del formulario
   Future<void> onSubmit() async {
+    print('Estado actual formulario al enviarlo, antes de emitir emit -> ${state.formStatus}');
     print('Enviando formulario... datos -> email: ${state.email.value}, contraseña: ${state.password.value}');
     emit( // Notifica a flutter blog que el estado ha cambiado
       state.copyWith(  // hace una copia del estado actual, pero con algunos valores modificados
@@ -24,17 +25,19 @@ class RegisterCubit extends Cubit<RegisterState> {
         email : GmailInput.dirty(value : state.email.value),
         password : PasswordInput.dirty( value: state.password.value),
         //icono: state.isValid ? Icons.check : Icons.error,
-
+        
         isValid: Formz.validate([
           state.email,
           state.password, 
         ])
-      )
+      ),
+      
     ); 
+    print('Estado actual formStatus -> ${state.formStatus}');
     if(!state.isValid){
-      print('formulario invalido: $state.email.value');
-      print('Gmail: ${state.email.errorMessage}');
-      print('password: ${state.password.errorMessage}');
+      print('Error formulario invalido: $state.email.value');
+      print('Error Gmail: ${state.email.errorMessage}');
+      print('Error password: ${state.password.errorMessage}');
       return;
     }
 
@@ -59,7 +62,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       }
     } catch (e) {
       print('ERROR ERROR ERROR');
-      emit(state.copyWith(formStatus: FormStatus.failHttp));
+      //emit(state.copyWith(formStatus: FormStatus.failHttp));
     }
   }
 
