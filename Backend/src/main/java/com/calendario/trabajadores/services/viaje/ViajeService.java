@@ -1,12 +1,16 @@
 package com.calendario.trabajadores.services.viaje;
 
+import com.calendario.trabajadores.mappings.IViajeMapper;
 import com.calendario.trabajadores.model.database.EstadoViaje;
 import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.database.Vehiculo;
 import com.calendario.trabajadores.model.database.Viaje;
+import com.calendario.trabajadores.model.dto.viaje.CrearEditarViajeResponse;
+import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
 import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
+import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
+import com.calendario.trabajadores.repository.vehiculo.IVehiculoRepository;
 import com.calendario.trabajadores.repository.viaje.IViajeRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,26 +20,43 @@ import java.util.Optional;
 public class ViajeService {
 
     private final IViajeRepository viajeRepository;
+    private final IUsuarioRepository usuarioRepository;
+    private final IVehiculoRepository vehiculoRepository;
+    private final IViajeMapper viajeMapper;
 
-    @Autowired
-    public ViajeService(IViajeRepository viajeRepository) {
+    //Constructor de ViajeService
+
+    public ViajeService(IViajeRepository viajeRepository, IUsuarioRepository usuarioRepository, IVehiculoRepository vehiculoRepository, IViajeMapper viajeMapper) {
         this.viajeRepository = viajeRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.vehiculoRepository = vehiculoRepository;
+        this.viajeMapper = viajeMapper;
     }
 
-    //Crear un viaje (WORKS)   convertir a DTO?????
-    public Viaje crearViaje(ViajeDTO param) {
-        Viaje viaje = new Viaje();
-        viaje.conductor = new Usuario();
-        viaje.conductor.id = param.idConductor;
-        viaje.origen = param.origen;
-        viaje.destino = param.destino;
-        viaje.fecha = param.fechaSalida;
-        viaje.hora = param.horaSalida;
-        viaje.vehiculo = new Vehiculo();
-        viaje.vehiculo.id = param.idVehiculo;
-        viaje.plazas = param.plazas;
-        viaje.estado = EstadoViaje.DISPONIBLE;
-        return viajeRepository.save(viaje);
+    //Crear un viaje  TODO:revisar
+    public Optional<CrearEditarViajeResponse> crearViaje(CrearViajeRequest request) {
+
+        //Buscamos las entidades conductor y vehiculo en la base de datos (getId)
+        Optional<Usuario> responseUsuario = usuarioRepository.findById(request.getIdConductor());
+        Optional<Vehiculo> responseVehiculo = vehiculoRepository.findById(request.getIdVehiculo());
+        // Compruebo que ambos estan vacios, si lo estan retornamos vacío
+        if (responseUsuario.isEmpty() || responseVehiculo.isEmpty()) {
+            return Optional.empty();
+        }
+        //Si no están vacíos, obtenemos los objetos
+        Usuario conductor = responseUsuario.get();
+        Vehiculo vehiculo = responseVehiculo.get();
+
+        var nuevoViaje = viajeMapper.crearViajeRequestToViaje(request, conductor, vehiculo);
+
+        // Guardamos el viaje
+        Viaje viajeGuardado = viajeRepository.save(nuevoViaje);
+
+        // Convertimos el viaje a DTO para la respuesta
+        CrearEditarViajeResponse response = viajeMapper.viajeToCrearEditarViajeResponse(viajeGuardado);
+
+        // Retornamos la respuesta como un Optional
+        return Optional.of(response);
     }
 
     // Cambiar el estado de un viaje con validaciones

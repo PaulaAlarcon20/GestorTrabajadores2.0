@@ -10,6 +10,8 @@ import com.calendario.trabajadores.repository.vehiculo.IVehiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,14 +21,14 @@ public class VehiculoService {
     private final IVehiculoMapper vehiculoMapper;
 
     //Constructor de VehiculoService
-    @Autowired
+
     public VehiculoService(IVehiculoRepository vehiculoRepository, IVehiculoMapper vehiculoMapper) {
 
         this.vehiculoRepository = vehiculoRepository;
         this.vehiculoMapper = vehiculoMapper;
     }
 
-    //Crear un vehiculo (WORKS)
+    //Crear un vehiculo
     public Optional<CrearEditarVehiculoResponse> crearVehiculo(CrearVehiculoRequest request) {
         //busco el vehiculoModel por matricula para saber si existe
         var vehiculoExists = vehiculoRepository.findVehiculoByMatricula(request.matricula);
@@ -43,7 +45,7 @@ public class VehiculoService {
         return Optional.of(response);
     }
 
-    //Metodo para modificar un vehiculo (.OK))
+    //Metodo para modificar un vehiculo
     public Optional<CrearEditarVehiculoResponse> modificarVehiculo(EditarVehiculoRequest request) {
         Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findById(request.id);
         if (vehiculoOptional.isEmpty()) {
@@ -76,7 +78,7 @@ public class VehiculoService {
         return Optional.of(vehiculoMapper.vehiculoToCreateEditResponse(v_actualizado));
     }
 
-    //Metodo para desactivar un vehiculo (activo = false) (O.K)
+    //Metodo para desactivar un vehiculo (activo = false)
     public Optional<CrearEditarVehiculoResponse> toggleVehiculo(Long id) {
         // Buscar el vehículo por ID
         Optional<Vehiculo> vehiculoOpt = vehiculoRepository.findById(id);
@@ -96,6 +98,20 @@ public class VehiculoService {
         var response = vehiculoMapper.vehiculoToCreateEditResponse(v_actualizado);
 
         return Optional.of(response);
+    }
+
+    //Metodo para listar todos los vehiculos de un usuario (Las tres opciones null, activo =true y activo=false) TODO
+    public List<CrearEditarVehiculoResponse> listarVehiculos(Long usuarioId, Optional<Boolean> activo) {
+        // Llamar al repositorio para obtener los vehículos filtrados según el estado
+        List<Vehiculo> vehiculos = vehiculoRepository.listarVehiculosUsuarioConFiltro(usuarioId, activo);
+
+        // Convertir la lista de entidades Vehiculo a DTOs usando lambdas y `toList()`
+        List<CrearEditarVehiculoResponse> listaDTO = vehiculos.stream()
+                // Convertir cada vehiculo a DTO
+                .map(vehiculo -> vehiculoMapper.vehiculoToCreateEditResponse(vehiculo))
+                .toList();
+        // ListaDTO es una lista de vehiculos que puede estar vacia
+        return listaDTO;
     }
 
 

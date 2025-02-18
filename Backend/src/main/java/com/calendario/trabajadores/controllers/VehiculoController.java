@@ -1,9 +1,11 @@
 package com.calendario.trabajadores.controllers;
 
+import com.calendario.trabajadores.model.dto.usuario.CrearEditarUsuarioResponse;
 import com.calendario.trabajadores.model.dto.vehiculo.CrearEditarVehiculoResponse;
 import com.calendario.trabajadores.model.dto.vehiculo.CrearVehiculoRequest;
 import com.calendario.trabajadores.model.dto.vehiculo.EditarVehiculoRequest;
 import com.calendario.trabajadores.services.vehiculo.VehiculoService;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,12 +33,13 @@ public class VehiculoController {
     @Autowired
     private UserService userService;
 
+    //No necesito el constructor porque ya tengo la inyeccion de dependencias con @Autowired ***********
     public VehiculoController(VehiculoService vehiculoService, UserService userService) {
         this.vehiculoService = vehiculoService;
         this.userService = userService;
     }
 
-    //Crear un vehículo (WORKS)
+    //Crear un vehículo
     @Operation(summary = "Creación de vehiculo", description = "Endpoint para crear un vehiculo")
     @PostMapping("/vehiculo/crear")
     @ApiResponses(value = {
@@ -53,7 +57,7 @@ public class VehiculoController {
         return ResponseEntity.ok(respuestaServicio.get());
     }
 
-    //Editar los datos de un vehiculo (.OK))
+    //Editar los datos de un vehiculo
     @Operation(summary = "Editar vehiculo", description = "Endpoint para editar un vehiculo")
     @PostMapping("/vehiculo/editar")
     @ApiResponses(value = {
@@ -71,7 +75,7 @@ public class VehiculoController {
         return ResponseEntity.ok(respuestaServicio.get());
     }
 
-    //Toggle Vehiculo (Activar o Desactivar un vehiculo) (O.K)
+    //Toggle Vehiculo (Activar o Desactivar un vehiculo)
     @Operation(summary = "Activar/desactivar vehiculo", description = "Endpoint para activar/desactivar un vehiculo")
     @PostMapping("/vehiculo/toggle")
     @ApiResponses(value = {
@@ -89,7 +93,30 @@ public class VehiculoController {
         return ResponseEntity.ok(respuestaServicio.get());
     }
 
-    //TODO:Listar todos los vehiculos de un usuario (O.K) (Las tres opciones)
+    //TODO:Listar todos los vehiculos de un usuario (Las tres opciones)
+    @Operation(summary = "listar todos los vehiculos de un usuario", description = "Endpoint para listar todos vehiculos" +
+            " de un usuario")
+    @GetMapping("/vehiculo/list")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vehiculos listados",
+                    content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = CrearEditarVehiculoResponse.class)))),
+            @ApiResponse(responseCode = "400", description = "Bad Request  - Parámetro inválido o falta de vehículos",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class)))
+    }
+    )
+    public ResponseEntity<?> listAll(@RequestParam(value = "usuarioId") Long usuarioId,
+                                     //Se supone que tengo que añadir ativo como filtrado porque si no me devuelve todos
+                                     //los vehiculos sin filtrar?
+                                     @RequestParam(value = "activo", required = false) Optional<Boolean> activo) {
+        Optional<List<CrearEditarVehiculoResponse>> respuestaServicio = vehiculoService.listarVehiculos(usuarioId, activo);
+        if (respuestaServicio.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "..."));
+        }
+        return ResponseEntity.ok(respuestaServicio.get());
+    }
 
 
 }

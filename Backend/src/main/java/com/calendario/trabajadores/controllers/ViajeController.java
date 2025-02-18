@@ -1,8 +1,12 @@
 package com.calendario.trabajadores.controllers;
 
 import com.calendario.trabajadores.model.database.EstadoViaje;
+import com.calendario.trabajadores.model.dto.usuario.CrearEditarUsuarioResponse;
+import com.calendario.trabajadores.model.dto.viaje.CrearEditarViajeResponse;
+import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
 import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
+import com.calendario.trabajadores.services.user.UserService;
 import com.calendario.trabajadores.services.viaje.ViajeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -16,29 +20,42 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 
 @RestController
 @Tag(name = "Viaje", description = "Endpoints para viajes")
 public class ViajeController {
+    //Inyeccion de dependencias
     @Autowired
     private ViajeService viajeService;
+    @Autowired
+    private UserService userService;
 
-    //Crear un nuevo viaje (WORKS) TODO:pero deberia pasar a usar DTO***
+    //No necesito el constructor porque ya tengo la inyeccion de dependencias con @Autowired ***********
+    public ViajeController(ViajeService viajeService, UserService userService) {
+        this.viajeService = viajeService;
+        this.userService = userService;
+    }
+
+    //Crear un nuevo viaje
     @Operation(summary = "Crear un viaje", description = "Endpoint crear viaje")
     @PostMapping("/viaje/crear")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Viaje creado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ViajeDTO.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarViajeResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
-    public ResponseEntity<?> crearViaje(
-            @RequestBody ViajeDTO model
-    ) {
-        return ResponseEntity.ok(viajeService.crearViaje(model));
+    public ResponseEntity<?> crearViaje(@RequestBody CrearViajeRequest input) {
+        Optional<CrearEditarViajeResponse> viajeResponse = viajeService.crearViaje(input);
+        if (viajeResponse.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "no se ha podido crear el viaje"));
+        }
+        return ResponseEntity.ok(viajeService.crearViaje(input));
     }
 
     // Cambiar estado de un viaje (revisar!!!) TODO:toggle
@@ -66,7 +83,7 @@ public class ViajeController {
         return ResponseEntity.ok(viajeDTOResponse.get());
     }
 
-    //Editar datos de un viaje (no revisado) TODO:pasar a usar DTO
+    /*//Editar datos de un viaje (no revisado) TODO:pasar a usar DTO añadir validacion de no se peude editar un viaje en curso o finalizado.
     //(la mayoria de los datos del viaje son editables mientras no tenga pasajero asignado!)**
     //este endpoint deberia ser solo para viajes sin pasajero asignado !!!**L
     @Operation(summary = "Editar datos de un viaje", description = "Endpoint para editar datos de un viaje")
@@ -100,7 +117,6 @@ public class ViajeController {
     ) {
         return ResponseEntity.ok(viajeService.crearViaje(model));
     }
-
-
+    */
 
 }

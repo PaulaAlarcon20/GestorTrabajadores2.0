@@ -21,7 +21,7 @@ public class UserService {
     private final IUserMapper userMapper;
 
     //Contructor de UserService
-    @Autowired
+
     public UserService(IUsuarioRepository userRepository, IUserMapper userMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;

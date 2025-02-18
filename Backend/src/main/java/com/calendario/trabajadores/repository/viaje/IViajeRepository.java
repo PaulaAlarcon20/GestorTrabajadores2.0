@@ -11,4 +11,5 @@ import java.util.List;
 public interface IViajeRepository extends JpaRepository<Viaje, Long>, CustomViajeRepository {
 
 
+    Object findViajeByConductor(Long idConductor);
 }
