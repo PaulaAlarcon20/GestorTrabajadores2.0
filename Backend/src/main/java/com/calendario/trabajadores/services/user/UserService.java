@@ -6,7 +6,6 @@ import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioRequest;
 import com.calendario.trabajadores.model.dto.usuario.CrearEditarUsuarioResponse;
 import com.calendario.trabajadores.model.dto.usuario.EditarUsuarioRequest;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
-import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,7 +49,27 @@ public class UserService {
         }
     }
 
-    //Metodo para crear un usuario
+    //Metodo para hacer logout (revisar!!!)******
+    public Optional<UsuarioDTO> logout(String username, String password) {
+        Optional<Usuario> usuario = userRepository.findUsuarioByEmail(username);
+        if (usuario.isEmpty()) {
+            return Optional.empty();
+        }
+        boolean passWordCorrecta = usuario.get().contraseña.equals(password);
+        if (passWordCorrecta) {
+            UsuarioDTO tempDTO = new UsuarioDTO();
+            tempDTO.id = usuario.get().id;
+            tempDTO.nombre = usuario.get().nombre;
+            tempDTO.apellido1 = usuario.get().apellido1;
+            tempDTO.apellido2 = usuario.get().apellido2;
+            tempDTO.email = usuario.get().email;
+            return Optional.of(tempDTO);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    //Metodo para crear un usuario (O.K)
     public Optional<CrearEditarUsuarioResponse> crearUsuario(CrearUsuarioRequest request) {
         //Buscar por email si el usuario ya existe
         var usuarioEsxists = userRepository.findUsuarioByEmail(request.getEmail());
@@ -69,19 +88,7 @@ public class UserService {
     }
 
 
-    public List<Usuario> usuariosConVehiculosActivos() {
-        return userRepository.findUsuariosWithActiveVehiculos();
-    }
-
-    public List<UsuarioDTO> usuariosConVehiculosActivosDTO() {
-        return userRepository.findUsuariosWithTheirActiveVehiculos();
-    }
-
-    public List<VehiculoDTO> vehiculosByUsuario(String email) {
-        return userRepository.findVehiculosByUsuario(email);
-    }
-
-    //Metodo para editar un usuario
+    //Metodo para editar un usuario (O.K)
     public Optional<CrearEditarUsuarioResponse> editUsuario(EditarUsuarioRequest request) {
         var usuario = userRepository.findById(request.getId());
         if (usuario.isEmpty()) {
@@ -94,33 +101,66 @@ public class UserService {
         return Optional.of(response);
     }
 
-    //Metodo para desactivar un usuario
+    //Metodo para desactivar un usuario (O.K)
     public Optional<CrearEditarUsuarioResponse> softDelete(Long id) {
+        //Buscamos al usuario por su id
         var usuario = userRepository.findById(id);
+        //Si no existe devolvemos un Optional vacio
         if (usuario.isEmpty()) {
             return Optional.empty();
         }
+        //Obtenemos el usuario
         Usuario temp = usuario.get();
+        // Desactivamos al usuario
         temp.setActivo(false);
+        //Guardamos el usuario en la base de datos
         Usuario usuarioSaved = userRepository.save(temp);
+        //Mapeamos el usuario a un DTO
         var response = userMapper.userToCreateEditResponse(usuarioSaved);
+        //Devolvemos el DTO
         return Optional.of(response);
     }
 
-    //Metodo para reactivar a un usuario
-    public Optional<UsuarioDTO> reactivar(Long id) {
+    //Metodo para reactivar a un usuario (O.K)
+    public Optional<CrearEditarUsuarioResponse> reactivar(Long id) {
+        //Buscamos al usuario por su id
+        var usuario = userRepository.findById(id);
+        //Si no existe devolvemos un Optional vacio
+        if (usuario.isEmpty()) {
+            return Optional.empty();
+        }
+        //Obtenemos el usuario
+        Usuario temp = usuario.get();
+        //Activamos al usuario
+        temp.setActivo(true);
+        //Guardamos el usuario en la base de datos
+        Usuario usuarioSaved = userRepository.save(temp);
+        //Mapeamos el usuario a un DTO
+        var response = userMapper.userToCreateEditResponse(usuarioSaved);
+        //Devolvemos el DTO
+        return Optional.of(response);
+    }
+
+    //Metodo para obtener un usuario por su email (O.K)
+    public Optional<CrearEditarUsuarioResponse> getUsuario(String email) {
+        var usuario = userRepository.findUsuarioByEmail(email);
+        if (usuario.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(userMapper.userToCreateEditResponse(usuario.get()));
+    }
+
+    //Metodo para obtener un usuario por su id (O.K)
+    public Optional<CrearEditarUsuarioResponse> getUsuario(Long id) {
         var usuario = userRepository.findById(id);
         if (usuario.isEmpty()) {
             return Optional.empty();
         }
-        Usuario temp = usuario.get();
-        temp.activo = true;
-        userRepository.save(temp);
-        return Optional.of(new UsuarioDTO(temp.id, temp.nombre, temp.apellido1, temp.apellido2, temp.email, null, temp.activo));
+        return Optional.of(userMapper.userToCreateEditResponse(usuario.get()));
     }
 
     //En lugar de tener varios metodos para encontrar según los parametros que tenga, creamos un método que
-    //sea capaz de devolvernos una lista de usuarios según los parametros que le pasemos
+    //sea capaz de devolvernos una lista de usuarios según los parametros que le pasemos (O.K)
     public Optional<List<CrearEditarUsuarioResponse>> listar(Optional<Boolean> activo) {
         if (activo.isEmpty()) {
             //si no se pasa el parametro activo, devolvemos todos los usuarios
@@ -139,14 +179,8 @@ public class UserService {
         }
     }
 
-    //Metodo para hacer logout (no desarrollado)******
-    public Optional<UsuarioDTO> logout(String username, String password) {
 
-        return Optional.empty();
-
-    }
-
-    //Metodo para borrar un usuario (IMPORTANTE: uso solo de admin!! no para usuarios!)
+    //Metodo para borrar un usuario (IMPORTANTE: uso solo de admin!! no para usuarios!) (O.K)
     public Optional<CrearEditarUsuarioResponse> borrar(Long id, String email) {
         var usuario = userRepository.findById(id);
         if (usuario.isEmpty()) {
@@ -158,20 +192,19 @@ public class UserService {
         userRepository.delete(usuario.get());
         return Optional.of(userMapper.userToCreateEditResponse(usuario.get()));
     }
-
-    public Optional<CrearEditarUsuarioResponse> getUsuario(String email) {
-        var usuario = userRepository.findUsuarioByEmail(email);
-        if (usuario.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(userMapper.userToCreateEditResponse(usuario.get()));
+    /*Metodo para obtener todos los usuarios con vehiculos activos (Revisar)
+    public Optional<List<CrearEditarUsuarioResponse>> usuariosConVehiculosActivos() {
+        var lista = userRepository.findUsuariosWithTheirActiveVehiculos();
+        var list = lista.stream().map(usuario -> userMapper.userToCreateEditResponse(usuario)).toList();
+        return Optional.of(list);
     }
-
-    public Optional<CrearEditarUsuarioResponse> getUsuario(Long id) {
-        var usuario = userRepository.findById(id);
-        if (usuario.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(userMapper.userToCreateEditResponse(usuario.get()));
+    //Metodo para obtener solo los vehiculos activos de un usuario (Revisar)
+    public List<UsuarioDTO> usuariosConVehiculosActivosDTO() {
+        return userRepository.findUsuariosWithTheirActiveVehiculos();
     }
+    //Metodo para obtener todos los vehiculos de un usuario (Revisar)
+    public List<VehiculoDTO> vehiculosByUsuario(String email) {
+        return userRepository.findVehiculosByUsuario(email);
+    }
+    */
 }

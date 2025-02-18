@@ -1,6 +1,5 @@
 package com.calendario.trabajadores.model.dto.viaje;
 
-import com.calendario.trabajadores.model.database.Viaje;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class ViajeDTO {
-
+public class EditarViajeRequest {
     public Long idVehiculo;
 
     public Long idConductor;
@@ -27,6 +25,4 @@ public class ViajeDTO {
     public Date horaSalida;
     //Integer y no int para poder ser null
     public Integer plazas;
-
-
 }
