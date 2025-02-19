@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 @Entity
 @Getter
@@ -32,4 +35,12 @@ public class Vehiculo {
     public Usuario usuario;
     //vehiculo activo o no
     public Boolean activo;
+    @Column(updatable = false)
+    private Date fechaCreacion;
+
+    @UpdateTimestamp
+    private Date fechaModificacion;
+
+    private String creadoPor;
+    private String modificadoPor;
 }

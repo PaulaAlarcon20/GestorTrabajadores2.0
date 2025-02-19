@@ -3,6 +3,7 @@ package com.calendario.trabajadores.model.database;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -38,6 +39,16 @@ public class Turno {
     //Puede ir una nota asociada a la petición de cambio de turno
     public String notasPeticion;
     // Constructor para asignar zona horaria por defecto
+    public Boolean activo;
+    @Column(updatable = false)
+    private Date fechaCreacion;
+
+    @UpdateTimestamp
+    private Date fechaModificacion;
+
+    private String creadoPor;
+    private String modificadoPor;
+    //Constructor vacio
     public Turno() {
         this.horaInicio = new Date();
         this.horaFin = new Date();

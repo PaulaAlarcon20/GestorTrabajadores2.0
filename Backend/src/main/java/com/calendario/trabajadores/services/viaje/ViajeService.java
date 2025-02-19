@@ -7,13 +7,16 @@ import com.calendario.trabajadores.model.database.Vehiculo;
 import com.calendario.trabajadores.model.database.Viaje;
 import com.calendario.trabajadores.model.dto.viaje.CrearEditarViajeResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
-import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
+import com.calendario.trabajadores.model.dto.viaje.EditarViajeRequest;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 import com.calendario.trabajadores.repository.vehiculo.IVehiculoRepository;
 import com.calendario.trabajadores.repository.viaje.IViajeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,9 +36,8 @@ public class ViajeService {
         this.viajeMapper = viajeMapper;
     }
 
-    //Crear un viaje  TODO:revisar
+    //Crear un viaje
     public Optional<CrearEditarViajeResponse> crearViaje(CrearViajeRequest request) {
-
         //Buscamos las entidades conductor y vehiculo en la base de datos (getId)
         Optional<Usuario> responseUsuario = usuarioRepository.findById(request.getIdConductor());
         Optional<Vehiculo> responseVehiculo = vehiculoRepository.findById(request.getIdVehiculo());
@@ -46,7 +48,7 @@ public class ViajeService {
         //Si no están vacíos, obtenemos los objetos
         Usuario conductor = responseUsuario.get();
         Vehiculo vehiculo = responseVehiculo.get();
-
+        // Creamos un nuevo viaje con los datos del request y los objetos conductor y vehiculo
         var nuevoViaje = viajeMapper.crearViajeRequestToViaje(request, conductor, vehiculo);
 
         // Guardamos el viaje
@@ -59,8 +61,9 @@ public class ViajeService {
         return Optional.of(response);
     }
 
-    // Cambiar el estado de un viaje con validaciones
-    public Optional<ViajeDTO> cambiarEstadoViaje(Long idViaje, EstadoViaje nuevoEstado) {
+    // Cambiar el estado de un viaje con validaciones //TODO: REVISAR TOGGLE CAMBIO DE ESTADO
+    //public Optional<ViajeDTO> cambiarEstadoViaje(Long idViaje, EstadoViaje nuevoEstado)
+    public Optional<CrearEditarViajeResponse> cambiarEstadoViaje(Long idViaje, String action) {
         // Buscar el viaje por ID
         Optional<Viaje> viajeOptional = viajeRepository.findById(idViaje);
 
@@ -70,118 +73,158 @@ public class ViajeService {
         }
 
         Viaje viajeModel = viajeOptional.get();
+        EstadoViaje estadoActual = viajeModel.getEstado();
+        // Estado por defecto
+        EstadoViaje siguienteEstado = estadoActual;
 
-        // Validación: evitar que un viaje finalizado vuelva a en curso o disponible
-        if (viajeModel.getEstado() == EstadoViaje.FINALIZADO && nuevoEstado != EstadoViaje.FINALIZADO) {
-            throw new RuntimeException("No se puede cambiar el estado de un viaje finalizado.");
+        // Validación: no se puede editar un viaje FINALIZADO
+        if (estadoActual == EstadoViaje.FINALIZADO) {
+            return Optional.empty(); // No se puede cambiar un viaje finalizado
         }
 
-        // Validación: para que el nuevo estado no sea el mismo que el actual
-        if (viajeModel.getEstado() == nuevoEstado) {
-            throw new RuntimeException("El viaje ya está en el estado solicitado.");
+        // Determinar el nuevo estado en función de la acción
+        if ("confirmar".equalsIgnoreCase(action) && estadoActual == EstadoViaje.DISPONIBLE) {
+            siguienteEstado = EstadoViaje.EN_CURSO;
+        } else if ("finalizar".equalsIgnoreCase(action) && estadoActual == EstadoViaje.EN_CURSO) {
+            siguienteEstado = EstadoViaje.FINALIZADO;
+        } else {
+            return Optional.empty();  // Acción no válida o cambio no permitido
+        }
+
+        // Si el estado actual es el mismo que el siguiente, no hacemos nada
+        if (estadoActual == siguienteEstado) {
+            return Optional.empty();  // El estado ya es el mismo, no se hace nada
         }
 
         // Actualizamos el estado del viaje
-        viajeModel.setEstado(nuevoEstado);
+        viajeModel.setEstado(siguienteEstado);
 
         // Guardamos los cambios
         Viaje viajeActualizado = viajeRepository.save(viajeModel);
 
-        // Mapeamos los datos del viajeModel a un DTO
-        //no se si el mapeo esta bien*****************
-        ViajeDTO viajeDTOResponse = new ViajeDTO();
-        viajeDTOResponse.idVehiculo = viajeActualizado.getVehiculo().getId();
-        viajeDTOResponse.idConductor = viajeActualizado.getConductor().getId();
-        viajeDTOResponse.origen = viajeActualizado.getOrigen();
-        viajeDTOResponse.destino = viajeActualizado.getDestino();
-        viajeDTOResponse.fechaSalida = viajeActualizado.getFecha();
-        viajeDTOResponse.horaSalida = viajeActualizado.getHora();
-        viajeDTOResponse.plazas = viajeActualizado.getPlazas();
+        // Mapeamos el viaje actualizado a un DTO de respuesta usando el mapper
+        CrearEditarViajeResponse viajeResponse = viajeMapper.viajeToCrearEditarViajeResponse(viajeActualizado);
 
-        return Optional.of(viajeDTOResponse);
+        return Optional.of(viajeResponse);
     }
 
-    /* Cambiar estado de un viaje (otra opcion)
-    public Optional<Viaje> cambiarEstadoViajeA(Long idViaje, EstadoViaje nuevoEstado) {
-        return viajeRepository.findById(idViaje)
-                .map(viaje -> {
-                    viaje.estado = nuevoEstado;
-                    return viajeRepository.save(viaje);
-                });
-    }
-    */
-
-    //Editar datos de un viaje *********** tengo otra opcion abajo (estado me da igual porque tengo otro metodo
-    // que solo cambia los estados de un viaje??)
-
-    public Viaje editarViaje(Long id, ViajeDTO param) {
+    //Editar datos de un viaje
+    // TODO EDITAR DATOS DE UN VIAJE : añadir validacion de no se peude editar un viaje en curso o finalizado.
+    //No se incluye estado porque no debe ser editado por el usuarioL
+    public Optional<CrearEditarViajeResponse> editarViaje(Long id, EditarViajeRequest param) {
         // Buscar el viaje en la base de datos
         Optional<Viaje> viajeOptional = viajeRepository.findById(id);
 
-        // Si no existe, lanzar una excepción o devolver null
+        // Si no existe, retornamos un Optional vacío
         if (viajeOptional.isEmpty()) {
-            throw new RuntimeException("Viaje no encontrado");
+            return Optional.empty();  // Viaje no encontrado
         }
 
+        // Obtener el viaje actual
         Viaje viaje = viajeOptional.get();
-        // Actualizar solo los campos que no son null en el DTO
-        if (param.idConductor != null) {
-            viaje.conductor = new Usuario();
-            viaje.conductor.id = param.idConductor;
+
+        // Validación: no se puede editar un viaje que está en curso o finalizado
+        if (viaje.getEstado() != EstadoViaje.DISPONIBLE) {
+            return Optional.empty();  // No se puede editar el viaje
         }
-        if (param.origen != null) {
-            viaje.origen = param.origen;
+
+        // Actualizar solo los campos que no son nulos en el DTO
+        if (param.getIdConductor() != null) {
+            viaje.getConductor().setId(param.getIdConductor());
         }
-        if (param.destino != null) {
-            viaje.destino = param.destino;
+        if (param.getOrigen() != null) {
+            viaje.setOrigen(param.getOrigen());
         }
-        if (param.fechaSalida != null) {
-            viaje.fecha = param.fechaSalida;
+        if (param.getDestino() != null) {
+            viaje.setDestino(param.getDestino());
         }
-        if (param.horaSalida != null) {
-            viaje.hora = param.horaSalida;
+        if (param.getFechaSalida() != null) {
+            viaje.setFecha(param.getFechaSalida());
         }
-        if (param.idVehiculo != null) {
-            viaje.vehiculo = new Vehiculo();
-            viaje.vehiculo.id = param.idVehiculo;
+        if (param.getHoraSalida() != null) {
+            viaje.setHora(param.getHoraSalida());
         }
-        if (param.plazas != null) {
-            viaje.plazas = param.plazas;
+        if (param.getIdVehiculo() != null) {
+            viaje.getVehiculo().setId(param.getIdVehiculo());
         }
-        /*    estado no se si quitarlo****
-        if (param.estado != null) {
-            viaje.estado = param.estado;
+        if (param.getPlazas() != null) {
+            viaje.setPlazas(param.getPlazas());
         }
-        */
-        // Guardar los cambios en la base de datos
-        return viajeRepository.save(viaje);
+
+        // Guardamos los cambios en la base de datos
+        Viaje viajeActualizado = viajeRepository.save(viaje);
+
+        // Usamos el Mapper para convertir el viaje actualizado a un DTO de respuesta
+        CrearEditarViajeResponse respuesta = viajeMapper.viajeToCrearEditarViajeResponse(viajeActualizado);
+
+        return Optional.of(respuesta);  // Retornamos el DTO con los datos actualizados
     }
+
 
     //Editar viaje pero sin usar tantos if: ************
-    // Optional.ofNullable() para asignar valores solo si no son null
-    /*public Viaje editarViaje(Long id, ViajeDTO param) {
-        Viaje viaje = viajeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Viaje no encontrado"));
+/*
+    public Optional<CrearEditarViajeResponse> editarViaje(Long id, EditarViajeRequest param) {
+    // Buscar el viaje en la base de datos
+    Optional<Viaje> viajeOptional = viajeRepository.findById(id);
 
-        Optional.ofNullable(param.idConductor).ifPresent(idConductor -> {
-            viaje.conductor = new Usuario();
-            viaje.conductor.id = idConductor;
-        });
-        Optional.ofNullable(param.origen).ifPresent(v -> viaje.origen = v);
-        Optional.ofNullable(param.destino).ifPresent(v -> viaje.destino = v);
-        Optional.ofNullable(param.fechaSalida).ifPresent(v -> viaje.fecha = v);
-        Optional.ofNullable(param.horaSalida).ifPresent(v -> viaje.hora = v);
-        Optional.ofNullable(param.idVehiculo).ifPresent(idVehiculo -> {
-            viaje.vehiculo = new Vehiculo();
-            viaje.vehiculo.id = idVehiculo;
-        });
-        Optional.ofNullable(param.plazas).ifPresent(v -> viaje.plazas = v);
-        Optional.ofNullable(param.estado).ifPresent(v -> viaje.estado = v);
-
-        return viajeRepository.save(viaje);
+    // Si no existe, retornamos un Optional vacío
+    if (viajeOptional.isEmpty()) {
+        return Optional.empty();  // Viaje no encontrado
     }
-    */
 
+    // Obtener el viaje actual
+    Viaje viaje = viajeOptional.get();
+
+    // Validación: no se puede editar un viaje que está en curso o finalizado
+    if (viaje.getEstado() != EstadoViaje.DISPONIBLE) {
+        return Optional.empty();  // No se puede editar el viaje
+    }
+
+    // Mapeo dinámico: Actualizamos solo los campos no nulos usando reflexión TODO: usar una mapper para esto
+    actualizarCampo(viaje::setConductor, param.getIdConductor());
+    actualizarCampo(viaje::setOrigen, param.getOrigen());
+    actualizarCampo(viaje::setDestino, param.getDestino());
+    actualizarCampo(viaje::setFecha, param.getFechaSalida());
+    actualizarCampo(viaje::setHora, param.getHoraSalida());
+    actualizarCampo(viaje::setVehiculo, param.getIdVehiculo());
+    actualizarCampo(viaje::setPlazas, param.getPlazas());
+
+    // Guardamos los cambios en la base de datos
+    Viaje viajeActualizado = viajeRepository.save(viaje);
+
+    // Usamos el Mapper para convertir el viaje actualizado a un DTO de respuesta
+    CrearEditarViajeResponse respuesta = viajeMapper.viajeToCrearEditarViajeResponse(viajeActualizado);
+
+    return Optional.of(respuesta);  // Retornamos el DTO con los datos actualizados
 }
 
+// Método auxiliar para actualizar campos solo si el valor no es nulo
+private <T> void actualizarCampo(Consumer<T> setter, T value) {
+    if (value != null) {
+        setter.accept(value);
+    }
+}
+*/
 
+
+    //Listar todos los viajes (uso para admin) TODO: REVISAR / USAR COOKIES DE SESION
+    //Lista todos los viajes y hace filtrado por rol (admin) y por estado del viaje
+    public List<CrearEditarViajeResponse> listarViajes(Long usuarioId, String rol, EstadoViaje estado) {
+        List<Viaje> viajes;
+
+        // Si el usuario es admin, puede ver todos los viajes con el filtro de estado
+        if ("ADMIN".equalsIgnoreCase(rol)) {
+            viajes = viajeRepository.findAllViajesByEstado(estado);  // Admin puede ver todos los viajes
+        } else {
+            // Si es un usuario normal, solo puede ver los viajes de su usuario y filtrados por estado
+            viajes = viajeRepository.findViajesByUsuarioAndEstado(usuarioId, estado);
+        }
+
+        // Convertimos la lista de Viaje a CrearEditarViajeResponse usando el Mapper
+        List<CrearEditarViajeResponse> viajesResponse = viajes.stream()
+                .map(viaje -> viajeMapper.viajeToCrearEditarViajeResponse(viaje))  // Usamos el Mapper para convertir a CrearEditarViajeResponse
+                .collect(Collectors.toList());
+
+        return viajesResponse;
+    }
+}

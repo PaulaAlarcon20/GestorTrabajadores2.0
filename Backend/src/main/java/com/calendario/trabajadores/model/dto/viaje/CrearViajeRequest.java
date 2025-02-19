@@ -25,4 +25,6 @@ public class CrearViajeRequest {
     public Date horaSalida;
     //Integer y no int para poder ser null
     public Integer plazas;
+    public Boolean activo;  //**** Inluyo activo? TODO:Supuestamente no si se crea activo por defecto
+    //algo mas es activo por defecto? como usuario o vehiculo??
 }

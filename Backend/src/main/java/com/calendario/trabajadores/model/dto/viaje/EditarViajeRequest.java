@@ -25,4 +25,5 @@ public class EditarViajeRequest {
     public Date horaSalida;
     //Integer y no int para poder ser null
     public Integer plazas;
+    //public Boolean activo;  //**** Inluyo activo? TODO:Pregunta
 }

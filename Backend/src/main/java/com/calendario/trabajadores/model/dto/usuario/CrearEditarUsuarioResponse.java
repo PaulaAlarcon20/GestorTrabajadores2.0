@@ -1,10 +1,15 @@
 package com.calendario.trabajadores.model.dto.usuario;
 
 import com.calendario.trabajadores.model.database.Puesto;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -24,7 +29,13 @@ public class CrearEditarUsuarioResponse {
     public String preferenciasHorarias;
     public Boolean disponibilidadHorasExtras;
     public String rol;
-    public boolean activo;
+    public Boolean activo;
+    @CreationTimestamp          //TODO:Revisar
+    @Column(updatable = false)
+    private Date fechaCreacion;
+
+    @UpdateTimestamp
+    private Date fechaModificacion;
 
 
 }

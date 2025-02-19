@@ -4,6 +4,7 @@ import com.calendario.trabajadores.model.database.EstadoViaje;
 import com.calendario.trabajadores.model.dto.usuario.CrearEditarUsuarioResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearEditarViajeResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
+import com.calendario.trabajadores.model.dto.viaje.EditarViajeRequest;
 import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.services.user.UserService;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -58,12 +60,12 @@ public class ViajeController {
         return ResponseEntity.ok(viajeService.crearViaje(input));
     }
 
-    // Cambiar estado de un viaje (revisar!!!) TODO:toggle
+    // Cambiar estado de un viaje  TODO:toggle
     @Operation(summary = "Cambiar estado de un viaje", description = "Endpoint para cambiar el estado de un viaje")
-    @PatchMapping("/viaje/estado")   //PATCH para actualizar solo el estado NO POST NI GET*?
+    @PatchMapping("/viaje/estado")   //PATCH para actualizar solo el estado NO POST NI GET
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Estado del viaje cambiado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ViajeDTO.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarViajeResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "Viaje no encontrado",
@@ -71,52 +73,83 @@ public class ViajeController {
     })
     public ResponseEntity<?> cambiarEstadoViaje(
             @PathVariable Long idViaje,
-            @RequestParam EstadoViaje nuevoEstado
+            @RequestParam String action  // Ahora esperamos un String "action" en lugar de "nuevoEstado"
     ) {
-        Optional<ViajeDTO> viajeDTOResponse = viajeService.cambiarEstadoViaje(idViaje, nuevoEstado);
+        // Llamamos al servicio para cambiar el estado del viaje
+        Optional<CrearEditarViajeResponse> viajeResponse = viajeService.cambiarEstadoViaje(idViaje, action);
 
-        if (viajeDTOResponse.isEmpty()) {
+        // Si no se encuentra el viaje o no se puede cambiar el estado, respondemos con NOT_FOUND
+        if (viajeResponse.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse("Viaje no encontrado"));
+                    .body(new ErrorResponse("Viaje no encontrado o acción no permitida"));
         }
 
-        return ResponseEntity.ok(viajeDTOResponse.get());
+        // Si todo va bien, retornamos el viaje actualizado
+        return ResponseEntity.ok(viajeResponse.get());
     }
 
-    /*//Editar datos de un viaje (no revisado) TODO:pasar a usar DTO añadir validacion de no se peude editar un viaje en curso o finalizado.
+
+    //Editar datos de un viaje (no revisado) TODO:añadir validacion de no se peude editar un viaje en curso o finalizado.
     //(la mayoria de los datos del viaje son editables mientras no tenga pasajero asignado!)**
     //este endpoint deberia ser solo para viajes sin pasajero asignado !!!**L
     @Operation(summary = "Editar datos de un viaje", description = "Endpoint para editar datos de un viaje")
-    @GetMapping("/viaje/editarDatos")
+    @PatchMapping("/viaje/editarDatos/{idViaje}")  // Usamos PATCH porque es para editar
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Datos del viaje modificados",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ViajeDTO.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarViajeResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Viaje no encontrado o no editable",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    }
-    )
+    })
     public ResponseEntity<?> editarViaje(
-            @RequestBody ViajeDTO model
+            @PathVariable Long idViaje,  // Aquí utilizamos PathVariable para pasar el ID en la URL
+            @RequestBody EditarViajeRequest model  // Recibimos los datos para editar el viaje
     ) {
-        return ResponseEntity.ok(viajeService.crearViaje(model));
+        // Llamamos al servicio para editar el viaje, pasamos el id y el EditarViajeRequest
+        Optional<CrearEditarViajeResponse> viajeEditado = viajeService.editarViaje(idViaje, model);
+
+        // Verificamos si el viaje fue encontrado y editado correctamente
+        if (viajeEditado.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse("Viaje no encontrado o no editable, el viaje no está disponible para su edición."));
+        }
+
+        // Si la edición fue exitosa, devolvemos la respuesta con el viaje editado
+        return ResponseEntity.ok(viajeEditado.get());
     }
 
-    //Listar todos los viajes (uso para admin) (No revisado) TODO: usando cookies de sesion, un unico endpoint que
+
+
+    /*//Listar todos los viajes (uso para admin) (No revisado) TODO: usando cookies de sesion, un unico endpoint que
     // diferencia si es admin o no, + estado viaje (enum) para filtrar
-    @Operation(summary = "Listar todos los viajes", description = "Endpoint para listar todos los viajes")
+    @Operation(summary = "Listar todos los viajes", description = "Endpoint para listar todos los viajes con filtro por estado y rol de usuario")
     @GetMapping("/viaje/listar")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista creada",
-                    content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ViajeDTO.class)))),
+            @ApiResponse(responseCode = "200", description = "Lista de viajes obtenida",
+                    content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CrearEditarViajeResponse.class)))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "No se encontraron viajes",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    }
-    )
+    })
     public ResponseEntity<?> listarViajes(
-            @RequestBody ViajeDTO model
+            @RequestParam Long usuarioId,  // ID del usuario para filtrar
+            @RequestParam String rol,  // Rol del usuario (admin o no)
+            @RequestParam EstadoViaje estado  // Estado del viaje para filtrar
     ) {
-        return ResponseEntity.ok(viajeService.crearViaje(model));
+        // Llamamos al servicio para listar los viajes filtrados
+        List<CrearEditarViajeResponse> viajesResponse = viajeService.listarViajes(usuarioId, rol, estado);
+
+        // Verificamos si la lista está vacía
+        if (viajesResponse.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse("No se encontraron viajes"));
+        }
+
+        // Si la lista no está vacía, retornamos la lista de viajes
+        return ResponseEntity.ok(viajesResponse);
     }
     */
+
 
 }

@@ -5,7 +5,10 @@ import com.calendario.trabajadores.model.database.Vehiculo;
 import com.calendario.trabajadores.model.database.Viaje;
 import com.calendario.trabajadores.model.dto.viaje.CrearEditarViajeResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
+import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
 import org.mapstruct.Mapper;
+
+import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface IViajeMapper {
@@ -13,4 +16,5 @@ public interface IViajeMapper {
     CrearEditarViajeResponse viajeToCrearEditarViajeResponse(Viaje viajeGuardado);
 
     Viaje crearViajeRequestToViaje(CrearViajeRequest request, Usuario conductor, Vehiculo vehiculo);
+
 }

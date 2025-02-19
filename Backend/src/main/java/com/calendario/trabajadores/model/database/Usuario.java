@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.transaction.TransactionUsageException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 //Entity es una anotación que indica que la clase es una entidad de la base de datos
@@ -45,5 +47,13 @@ public class Usuario {
     public List<Viaje> viajes = new ArrayList();
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
     public List<UsuarioViaje> usuarioViajes = new ArrayList<>();
-    public boolean activo;
+    public Boolean activo;
+    @Column(updatable = false)
+    private Date fechaCreacion;
+
+    @UpdateTimestamp
+    private Date fechaModificacion;
+
+    private String creadoPor;
+    private String modificadoPor;
 }

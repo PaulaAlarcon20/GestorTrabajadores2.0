@@ -20,7 +20,7 @@ public class UsuarioVehiculosResponse {
     public String apellido2;
     public String email;
     public List<VehiculoDTO> vehiculos;
-    public boolean activo;
+    public Boolean activo;
 
 
 }

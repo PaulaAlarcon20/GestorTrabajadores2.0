@@ -1,11 +1,14 @@
 package com.calendario.trabajadores.model.database;
 
+import com.calendario.trabajadores.model.common.CamposComunes;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 import java.util.List;
@@ -16,7 +19,7 @@ import java.util.List;
 @Table(name = "viajes")
 @NoArgsConstructor//Constructor vacio
 @AllArgsConstructor//Constructor con todos los atributos
-public class Viaje {
+public class Viaje extends CamposComunes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;

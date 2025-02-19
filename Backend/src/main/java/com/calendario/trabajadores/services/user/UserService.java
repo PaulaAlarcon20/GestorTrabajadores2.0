@@ -49,7 +49,7 @@ public class UserService {
         }
     }
 
-    //Metodo para hacer logout (revisar!!!)******
+    //Metodo para hacer logout TODO:logout
     public Optional<UsuarioVehiculosResponse> logout(String username, String password) {
         Optional<Usuario> usuario = userRepository.findUsuarioByEmail(username);
         if (usuario.isEmpty()) {
@@ -69,7 +69,7 @@ public class UserService {
         }
     }
 
-    //Metodo para crear un usuario (O.K)
+    //Metodo para crear un usuario
     public Optional<CrearEditarUsuarioResponse> crearUsuario(CrearUsuarioRequest request) {
         //Buscar por email si el usuario ya existe
         var usuarioEsxists = userRepository.findUsuarioByEmail(request.getEmail());
@@ -88,7 +88,7 @@ public class UserService {
     }
 
 
-    //Metodo para editar un usuario (O.K)
+    //Metodo para editar un usuario
     public Optional<CrearEditarUsuarioResponse> editUsuario(EditarUsuarioRequest request) {
         var usuario = userRepository.findById(request.getId());
         if (usuario.isEmpty()) {
@@ -101,7 +101,7 @@ public class UserService {
         return Optional.of(response);
     }
 
-    //Metodo para desactivar un usuario (O.K)
+    //Metodo para desactivar un usuario
     public Optional<CrearEditarUsuarioResponse> softDelete(Long id) {
         //Buscamos al usuario por su id
         var usuario = userRepository.findById(id);
@@ -121,7 +121,7 @@ public class UserService {
         return Optional.of(response);
     }
 
-    //Metodo para reactivar a un usuario (O.K)
+    //Metodo para reactivar a un usuario
     public Optional<CrearEditarUsuarioResponse> reactivar(Long id) {
         //Buscamos al usuario por su id
         var usuario = userRepository.findById(id);
@@ -141,7 +141,7 @@ public class UserService {
         return Optional.of(response);
     }
 
-    //Metodo para obtener un usuario por su email (O.K)
+    //Metodo para obtener un usuario por su email
     public Optional<CrearEditarUsuarioResponse> getUsuario(String email) {
         var usuario = userRepository.findUsuarioByEmail(email);
         if (usuario.isEmpty()) {
@@ -150,7 +150,7 @@ public class UserService {
         return Optional.of(userMapper.userToCreateEditResponse(usuario.get()));
     }
 
-    //Metodo para obtener un usuario por su id (O.K)
+    //Metodo para obtener un usuario por su id
     public Optional<CrearEditarUsuarioResponse> getUsuario(Long id) {
         var usuario = userRepository.findById(id);
         if (usuario.isEmpty()) {
@@ -180,7 +180,7 @@ public class UserService {
     }
 
 
-    //Metodo para borrar un usuario (IMPORTANTE: uso solo de admin!! no para usuarios!) (O.K)
+    //Metodo para borrar un usuario (IMPORTANTE: no utilizar con usuarios! Riesgo de borrado de la base de datos)
     public Optional<CrearEditarUsuarioResponse> borrar(Long id, String email) {
         var usuario = userRepository.findById(id);
         if (usuario.isEmpty()) {
@@ -192,7 +192,7 @@ public class UserService {
         userRepository.delete(usuario.get());
         return Optional.of(userMapper.userToCreateEditResponse(usuario.get()));
     }
-
+    //Metodo para listar usuarios con vehiculos
     public List<UsuarioVehiculosResponse> listarUsuariosVehiculos(Optional<Boolean> activo) {
         //primero compruebo si es null
         if (activo.isEmpty()) {

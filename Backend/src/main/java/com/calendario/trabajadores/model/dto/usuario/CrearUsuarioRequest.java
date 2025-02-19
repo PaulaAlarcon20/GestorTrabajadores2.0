@@ -24,6 +24,7 @@ public class CrearUsuarioRequest {
     public String preferenciasHorarias;
     public Boolean disponibilidadHorasExtras;
     public String rol;
+    public Boolean activo;  //**** TODO:Revisar
 
 }
 

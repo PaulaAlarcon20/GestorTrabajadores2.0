@@ -1,5 +1,6 @@
 package com.calendario.trabajadores.repository.viaje;
 
+import com.calendario.trabajadores.model.database.EstadoViaje;
 import com.calendario.trabajadores.model.database.Viaje;
 
 import java.util.Date;
@@ -27,4 +28,7 @@ public interface CustomViajeRepository {
     void eliminarUsuarioViaje(Long viajeId, Long usuarioId);
 
 
+    List<Viaje> findAllViajesByEstado(EstadoViaje estado);
+
+    List<Viaje> findViajesByUsuarioAndEstado(Long usuarioId, EstadoViaje estado);
 }
