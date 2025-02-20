@@ -126,7 +126,6 @@ class RegisterForm extends StatelessWidget {
               onPressed: stateForm
                 ? () {
                   registerCubit.onSubmit();
-                  print('ENTRA AQUÍ 1');
                   Navigator.pushReplacement(
                     context, 
                     MaterialPageRoute(builder: (context) => HomeScreen()));
@@ -169,3 +168,5 @@ class RegisterForm extends StatelessWidget {
       ));
   }
 }
+
+
