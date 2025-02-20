@@ -49,8 +49,8 @@ class AppTheme {
       
       colorScheme: ColorScheme(
         brightness: isWhite ? Brightness.dark : Brightness.light,                             // Brillo el color
-        primary: isWhite ? Color(0xFF0D47A1): Color(0xFFFFFFFF),                               // Entiendo que color primario
-        onPrimary: isWhite ? Colors.black : Color(0xB3FFFFFF),                                 // Color de texto
+        primary: isWhite ? Color.fromARGB(255, 54, 138, 223): Color(0xFFFFFFFF),                               // Entiendo que color primario
+        onPrimary: isWhite ? const Color.fromARGB(255, 255, 249, 249) : Color(0xB3FFFFFF),                                 // Color de texto
         secondary: isWhite ? Color.fromARGB(255, 54, 138, 223) : Colors.blue.shade400,            // Botón Inicio sesión
         onSecondary: isWhite ? Colors.white : Colors.white,                               // Color de texto sobre secondary
         error: Color(0xFFD32F2F),                                                           // Color de errores
