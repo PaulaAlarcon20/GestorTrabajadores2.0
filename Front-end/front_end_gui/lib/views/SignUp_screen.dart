@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front_end_gui/views/RegisterView_screen.dart';
-import 'package:front_end_gui/views/widgets/PersonalForm.dart';
+import 'package:front_end_gui/views/widgets/AllForms.dart';
 
 
 
@@ -72,12 +72,15 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
           decoration: BoxDecoration(
             //maincolor: Colors.red
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Crear cuenta', style: TextStyle(fontWeight: FontWeight.bold),),
-              Text('Paso $_pasos de 3', style: TextStyle(fontSize: 17, color: const Color.fromARGB(255, 128, 128, 128)),)
-            ],
+          child: Padding(
+            padding: EdgeInsets.only(top: 15),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Crear cuenta', style: TextStyle(fontWeight: FontWeight.bold),),
+                Text('Paso $_pasos de 3', style: TextStyle(fontSize: 17, color: const Color.fromARGB(255, 128, 128, 128)),)
+              ],
+            ),
           ),
         ),
         
