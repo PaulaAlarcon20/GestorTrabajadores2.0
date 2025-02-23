@@ -131,7 +131,7 @@ public class UserController {
 
     //Listar información de un usuario (obtener el usuario con el id) (O.K)
     @Operation(summary = "Listar información de un usuario", description = "Endpoint para listar información de un usuario")
-    @GetMapping("/user/get")
+    @GetMapping("/user/getById")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario encontrado",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarUsuarioResponse.class))),
@@ -150,7 +150,7 @@ public class UserController {
 
     //Listar información de un usuario (obtener el usuario con el email) (O.K)
     @Operation(summary = "Listar información de un usuario", description = "Endpoint para listar información de un usuario")
-    @GetMapping("/user/get")
+    @GetMapping("/user/getByEmail")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario encontrado",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarUsuarioResponse.class))),

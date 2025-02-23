@@ -110,12 +110,12 @@ public class VehiculoController {
                                      //Se supone que tengo que añadir ativo como filtrado porque si no me devuelve todos
                                      //los vehiculos sin filtrar?
                                      @RequestParam(value = "activo", required = false) Optional<Boolean> activo) {
-        Optional<List<CrearEditarVehiculoResponse>> respuestaServicio = vehiculoService.listarVehiculos(usuarioId, activo);
+        List<CrearEditarVehiculoResponse> respuestaServicio = vehiculoService.listarVehiculos(usuarioId, activo);
         if (respuestaServicio.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "..."));
         }
-        return ResponseEntity.ok(respuestaServicio.get());
+        return ResponseEntity.ok(respuestaServicio);
     }
 
 

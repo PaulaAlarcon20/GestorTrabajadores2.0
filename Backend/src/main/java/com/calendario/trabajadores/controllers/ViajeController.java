@@ -57,7 +57,7 @@ public class ViajeController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "no se ha podido crear el viaje"));
         }
-        return ResponseEntity.ok(viajeService.crearViaje(input));
+        return ResponseEntity.ok(viajeResponse);
     }
 
     // Cambiar estado de un viaje  TODO:toggle

@@ -38,7 +38,8 @@ public class VehiculoService {
         }
         //si no existe creamos el vehiculoModel
         Vehiculo vehiculoModel = vehiculoMapper.createRequestToVehiculo(request);
-
+        vehiculoModel.usuario = new Usuario();
+        vehiculoModel.usuario.id = request.idUsuario;
         //guardamos el vehiculoModel en la base de datos
         Vehiculo v_guardado = vehiculoRepository.save(vehiculoModel);
         var response = vehiculoMapper.vehiculoToCreateEditResponse(v_guardado);

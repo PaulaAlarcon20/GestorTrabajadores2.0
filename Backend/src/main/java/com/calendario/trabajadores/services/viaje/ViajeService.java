@@ -49,8 +49,11 @@ public class ViajeService {
         Usuario conductor = responseUsuario.get();
         Vehiculo vehiculo = responseVehiculo.get();
         // Creamos un nuevo viaje con los datos del request y los objetos conductor y vehiculo
-        var nuevoViaje = viajeMapper.crearViajeRequestToViaje(request, conductor, vehiculo);
-
+        var nuevoViaje = viajeMapper.crearViajeRequestToViaje(request);
+        nuevoViaje.conductor = new Usuario();
+        nuevoViaje.conductor.id = request.idConductor;
+        nuevoViaje.vehiculo = new Vehiculo();
+        nuevoViaje.vehiculo.id = request.idVehiculo;
         // Guardamos el viaje
         Viaje viajeGuardado = viajeRepository.save(nuevoViaje);
 
