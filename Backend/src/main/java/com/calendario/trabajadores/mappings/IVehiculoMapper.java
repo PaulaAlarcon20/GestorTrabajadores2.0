@@ -14,11 +14,11 @@ public interface IVehiculoMapper {
     CrearEditarVehiculoResponse vehiculoToCreateEditResponse(Vehiculo vehiculoDB);
 
 
-
+    @Mapping(source = "idUsuario", target = "usuario.id")
     Vehiculo createRequestToVehiculo(CrearVehiculoRequest request);
 
 
-
+    @Mapping(source = "idUsuario", target = "usuario.id")
     Vehiculo editRequestToUser(EditarVehiculoRequest request);
 }
 

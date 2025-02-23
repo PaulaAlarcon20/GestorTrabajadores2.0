@@ -1,5 +1,6 @@
 package com.calendario.trabajadores.model.dto.usuario;
 
+import com.calendario.trabajadores.model.common.CamposComunes;
 import com.calendario.trabajadores.model.database.Puesto;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CrearEditarUsuarioResponse {
+public class UsuarioResponse extends CamposComunes {
 
     public Long id;
     public String nombre;
@@ -30,12 +31,6 @@ public class CrearEditarUsuarioResponse {
     public Boolean disponibilidadHorasExtras;
     public String rol;
     public Boolean activo;
-    @CreationTimestamp          //TODO:Revisar
-    @Column(updatable = false)
-    private Date fechaCreacion;
-
-    @UpdateTimestamp
-    private Date fechaModificacion;
 
 
 }

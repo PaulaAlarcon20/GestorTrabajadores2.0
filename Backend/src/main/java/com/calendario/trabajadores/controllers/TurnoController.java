@@ -1,26 +1,10 @@
 package com.calendario.trabajadores.controllers;
 
-import com.calendario.trabajadores.model.dto.turno.CrearTurnoRequest;
-import com.calendario.trabajadores.model.dto.usuario.CrearEditarUsuarioResponse;
-import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioRequest;
-import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.services.turno.TurnoService;
 import com.calendario.trabajadores.services.user.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @Tag(name = "Turno", description = "Endpoints para viajes")
@@ -41,7 +25,7 @@ public class TurnoController {
     }
     )
     public ResponseEntity<?> create(@RequestBody CrearTurnoRequest request) {
-        Optional<CrearEditarUsuarioResponse> usuario = userService.crearTurno(request);
+        Optional<UsuarioResponse> usuario = userService.crearTurno(request);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "el turno ya existe"));

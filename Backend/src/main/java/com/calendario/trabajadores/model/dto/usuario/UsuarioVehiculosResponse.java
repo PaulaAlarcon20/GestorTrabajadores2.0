@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioVehiculosResponse {
+public class UsuarioVehiculosResponse{
 
     public Long id;
     public String nombre;

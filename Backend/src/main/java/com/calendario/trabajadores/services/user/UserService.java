@@ -3,11 +3,10 @@ package com.calendario.trabajadores.services.user;
 import com.calendario.trabajadores.mappings.IUserMapper;
 import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioRequest;
-import com.calendario.trabajadores.model.dto.usuario.CrearEditarUsuarioResponse;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
 import com.calendario.trabajadores.model.dto.usuario.EditarUsuarioRequest;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -70,7 +69,7 @@ public class UserService {
     }
 
     //Metodo para crear un usuario
-    public Optional<CrearEditarUsuarioResponse> crearUsuario(CrearUsuarioRequest request) {
+    public Optional<UsuarioResponse> crearUsuario(CrearUsuarioRequest request) {
         //Buscar por email si el usuario ya existe
         var usuarioEsxists = userRepository.findUsuarioByEmail(request.getEmail());
         if (usuarioEsxists.isPresent()) {
@@ -89,7 +88,7 @@ public class UserService {
 
 
     //Metodo para editar un usuario
-    public Optional<CrearEditarUsuarioResponse> editUsuario(EditarUsuarioRequest request) {
+    public Optional<UsuarioResponse> editUsuario(EditarUsuarioRequest request) {
         var usuario = userRepository.findById(request.getId());
         if (usuario.isEmpty()) {
             return Optional.empty();
@@ -102,7 +101,7 @@ public class UserService {
     }
 
     //Metodo para desactivar un usuario
-    public Optional<CrearEditarUsuarioResponse> softDelete(Long id) {
+    public Optional<UsuarioResponse> softDelete(Long id) {
         //Buscamos al usuario por su id
         var usuario = userRepository.findById(id);
         //Si no existe devolvemos un Optional vacio
@@ -122,7 +121,7 @@ public class UserService {
     }
 
     //Metodo para reactivar a un usuario
-    public Optional<CrearEditarUsuarioResponse> reactivar(Long id) {
+    public Optional<UsuarioResponse> reactivar(Long id) {
         //Buscamos al usuario por su id
         var usuario = userRepository.findById(id);
         //Si no existe devolvemos un Optional vacio
@@ -142,7 +141,7 @@ public class UserService {
     }
 
     //Metodo para obtener un usuario por su email
-    public Optional<CrearEditarUsuarioResponse> getUsuario(String email) {
+    public Optional<UsuarioResponse> getUsuario(String email) {
         var usuario = userRepository.findUsuarioByEmail(email);
         if (usuario.isEmpty()) {
             return Optional.empty();
@@ -151,7 +150,7 @@ public class UserService {
     }
 
     //Metodo para obtener un usuario por su id
-    public Optional<CrearEditarUsuarioResponse> getUsuario(Long id) {
+    public Optional<UsuarioResponse> getUsuario(Long id) {
         var usuario = userRepository.findById(id);
         if (usuario.isEmpty()) {
             return Optional.empty();
@@ -161,7 +160,7 @@ public class UserService {
 
     //En lugar de tener varios metodos para encontrar según los parametros que tenga, creamos un método que
     //sea capaz de devolvernos una lista de usuarios según los parametros que le pasemos (O.K)
-    public Optional<List<CrearEditarUsuarioResponse>> listar(Optional<Boolean> activo) {
+    public Optional<List<UsuarioResponse>> listar(Optional<Boolean> activo) {
         if (activo.isEmpty()) {
             //si no se pasa el parametro activo, devolvemos todos los usuarios
             var lista = userRepository.findAll();
@@ -181,7 +180,7 @@ public class UserService {
 
 
     //Metodo para borrar un usuario (IMPORTANTE: no utilizar con usuarios! Riesgo de borrado de la base de datos)
-    public Optional<CrearEditarUsuarioResponse> borrar(Long id, String email) {
+    public Optional<UsuarioResponse> borrar(Long id, String email) {
         var usuario = userRepository.findById(id);
         if (usuario.isEmpty()) {
             return Optional.empty();
@@ -192,6 +191,7 @@ public class UserService {
         userRepository.delete(usuario.get());
         return Optional.of(userMapper.userToCreateEditResponse(usuario.get()));
     }
+
     //Metodo para listar usuarios con vehiculos
     public List<UsuarioVehiculosResponse> listarUsuariosVehiculos(Optional<Boolean> activo) {
         //primero compruebo si es null

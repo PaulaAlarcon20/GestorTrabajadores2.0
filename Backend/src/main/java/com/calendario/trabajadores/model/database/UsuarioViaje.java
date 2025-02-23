@@ -18,9 +18,9 @@ public class UsuarioViaje {
     public Long id;
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    public Usuario usuario;
+    public Usuario usuario = new Usuario();
     @ManyToOne
     @JoinColumn(name = "viaje_id")
-    public Viaje viaje;
+    public Viaje viaje = new Viaje();
 
 }

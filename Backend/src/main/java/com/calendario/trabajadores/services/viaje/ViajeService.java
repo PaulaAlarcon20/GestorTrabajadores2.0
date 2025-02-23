@@ -8,6 +8,7 @@ import com.calendario.trabajadores.model.database.Viaje;
 import com.calendario.trabajadores.model.dto.viaje.CrearEditarViajeResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
 import com.calendario.trabajadores.model.dto.viaje.EditarViajeRequest;
+import com.calendario.trabajadores.model.dto.viaje.ViajeResponse;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 import com.calendario.trabajadores.repository.vehiculo.IVehiculoRepository;
 import com.calendario.trabajadores.repository.viaje.IViajeRepository;
@@ -50,10 +51,6 @@ public class ViajeService {
         Vehiculo vehiculo = responseVehiculo.get();
         // Creamos un nuevo viaje con los datos del request y los objetos conductor y vehiculo
         var nuevoViaje = viajeMapper.crearViajeRequestToViaje(request);
-        nuevoViaje.conductor = new Usuario();
-        nuevoViaje.conductor.id = request.idConductor;
-        nuevoViaje.vehiculo = new Vehiculo();
-        nuevoViaje.vehiculo.id = request.idVehiculo;
         // Guardamos el viaje
         Viaje viajeGuardado = viajeRepository.save(nuevoViaje);
 
@@ -65,7 +62,7 @@ public class ViajeService {
     }
 
     // Cambiar el estado de un viaje con validaciones //TODO: REVISAR TOGGLE CAMBIO DE ESTADO
-    //public Optional<ViajeDTO> cambiarEstadoViaje(Long idViaje, EstadoViaje nuevoEstado)
+    //public Optional<ViajeResponse> cambiarEstadoViaje(Long idViaje, EstadoViaje nuevoEstado)
     public Optional<CrearEditarViajeResponse> cambiarEstadoViaje(Long idViaje, String action) {
         // Buscar el viaje por ID
         Optional<Viaje> viajeOptional = viajeRepository.findById(idViaje);
@@ -229,5 +226,16 @@ private <T> void actualizarCampo(Consumer<T> setter, T value) {
                 .collect(Collectors.toList());
 
         return viajesResponse;
+    }
+
+    //Listar datos viaje
+    public Optional<ViajeResponse> listarDatosViaje(Long idViaje) {
+        var viajeExists = viajeRepository.findById(idViaje);
+        if (viajeExists.isEmpty()) {
+            return Optional.empty();
+        }
+        var viajeTemp = viajeExists.get();
+        var respuesta = viajeMapper.viajeToViajeResponse(viajeTemp);
+        return Optional.of(respuesta);
     }
 }

@@ -1,19 +1,22 @@
 package com.calendario.trabajadores.mappings;
 
-import com.calendario.trabajadores.model.database.Usuario;
-import com.calendario.trabajadores.model.database.Vehiculo;
+import com.calendario.trabajadores.model.database.UsuarioViaje;
 import com.calendario.trabajadores.model.database.Viaje;
 import com.calendario.trabajadores.model.dto.viaje.CrearEditarViajeResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
-import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
+import com.calendario.trabajadores.model.dto.viaje.ViajeResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface IViajeMapper {
-
+    @Mapping(target = "idVehiculo", source = "vehiculo.id") // Only sets ID
+    @Mapping(target = "idConductor", source = "conductor.id")
+    @Mapping(source = "fecha", target = "fechaSalida")
+    @Mapping(source = "hora", target = "horaSalida")
     CrearEditarViajeResponse viajeToCrearEditarViajeResponse(Viaje viajeGuardado);
 
     @Mapping(source = "idVehiculo", target = "vehiculo.id") // Only sets ID
@@ -26,5 +29,16 @@ public interface IViajeMapper {
     @Mapping(target = "creadoPor", ignore = true)
     @Mapping(target = "modificadoPor", ignore = true)
     Viaje crearViajeRequestToViaje(CrearViajeRequest request);
+
+    @Mapping(target = "pasajeros", source = "usuarioViajes")
+    ViajeResponse viajeToViajeResponse(Viaje viajedb);
+
+    List<ViajeResponse> viajesToViajeResponses(List<Viaje> viajes);
+
+    default List<String> mapUsuarioViajesToNombres(List<UsuarioViaje> usuarioViajes) {
+        return usuarioViajes.stream()
+                .map(usuarioViaje -> usuarioViaje.getUsuario().getNombre())
+                .collect(Collectors.toList());
+    }
 
 }

@@ -1,10 +1,9 @@
 package com.calendario.trabajadores.controllers;
 
 import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioRequest;
-import com.calendario.trabajadores.model.dto.usuario.CrearEditarUsuarioResponse;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
 import com.calendario.trabajadores.model.dto.usuario.EditarUsuarioRequest;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
-import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,7 +34,7 @@ public class UserController {
     @PostMapping("/user/create")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario creado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarUsuarioResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
@@ -43,7 +42,7 @@ public class UserController {
     public ResponseEntity<?> create(@RequestBody CrearUsuarioRequest request) {
         //Forzamos que el usuario registrado sea un usuario normal (capa extra de seguridad)
         request.rol = "user";
-        Optional<CrearEditarUsuarioResponse> usuario = userService.crearUsuario(request);
+        Optional<UsuarioResponse> usuario = userService.crearUsuario(request);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "el usuario ya existe"));
@@ -56,7 +55,7 @@ public class UserController {
     @PostMapping("/user/adminCreate")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Admin creado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarUsuarioResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
@@ -64,7 +63,7 @@ public class UserController {
     public ResponseEntity<?> createAdmin(@RequestBody CrearUsuarioRequest request) {
         //Forzamos que el usuario registrado sea un usuario normal (capa extra de seguridad)
         request.rol = "admin";
-        Optional<CrearEditarUsuarioResponse> usuario = userService.crearUsuario(request);
+        Optional<UsuarioResponse> usuario = userService.crearUsuario(request);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "el usuario ya existe"));
@@ -77,7 +76,7 @@ public class UserController {
     @PostMapping("/user/edit")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "user modificado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarUsuarioResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
@@ -96,13 +95,13 @@ public class UserController {
     @PostMapping("/user/deactivate")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "usuario desactivado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarUsuarioResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
     public ResponseEntity<?> bajaUsuario(@RequestParam Long id) {
-        Optional<CrearEditarUsuarioResponse> usuario = userService.softDelete(id);
+        Optional<UsuarioResponse> usuario = userService.softDelete(id);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "el usuario no existe"));
@@ -115,13 +114,13 @@ public class UserController {
     @PostMapping("/user/reactivate")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "usuario reactivado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarUsuarioResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
     public ResponseEntity<?> reactivar(@RequestParam Long id) {
-        Optional<CrearEditarUsuarioResponse> usuario = userService.reactivar(id);
+        Optional<UsuarioResponse> usuario = userService.reactivar(id);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "el usuario no existe"));
@@ -134,13 +133,13 @@ public class UserController {
     @GetMapping("/user/getById")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario encontrado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarUsuarioResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
     public ResponseEntity<?> getUsuario(@RequestParam Long id) {
-        Optional<CrearEditarUsuarioResponse> usuario = userService.getUsuario(id);
+        Optional<UsuarioResponse> usuario = userService.getUsuario(id);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "el usuario no existe"));
@@ -153,13 +152,13 @@ public class UserController {
     @GetMapping("/user/getByEmail")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario encontrado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarUsuarioResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
     public ResponseEntity<?> getUsuario(@RequestParam String email) {
-        Optional<CrearEditarUsuarioResponse> usuario = userService.getUsuario(email);
+        Optional<UsuarioResponse> usuario = userService.getUsuario(email);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "el usuario no existe"));
@@ -172,13 +171,13 @@ public class UserController {
     @GetMapping("/user/list")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "user reactivated",
-                    content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CrearEditarUsuarioResponse.class)))),
+                    content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UsuarioResponse.class)))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
     public ResponseEntity<?> listAll(@RequestParam(value = "activo") Optional<Boolean> activo) {
-        Optional<List<CrearEditarUsuarioResponse>> usuario = userService.listar(activo);
+        Optional<List<UsuarioResponse>> usuario = userService.listar(activo);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "..."));
@@ -206,13 +205,13 @@ public class UserController {
     @DeleteMapping("/user/delete")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "borrar usuario",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarUsuarioResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
     public ResponseEntity<?> borrarUsuario(@RequestParam Long id, String email) {
-        Optional<CrearEditarUsuarioResponse> usuario = userService.borrar(id, email);
+        Optional<UsuarioResponse> usuario = userService.borrar(id, email);
         if (usuario.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "el usuario no existe"));

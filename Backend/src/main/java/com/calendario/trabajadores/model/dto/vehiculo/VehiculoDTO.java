@@ -1,5 +1,6 @@
 package com.calendario.trabajadores.model.dto.vehiculo;
 
+import com.calendario.trabajadores.model.common.CamposComunes;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class VehiculoDTO {
+public class VehiculoDTO extends CamposComunes {
 
     public Long id;
     public String modeloCoche;
@@ -25,12 +26,6 @@ public class VehiculoDTO {
     public Integer plazas;
     //Boolean y no boolean para que pueda ser null
     public Boolean activo;
-    @CreationTimestamp
-    @Column(updatable = false)
-    private Date fechaCreacion;
-
-    @UpdateTimestamp
-    private Date fechaModificacion;
 
 
 }

@@ -1,16 +1,13 @@
 package com.calendario.trabajadores.controllers;
 
-import com.calendario.trabajadores.model.database.EstadoViaje;
-import com.calendario.trabajadores.model.dto.usuario.CrearEditarUsuarioResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearEditarViajeResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
 import com.calendario.trabajadores.model.dto.viaje.EditarViajeRequest;
-import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
+import com.calendario.trabajadores.model.dto.viaje.ViajeResponse;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.services.user.UserService;
 import com.calendario.trabajadores.services.viaje.ViajeService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -117,6 +113,34 @@ public class ViajeController {
 
         // Si la edición fue exitosa, devolvemos la respuesta con el viaje editado
         return ResponseEntity.ok(viajeEditado.get());
+    }
+
+    //Endpoint de prueba
+    @Operation(summary = "Devolver toda la informacion de un viaje", description = "Endpoint para listar toda la informacion de un viaje")
+    @GetMapping("/viaje/listar")  // Usamos PATCH porque es para editar
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Datos del viaje listados",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ViajeResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Viaje no encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<?> usuariosViaje(
+            @RequestParam Long idViaje// Aquí utilizamos PathVariable para pasar el ID en la URL
+
+    ) {
+        // Llamamos al servicio para editar el viaje, pasamos el id y el EditarViajeRequest
+        var viajeDatos = viajeService.listarDatosViaje(idViaje);
+
+        // Verificamos si el viaje fue encontrado y editado correctamente
+        if (viajeDatos.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse("Viaje no encontrado"));
+        }
+
+        // Si la edición fue exitosa, devolvemos la respuesta con el viaje editado
+        return ResponseEntity.ok(viajeDatos.get());
     }
 
 

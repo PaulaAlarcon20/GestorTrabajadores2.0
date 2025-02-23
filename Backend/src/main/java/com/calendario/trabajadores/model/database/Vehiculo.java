@@ -32,7 +32,7 @@ public class Vehiculo {
     //Aseguro la relacion de un vehiculo por usuario, no puede ser nulo y el usuario debe ser unico
     @JoinColumn(name = "usuario_id", nullable = false)
     @JsonBackReference
-    public Usuario usuario;
+    public Usuario usuario = new Usuario();
     //vehiculo activo o no
     public Boolean activo;
     @Column(updatable = false)

@@ -1,6 +1,5 @@
 package com.calendario.trabajadores.controllers;
 
-import com.calendario.trabajadores.model.dto.usuario.CrearEditarUsuarioResponse;
 import com.calendario.trabajadores.model.dto.vehiculo.CrearEditarVehiculoResponse;
 import com.calendario.trabajadores.model.dto.vehiculo.CrearVehiculoRequest;
 import com.calendario.trabajadores.model.dto.vehiculo.EditarVehiculoRequest;

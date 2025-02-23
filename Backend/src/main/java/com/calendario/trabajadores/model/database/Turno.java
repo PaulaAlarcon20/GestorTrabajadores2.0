@@ -20,7 +20,7 @@ public class Turno {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false) //Revisar lo de usuario id**
-    public Usuario usuario;
+    public Usuario usuario = new Usuario();
 
     @Column(nullable = false)
     private Date horaInicio;
