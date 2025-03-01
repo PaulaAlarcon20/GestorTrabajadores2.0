@@ -19,8 +19,6 @@ class SignUpState extends Equatable { // Equatable es una clase qeu ayuda a comp
   final bool isValid;
 
   //Paso 2/3
-  //final FormStatus formStatus2;
-  //final MultiInput centroDeTrabajo;
   // ENUM
   //final MultiInput localidad;
   // Preferencias horarias radio Buttons
@@ -33,9 +31,8 @@ class SignUpState extends Equatable { // Equatable es una clase qeu ayuda a comp
     this.apellidos = const MultiInput.pure(),
     this.gmail = const GmailInput.pure(),
     this.telefono = const TelefonoInput.pure(),
-    this.isValid = false
+    this.isValid = false,
 
-    // Paso 2/3
   });
 
   SignUpState copyWith({
@@ -44,7 +41,11 @@ class SignUpState extends Equatable { // Equatable es una clase qeu ayuda a comp
     MultiInput? apellidos,
     GmailInput? gmail,
     TelefonoInput? telefono,
-    bool? isValid
+    bool? isValid,
+
+    FormStatus? formStatus2,
+    MultiInput? centroDeTrabajo,
+    bool? isValid2,
   }) {
     return SignUpState(
       formStatus: formStatus ?? this.formStatus,
@@ -52,8 +53,7 @@ class SignUpState extends Equatable { // Equatable es una clase qeu ayuda a comp
       apellidos: apellidos ?? this.apellidos,
       gmail: gmail ?? this.gmail,
       telefono: telefono ?? this.telefono,
-      isValid: isValid ?? this.isValid
-
+      isValid: isValid ?? this.isValid,
     );
   }
 

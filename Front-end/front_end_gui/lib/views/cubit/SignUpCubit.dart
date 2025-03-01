@@ -15,11 +15,9 @@ class SignUpCubit extends Cubit<SignUpState> {
     emit(state.copyWith(isValid: isValid));
   }
 
-  void onSubmit() {
-    print('Click en botón');
 
+  void onSubmit() {
     // Más tarde desarrollar emit, nuevo estado y petición Http y validación estado petición
-    print('Estado del formulario SigUp parte 1 -> ${state.formStatus}');
     emit(
       state.copyWith(
         formStatus: FormStatus.validating,
@@ -36,7 +34,6 @@ class SignUpCubit extends Cubit<SignUpState> {
         ])
       )
     );
-    print('Estado del formulario SigUp parte 1 -> ${state.formStatus}');
   }
 
   void nombreChanged(String  nombre){
@@ -45,7 +42,7 @@ class SignUpCubit extends Cubit<SignUpState> {
     emit(
       state.copyWith(
         nombre: nombreNewValor,
-        isValid: Formz.validate([nombreNewValor, state.apellidos, state.gmail]) // le vamos a tener que enviar todo slos campos porque necesita saber si todos los campos son validos
+        isValid: Formz.validate([nombreNewValor, state.apellidos, state.gmail, state.telefono]) // le vamos a tener que enviar todo slos campos porque necesita saber si todos los campos son validos
       )
     );
   }
@@ -56,7 +53,7 @@ class SignUpCubit extends Cubit<SignUpState> {
     emit(
       state.copyWith(
         apellidos: apellidosNewValor,
-        isValid: Formz.validate([apellidosNewValor, state.nombre, state.gmail])
+        isValid: Formz.validate([apellidosNewValor, state.nombre, state.gmail, state.telefono])
       )
     );
   }
@@ -67,12 +64,12 @@ class SignUpCubit extends Cubit<SignUpState> {
     emit(
       state.copyWith(
         gmail: gmailNewValor,
-        isValid: Formz.validate([gmailNewValor, state.nombre, state.apellidos])
+        isValid: Formz.validate([gmailNewValor, state.nombre, state.apellidos, state.telefono])
       )
     );
   }
 
-    void telefonoChanged(String telefono){
+  void telefonoChanged(String telefono){
     final telefonoNewValor = TelefonoInput.dirty(value: telefono);
 
     emit(
@@ -82,9 +79,5 @@ class SignUpCubit extends Cubit<SignUpState> {
       )
     );
   }
-
-
-
- 
 
 }

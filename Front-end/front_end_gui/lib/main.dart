@@ -3,11 +3,16 @@ import 'package:front_end_gui/config/theme/app_theme.dart';
 import 'package:front_end_gui/views/RegisterView_screen.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end_gui/views/cubit/SignUpCubit2.dart';
 
 /// Fichero principal de la aplicación que contiene nuestra aplicación
 void main() => runApp(
-  BlocProvider(
-      create: (context) => SignUpCubit(),
+  MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => SignUpCubit()),
+        BlocProvider(create: (context) => SignUpCubit2())
+      ],
+      
       child: const MyApp(),
     ));
 

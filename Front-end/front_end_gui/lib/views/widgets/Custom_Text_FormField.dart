@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:front_end_gui/views/infraestructure/inputs/inputs.dart';
 
 
 /// Widget con estilos personalizados para formularios de login
@@ -19,8 +20,7 @@ class CustomTextFormfield extends StatelessWidget {
   final  List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
-
-
+  final List<passwordInputError>? errorMessages;
 
   const CustomTextFormfield({
     super.key, 
@@ -31,6 +31,7 @@ class CustomTextFormfield extends StatelessWidget {
     this.validator,  
     this.inputFormatters,
     this.keyboardType,
+    this.errorMessages,
     required this.obscureText,  
     this.prefixIcon
   });
@@ -38,10 +39,9 @@ class CustomTextFormfield extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    //double screenHeight = MediaQuery.of(context).size.height;
     
     final colors = Theme.of(context).colorScheme;
-
     final bool mododark = Theme.of(context).brightness == Brightness.light;
   
     return TextFormField(
@@ -72,14 +72,16 @@ class CustomTextFormfield extends StatelessWidget {
           hintText: hintText,
           hintStyle: TextStyle(
             
-            //color: Colors.amber
+            
           ),
           errorText: erroreMessage,
           errorStyle: TextStyle(
             fontSize: 15
           ),
           focusColor: colors.primary,
-      ),
+          
+      )
     );
+    
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit.dart';
+import 'package:front_end_gui/views/cubit/SignUpCubit2.dart';
+import 'package:front_end_gui/views/infraestructure/inputs/disponibilidadHorasExtras.dart';
+import 'package:front_end_gui/views/infraestructure/inputs/inputs.dart';
 import 'package:front_end_gui/views/widgets/Custom_Text_FormField.dart';
 import 'package:front_end_gui/views/widgets/TelefonoInputFormatter.dart';
 
@@ -137,19 +140,31 @@ class ProfesionalFirstForm extends StatefulWidget {
 
 class _ProfesionalFirstForm extends State<ProfesionalFirstForm> {
   // const PersonalFirstForm({super.key});
-
+  
   final _formKey = GlobalKey<FormState>();
-  String?  _seleccionPreferencias;
+ 
   int? _disponibilidadHorasExtras;
   String? _seleccionPuesto;
-  bool? _opcion1 = false;
-  bool? _opcion2 = false;
-  bool? _opcion3 = false;
+  String? _preferenciaHoraria;
 
   List<String> _puestoTrabajo = ['TCAE','Enfermero','Médico'];
-  List<String> _preferenciasHorarias = ['TCAE','Enfermero','Médico'];
+
+
+  List<Map<String,dynamic>> _preferenciasHorarias = [
+    {"Mañana": "Mañana","": false},
+    {"Tarde": "Tarde","": false},
+    {"Noche": "Noche","": false},
+  ];
   @override
   Widget build(BuildContext context) {
+
+    final signUpCubit2 = context.watch<SignUpCubit2>();
+    final centroTrabajo = signUpCubit2.state.centroDeTrabajo;
+    final localidad = signUpCubit2.state.localidad;
+    final disponibilidadhorasExtras = signUpCubit2.state.disponibilidadHorasExtras;
+
+    //final bool stateForm = registerCubit.state.isValid == true; 
+    final bool stateFormSigUp2 = signUpCubit2.state.isValid2 == true;
 
     return Form(
         key: _formKey,
@@ -171,7 +186,13 @@ class _ProfesionalFirstForm extends State<ProfesionalFirstForm> {
                       ),
                       CustomTextFormfield(
                         hintText: 'Centro de trabajo',
-                        obscureText: false),
+                          onChanged: (value) {
+                            signUpCubit2.centroTrabajoChanged(value);
+                            
+                          },
+                          erroreMessage: centroTrabajo.errorMessage,
+                          obscureText: false
+                        ),
                   
                       //SizedBox(height: 5),
                   
@@ -183,28 +204,34 @@ class _ProfesionalFirstForm extends State<ProfesionalFirstForm> {
                       ),
                       DropdownButtonFormField<String>(
                           value: _seleccionPuesto,
-                          hint: Text('Seleccione su puesto...', style: TextStyle(color: Colors.black)),
+                          hint: 
+                            
+                         Text('Seleccione su puesto...', style: TextStyle(color: Colors.black)),
+                       
                           style: TextStyle(fontSize: 19, ),
                           isDense: false,
-                          
-                          alignment: AlignmentDirectional.bottomStart,
-                          icon: Icon(Icons.arrow_drop_down, size: 35),
+                          isExpanded: false,
+                          //alignment: Alignment.centerLeft,
+                          icon: Icon(Icons.arrow_drop_down, size: 35 ),
                           iconEnabledColor: Colors.black,
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
                           ),
                           items: _puestoTrabajo.map((String option) {
+                            
                             return DropdownMenuItem<String>( 
                               value: option, 
-                              child: Text(option, style: TextStyle(color: Colors.black,), )
+                              child:  Text(option, style: TextStyle(color: Colors.black)),
+                              
                             );
                           }).toList(),
 
                           onChanged: (value) {
+                            print('OPCIÓN SELECCIONADA: $value');
                             setState(() {
                               _seleccionPuesto = value;
+                              signUpCubit2.puestoChanged(value!);
                             });
-                            print('Valor seleccionado en Dropdwon: $_seleccionPuesto');
                           },
                         ),        
                    
@@ -215,7 +242,14 @@ class _ProfesionalFirstForm extends State<ProfesionalFirstForm> {
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold)),
                       ),
-                      CustomTextFormfield(hintText: 'Localidad',obscureText: false),
+                      CustomTextFormfield(
+                        hintText: 'Localidad',
+                        onChanged: (value) {
+                          signUpCubit2.localidadChanged(value);
+                        } ,
+                        erroreMessage: localidad.errorMessage,
+                        obscureText: false
+                        ),
                   
                       Padding(
                         padding: const EdgeInsets.only(left: 20, top: 15),
@@ -225,37 +259,46 @@ class _ProfesionalFirstForm extends State<ProfesionalFirstForm> {
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ), 
-                      CheckboxListTile(
+                      
+                      RadioListTile(
                         title: Text('Mañanas', style: TextStyle(fontSize: 18),),
-                        value: _opcion1, 
-                        onChanged: (bool? value) {
+                        value: 'mañanas', 
+                        groupValue: _preferenciaHoraria, 
+                        onChanged: (value) {
                           setState(() {
-                            _opcion1 = value ?? false;
+                            _preferenciaHoraria = value;
+                            signUpCubit2.preferenciaHorariaChanged(value!);
                           });
-                        },      
-                        controlAffinity: ListTileControlAffinity.leading,
+                          print('Valor seleccionado -> $_preferenciaHoraria');
+                        }
                       ),
-                      CheckboxListTile(
+
+                      RadioListTile(
                         title: Text('Tardes', style: TextStyle(fontSize: 18),),
-                        value: _opcion2, 
-                        onChanged: (bool? value) {
+                        value: 'tardes', 
+                        groupValue: _preferenciaHoraria, 
+                        onChanged: (value) {
                           setState(() {
-                            _opcion2 =  value ?? false;
+                            _preferenciaHoraria = value;
+                            signUpCubit2.preferenciaHorariaChanged(value!);
                           });
-                        },
-                        controlAffinity: ListTileControlAffinity.leading
+                          print('Valor seleccionado -> $_preferenciaHoraria');
+                        }
                       ),
-                      CheckboxListTile(
+
+                      RadioListTile(
                         title: Text('Noches', style: TextStyle(fontSize: 18),),
-                        value: _opcion3, 
-                        onChanged: (bool? value) {
+                        value: 'noches', 
+                        groupValue: _preferenciaHoraria, 
+                        onChanged: (value) {
                           setState(() {
-                            _opcion3 =  value ?? false;
+                            _preferenciaHoraria = value;
+                            signUpCubit2.preferenciaHorariaChanged(value!);
                           });
-                        },
-                        controlAffinity: ListTileControlAffinity.leading
+                          print('Valor seleccionado -> $_preferenciaHoraria');
+                        }
                       ),
-      
+
 
                       Padding(
                         padding: const EdgeInsets.only(left: 20, top: 15),
@@ -275,9 +318,12 @@ class _ProfesionalFirstForm extends State<ProfesionalFirstForm> {
                               onChanged: (value) {
                                 setState(() {
                                   _disponibilidadHorasExtras = value;
+                                  signUpCubit2.disponibilidadHorasExtrasChanged(value!);
+                                  
                                   print('Valor seleccionado: $_disponibilidadHorasExtras');
                                 });
                               },
+                              
                             ),
                           ),
                           Expanded(
@@ -288,14 +334,14 @@ class _ProfesionalFirstForm extends State<ProfesionalFirstForm> {
                             onChanged: (value) {
                               setState(() {
                                 _disponibilidadHorasExtras = value;
+                                signUpCubit2.disponibilidadHorasExtrasChanged(value!);
                                 print('Valor seleccionado: $_disponibilidadHorasExtras');
                               });
                             },
                             ),
-                          ),
-                        ],
-                      ),
-                    
+                          ),                       
+                        ],              
+                      ),   
                     ],
                   ),
                 ),
@@ -314,13 +360,16 @@ class _CreateUserForm extends State<CreateUserForm> {
   // const PersonalFirstForm({super.key});
 
   final _formKey = GlobalKey<FormState>();
-
+  
 
   @override
   Widget build(BuildContext context) {
 
-
-
+    // Un watch del contexto del arbol
+    final signUpCubit3 = context.watch<SignUpCubit2>();
+    final password = signUpCubit3.state.password;
+    bool stateForm3 = signUpCubit3.state.isValid2 == true;
+    
     return Form(
         key: _formKey,
           child: Padding(
@@ -341,9 +390,27 @@ class _CreateUserForm extends State<CreateUserForm> {
                       ),
                       
                       CustomTextFormfield(
+
                         hintText: 'Tu contraseña',
-                        obscureText: false),
+                        erroreMessage: password.errorMessage,
+                        onChanged: (value) {
+                          signUpCubit3.passwordChanged(value);
+                        },
+                        obscureText: false
+                      ),
+                      if(stateForm3)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 7),
+                        child: Row(
+                          children: [
+                            Icon(Icons.check_rounded, color: Colors.green,),
+                            Text('Contraseña validada', style: TextStyle(color: Colors.green),),
+                          ],
+                        ),
+                      )
                     // TODO Mostrar validación desde el inicio en gris e icono y si esta bien, que se ponga verde, interrogación si no cumple y check verde si
+                    // Poner otro campo para repetir contraseña
+                    
                     ],
                   ),
                 ),

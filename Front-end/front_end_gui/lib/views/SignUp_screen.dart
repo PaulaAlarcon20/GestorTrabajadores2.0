@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:front_end_gui/views/RegisterView_screen.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit.dart';
+import 'package:front_end_gui/views/cubit/SignUpCubit2.dart';
 import 'package:front_end_gui/views/widgets/AllForms.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -49,9 +52,13 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
     double screenHeight = MediaQuery.of(context).size.height;
     
     final signUpCubit = context.watch<SignUpCubit>();
+    final signUpCubit2 = context.watch<SignUpCubit2>();
+
     final bool stateForm1 = signUpCubit.state.isValid == true; 
+    final bool stateForm2 = signUpCubit2.state.isValid2 == true;
     //final signUpCubit = context.watch<SignUpCubit>(); 
     //final bool stateForm = signUpCubit.state.isValid == true;
+    final bool statePuesto = signUpCubit2.state.puesto.value.isEmpty;
 
     return Scaffold(
       appBar: AppBar(
@@ -131,17 +138,22 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
                   else if(_currentStep == 1)
                    Expanded(
                      child: FilledButton(
-                      onPressed: true
-                      ? () {_nextStep();}
+                      onPressed: stateForm2 && !statePuesto // Si estado true y puesto rellenado
+                      ? () {
+                        signUpCubit2.onSubmit();
+                        _nextStep();
+                    
+                      }
                       : null,
-                      child: Text('Paso 2')
-                                       ),
+                      child: Text('Siguiente', style: TextStyle( fontSize: screenWidth * 0.045),)
+                    ),
                    ) 
                    else if(_currentStep == 2)
                    Expanded(
                     child: FilledButton(
                       onPressed: () { print('Vas a crear un usuario');}, 
-                      child: Text('Paso 3')))
+                      child: Text('Finalizar', style: TextStyle( fontSize: screenWidth * 0.045),))
+                    )
                   
                   
                   
