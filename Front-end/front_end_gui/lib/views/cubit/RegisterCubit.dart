@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:front_end_gui/views/infraestructure/inputs/inputs.dart';
+import 'package:front_end_gui/views/infraestructure/inputs/passwordLogin.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Para convertir el JSON
 
@@ -23,7 +24,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       state.copyWith(  // hace una copia del estado actual, pero con algunos valores modificados
         formStatus : FormStatus.validating, // Se indica que el estado de las validaciones es 'validando'
         email : GmailInput.dirty(value : state.email.value),
-        password : PasswordInput.dirty( value: state.password.value),
+        password : PasswordLoginInput.dirty( value: state.password.value),
         //icono: state.isValid ? Icons.check : Icons.error,
         
         isValid: Formz.validate([
@@ -33,13 +34,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       ),
       
     ); 
-    print('Estado actual formStatus -> ${state.formStatus}');
-    if(!state.isValid){
-      print('Error formulario invalido: $state.email.value');
-      print('Error Gmail: ${state.email.errorMessage}');
-      print('Error password: ${state.password.errorMessage}');
-      return;
-    }
+
 
     try {
       final url = Uri.parse('https://tu-api.com');
@@ -55,13 +50,13 @@ class RegisterCubit extends Cubit<RegisterState> {
 
       if (response.statusCode == 200){
         print('Se inicia sesión...');
+        
       } else {
-        print('Error en la autenticación -> ${response.statusCode} /  ${FormStatus.failHttp}');
+        print('Error en la autenticación -> ${response.statusCode} /  ${FormStatus.failHttp}',);
         emit(state.copyWith(formStatus:  FormStatus.failHttp));
-
       }
     } catch (e) {
-      print('ERROR ERROR ERROR');
+      print('Error durante petición Http');
       //emit(state.copyWith(formStatus: FormStatus.failHttp));
     }
   }
@@ -79,7 +74,7 @@ class RegisterCubit extends Cubit<RegisterState> {
   }
 
   void passwordChanged(String value){
-    final passwordNewValue = PasswordInput.dirty(value: value);
+    final passwordNewValue = PasswordLoginInput.dirty(value: value);
 
     emit(
 

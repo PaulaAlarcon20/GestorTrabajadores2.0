@@ -9,14 +9,14 @@ class RegisterState extends Equatable {
   final FormStatus formStatus;
   final GmailInput email;
   final IconData icono;
-  final PasswordInput password;
+  final PasswordLoginInput password;
   final bool isValid;
 
   // Constructor
   const RegisterState({
     this.formStatus = FormStatus.invalid,
     this.email = const GmailInput.pure(),
-    this.password = const PasswordInput.pure(),
+    this.password = const PasswordLoginInput.pure(),
     this.isValid = false,
     this.icono = Icons.error
   });
@@ -27,7 +27,7 @@ class RegisterState extends Equatable {
     FormStatus? formStatus,
     bool? isValid,
     GmailInput? email,
-    PasswordInput? password,
+    PasswordLoginInput? password,
     IconData? icono
     
   }) {

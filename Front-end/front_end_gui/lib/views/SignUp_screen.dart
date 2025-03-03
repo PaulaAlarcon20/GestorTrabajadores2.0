@@ -148,11 +148,8 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
                     Expanded(child: FilledButton(
                       onPressed: stateForm1
                       ? (){
-                         print('Pasa pora quí 1  _currentState -> $_currentStep *** $_pasos');
-                        signUpCubit.onSubmit();
-                        print('Pasa pora quí 2');
-                        _nextStep();
-                         print('Pasa pora quí 3');
+                         signUpCubit.onSubmit(0);
+                         _nextStep();
                       }
                       : null, 
                       child: Text('Siguiente', style: TextStyle( fontSize: screenWidth * 0.045),))
@@ -162,7 +159,7 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
                      child: FilledButton(
                       onPressed: stateForm2 && !statePuesto // Si estado true y puesto rellenado
                       ? () {
-                        signUpCubit2.onSubmit2();
+                        signUpCubit2.onSubmit2(0);
                         _nextStep();
                         isLoading3 = false;
                       }
@@ -176,10 +173,9 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
                       
                       onPressed: stateForm3 
                       ? () {
-                        print('ESTADO DE ISLOADING $isLoading3');
-                        signUpCubit2.onSubmit3();
-                        print('OPCION 1');
-                        print('ESTADO DE ISLOADING $isLoading3');
+                        signUpCubit.onSubmit(1);
+                        signUpCubit2.onSubmit2(1);
+                        signUpCubit2.onSubmit3(1);
                       }
                       : null, 
                       label: isLoading3!
@@ -194,10 +190,9 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
                       
                       onPressed: stateForm3 
                       ? () {
-                        print('ESTADO DE ISLOADING $isLoading3');
-                        signUpCubit2.onSubmit3();
-                        print('OPCION 2');
-                        print('ESTADO DE ISLOADING $isLoading3');
+                        signUpCubit.onSubmit(1);
+                        signUpCubit2.onSubmit2(1);
+                        signUpCubit2.onSubmit3(1);
                       }
                       : null, 
                       label: isLoading3!
