@@ -13,7 +13,7 @@ class GmailInput extends FormzInput<String, gmailInputError> {
   String? get errorMessage {
     if(isValid || isPure ) return null;
     if(displayError == gmailInputError.empty) return '* Campo requerido';
-    if(displayError == gmailInputError.invalidFormat) return 'Dirección no valida';
+    if(displayError == gmailInputError.invalidFormat) return '* Dirección no valida';
 
     return null;
   }

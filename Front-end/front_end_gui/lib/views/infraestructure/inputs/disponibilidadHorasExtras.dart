@@ -12,7 +12,7 @@ class DisponibilidadHorasExtras extends FormzInput<int?, disponibilidadhorasextr
 
   String? get errorMessage {
     if (isValid || isPure) return null;
-    if (displayError == disponibilidadhorasextrasError.empty) return 'Debe seleccionar una opción';
+    if (displayError == disponibilidadhorasextrasError.empty) return '* Debe seleccionar una opción';
     return null;
   }
 

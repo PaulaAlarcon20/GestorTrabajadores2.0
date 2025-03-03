@@ -12,7 +12,7 @@ class TelefonoInput extends FormzInput<String, tlfInputError> {
   String? get errorMessage { // Devuelve un mensaje de error basado en la validación
     if(isValid || isPure ) return null;
     if(displayError == tlfInputError.empty) return '* Campo requerido';
-    if(displayError == tlfInputError.lenght) return 'El número debe tener al menos 9 dígitos';
+    if(displayError == tlfInputError.lenght) return '* El número debe tener al menos 9 dígitos';
 
     return null;
   }
