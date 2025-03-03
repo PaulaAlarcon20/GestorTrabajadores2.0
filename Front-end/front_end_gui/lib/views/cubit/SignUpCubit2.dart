@@ -18,9 +18,32 @@ class SignUpCubit2 extends Cubit<SignUpState2> {
     emit(state.copyWith(isValid2: isValid2));
   }
 
+  void setValidState3(bool isValid3) {
+    emit(state.copyWith(isValid3: isValid3));
+  }
+
+  void onSubmit3() {
 
 
-  void onSubmit() {
+
+    emit(
+      state.copyWith(
+        formStatus3: FormStatus3.validating,
+
+        isValid3: Formz.validate([
+          state.password
+
+          
+        ]),
+      ),
+
+      
+    );
+  }
+    
+  
+
+  void onSubmit2() {
     emit(
       state.copyWith(
         formStatus2: FormStatus.validating,
@@ -40,7 +63,9 @@ class SignUpCubit2 extends Cubit<SignUpState2> {
           state.disponibilidadHorasExtras,
 
           
-        ])
+        ]),
+
+        
       )
     );
     print('Envio formulario -> centro: ${state.centroDeTrabajo.value} / puesto: ${state.puesto.value} / localidad: ${state.localidad.value} / preferencias: ${state.preferenciasHorarias.value} /disponibilidad: ${state.disponibilidadHorasExtras.value}');
@@ -113,7 +138,7 @@ class SignUpCubit2 extends Cubit<SignUpState2> {
     emit(
       state.copyWith(
         password: passwordNewValor,
-        isValid2:  Formz.validate([passwordNewValor]) // TODO validador nuevo puede hacer falta, vamos a probar
+        isValid3:  Formz.validate([passwordNewValor]) // TODO validador nuevo puede hacer falta, vamos a probar
       )
     );
 

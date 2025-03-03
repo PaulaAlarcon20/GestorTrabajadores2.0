@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:front_end_gui/views/RegisterView_screen.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit2.dart';
+import 'package:front_end_gui/views/cubit/SignUpState2.dart';
 import 'package:front_end_gui/views/widgets/AllForms.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,12 +28,21 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
   int _currentStep = 0; // Inicio parada  TODO Vamos a jugar con esta variable 
   int _pasos = 1;
 
-  
+  bool? changedStateSpinner;
+  bool ? isLoading3;
+
   void _nextStep() {
     if (_currentStep < 2) {
       setState(() {
         _currentStep++;
         _pasos++;
+
+        if(_pasos == 3){
+          changedStateSpinner = true;
+          isLoading3 = false;
+        }
+        
+        print('Estado de _pasos ($_pasos) es -> $changedStateSpinner  y _currentStep $_currentStep');
       });
     }
   }
@@ -42,10 +52,17 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
       setState(() {
         _currentStep--;
         _pasos--;
+        
+        if(_pasos == 3){
+          changedStateSpinner = false;
+        }
+        
+        print('BACKEstado de _pasos ($_pasos) es -> $changedStateSpinner');
+        // Desarrollar lógica para que cuando de atrás en el ultimo paso del spinner cambiar valor a false de is Loading3
       });
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -53,11 +70,16 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
     
     final signUpCubit = context.watch<SignUpCubit>();
     final signUpCubit2 = context.watch<SignUpCubit2>();
+    
 
+    isLoading3 = signUpCubit2.state.formStatus3 == FormStatus3.valid;
+    
     final bool stateForm1 = signUpCubit.state.isValid == true; 
     final bool stateForm2 = signUpCubit2.state.isValid2 == true;
-    //final signUpCubit = context.watch<SignUpCubit>(); 
-    //final bool stateForm = signUpCubit.state.isValid == true;
+    final bool stateForm3 = signUpCubit2.state.isValid3 == true;
+
+    
+
     final bool statePuesto = signUpCubit2.state.puesto.value.isEmpty;
 
     return Scaffold(
@@ -140,19 +162,49 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
                      child: FilledButton(
                       onPressed: stateForm2 && !statePuesto // Si estado true y puesto rellenado
                       ? () {
-                        signUpCubit2.onSubmit();
+                        signUpCubit2.onSubmit2();
                         _nextStep();
-                    
+                        isLoading3 = false;
                       }
                       : null,
                       child: Text('Siguiente', style: TextStyle( fontSize: screenWidth * 0.045),)
                     ),
                    ) 
-                   else if(_currentStep == 2)
+                   else if(_currentStep == 2 && !changedStateSpinner!)
                    Expanded(
-                    child: FilledButton(
-                      onPressed: () { print('Vas a crear un usuario');}, 
-                      child: Text('Finalizar', style: TextStyle( fontSize: screenWidth * 0.045),))
+                    child: FilledButton.tonalIcon(
+                      
+                      onPressed: stateForm3 
+                      ? () {
+                        print('ESTADO DE ISLOADING $isLoading3');
+                        signUpCubit2.onSubmit3();
+                        print('OPCION 1');
+                        print('ESTADO DE ISLOADING $isLoading3');
+                      }
+                      : null, 
+                      label: isLoading3!
+                      ? const CircularProgressIndicator() 
+                      : Text('Finalizar', style: TextStyle( fontSize: screenWidth * 0.045),)
+                      ),
+                      
+                    )
+                  else if(_currentStep == 2 && changedStateSpinner!)
+                  Expanded(
+                    child: FilledButton.tonalIcon(
+                      
+                      onPressed: stateForm3 
+                      ? () {
+                        print('ESTADO DE ISLOADING $isLoading3');
+                        signUpCubit2.onSubmit3();
+                        print('OPCION 2');
+                        print('ESTADO DE ISLOADING $isLoading3');
+                      }
+                      : null, 
+                      label: isLoading3!
+                      ? const CircularProgressIndicator() 
+                      : Text('Finalizar', style: TextStyle( fontSize: screenWidth * 0.045),)
+                      ),
+                      
                     )
                   
                   
