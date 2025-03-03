@@ -1,13 +1,17 @@
 package com.calendario.trabajadores.mappings;
 
+import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.database.UsuarioViaje;
 import com.calendario.trabajadores.model.database.Viaje;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearEditarViajeResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
 import com.calendario.trabajadores.model.dto.viaje.ViajeResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,15 +34,20 @@ public interface IViajeMapper {
     @Mapping(target = "modificadoPor", ignore = true)
     Viaje crearViajeRequestToViaje(CrearViajeRequest request);
 
-    @Mapping(target = "pasajeros", source = "usuarioViajes")
+    //Mapar la lista de pasajeros
+    @Mapping(target = "pasajeros", source = "usuarioViajes", qualifiedByName = "mapPasajeros")
     ViajeResponse viajeToViajeResponse(Viaje viajedb);
-
-    List<ViajeResponse> viajesToViajeResponses(List<Viaje> viajes);
-
-    default List<String> mapUsuarioViajesToNombres(List<UsuarioViaje> usuarioViajes) {
+    //Implementacion de mapeo la lista de pasajeros (mapPasajeros)
+    @Named("mapPasajeros")
+    default List<UsuarioResponse> mapPasajeros(List<UsuarioViaje> usuarioViajes) {
+        if (usuarioViajes == null) return new ArrayList<>();
         return usuarioViajes.stream()
-                .map(usuarioViaje -> usuarioViaje.getUsuario().getNombre())
+                .map(uv -> usuarioToUsuarioResponse(uv.getUsuario())) // Extract Usuario
                 .collect(Collectors.toList());
     }
+    //Mapear un usuario (no usa lista)
+    //Aquí hago las referencias cuando el nombre de un atributo no corresponde con el del dto
+    @Mapping(target = "id", source = "id")
+    UsuarioResponse usuarioToUsuarioResponse(Usuario usuario);
 
 }

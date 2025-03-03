@@ -6,6 +6,8 @@ import com.calendario.trabajadores.model.database.Vehiculo;
 import com.calendario.trabajadores.model.dto.vehiculo.CrearEditarVehiculoResponse;
 import com.calendario.trabajadores.model.dto.vehiculo.CrearVehiculoRequest;
 import com.calendario.trabajadores.model.dto.vehiculo.EditarVehiculoRequest;
+import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
+import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.repository.vehiculo.IVehiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,89 +31,125 @@ public class VehiculoService {
     }
 
     //Crear un vehiculo
-    public Optional<CrearEditarVehiculoResponse> crearVehiculo(CrearVehiculoRequest request) {
-        //busco el vehiculoModel por matricula para saber si existe
+    public GenericResponse<CrearEditarVehiculoResponse> crearVehiculo(CrearVehiculoRequest request) {
+        GenericResponse<CrearEditarVehiculoResponse> responseWrapper = new GenericResponse<>();
+
+        // Busco el vehículo por matrícula para saber si ya existe
         var vehiculoExists = vehiculoRepository.findVehiculoByMatricula(request.matricula);
-        //si existe devolvemos un error
+
+        // Si existe, devolvemos un error
         if (vehiculoExists.isPresent()) {
-            return Optional.empty();
+            responseWrapper.setError(new ErrorResponse("El vehículo ya existe"));
+            return responseWrapper;
         }
-        //si no existe creamos el vehiculoModel
+
+        // Si no existe, creamos el vehículo
         Vehiculo vehiculoModel = vehiculoMapper.createRequestToVehiculo(request);
-        //guardamos el vehiculoModel en la base de datos
+
+        // Guardamos en la base de datos
         Vehiculo v_guardado = vehiculoRepository.save(vehiculoModel);
+
+        // Mapeamos la respuesta
         var response = vehiculoMapper.vehiculoToCreateEditResponse(v_guardado);
-        return Optional.of(response);
+
+        // Devolvemos la respuesta exitosa
+        responseWrapper.setData(response);
+        return responseWrapper;
     }
 
     //Metodo para modificar un vehiculo
-    public Optional<CrearEditarVehiculoResponse> modificarVehiculo(EditarVehiculoRequest request) {
+    public GenericResponse<CrearEditarVehiculoResponse> modificarVehiculo(EditarVehiculoRequest request) {
+        GenericResponse<CrearEditarVehiculoResponse> responseWrapper = new GenericResponse<>();
+
+        // Buscar el vehículo por ID
         Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findById(request.id);
+
         if (vehiculoOptional.isEmpty()) {
-            return Optional.empty();
+            responseWrapper.setError(new ErrorResponse("El vehículo no existe"));
+            return responseWrapper;
         }
+
         Vehiculo vehiculoModel = vehiculoOptional.get();
-        // Validaciones
+
+        // Actualizar solo los campos que se envían en la petición
         if (!request.getMatricula().isBlank()) {
             vehiculoModel.setMatricula(request.getMatricula());
         }
-        if (!request.modeloCoche.isBlank()) {
+        if (!request.getModeloCoche().isBlank()) {
             vehiculoModel.setModeloCoche(request.getModeloCoche());
         }
-        if (request.activo != null) {
+        if (request.getActivo() != null) {
             vehiculoModel.setActivo(request.getActivo());
         }
-        if (request.plazas != 0) {
+        if (request.getPlazas() != 0) {
             vehiculoModel.setPlazas(request.getPlazas());
         }
-        //Creo un usuario vacio con el id del request
+
+        // Si se proporciona un ID de usuario, se asocia el vehículo al usuario correspondiente
         if (request.getIdUsuario() != 0) {
             Usuario tempUser = new Usuario();
             tempUser.setId(request.getIdUsuario());
-            //El ID que he conseguido con el get se lo paso a tempUser
-            //Igualo tempUser con el usuario de vehiculoModel
-            vehiculoModel.usuario = tempUser;
+            vehiculoModel.setUsuario(tempUser);
         }
+
+        // Guardar los cambios en la base de datos
         Vehiculo v_actualizado = vehiculoRepository.save(vehiculoModel);
 
-        return Optional.of(vehiculoMapper.vehiculoToCreateEditResponse(v_actualizado));
+        // Mapear la respuesta y devolverla con éxito
+        responseWrapper.setData(vehiculoMapper.vehiculoToCreateEditResponse(v_actualizado));
+        return responseWrapper;
     }
 
+
     //Metodo para desactivar un vehiculo (activo = false)
-    public Optional<CrearEditarVehiculoResponse> toggleVehiculo(Long id) {
+    public GenericResponse<CrearEditarVehiculoResponse> toggleVehiculo(Long id) {
+        GenericResponse<CrearEditarVehiculoResponse> responseWrapper = new GenericResponse<>();
+
         // Buscar el vehículo por ID
         Optional<Vehiculo> vehiculoOpt = vehiculoRepository.findById(id);
-        // Si no existe, devuelve vacío
+
+        // Si no existe, devolver error
         if (vehiculoOpt.isEmpty()) {
-            return Optional.empty();
+            responseWrapper.setError(new ErrorResponse("El vehículo no existe"));
+            return responseWrapper;
         }
-        // Cambiar el estado a inactivo
-        Vehiculo tempV = vehiculoOpt.get();
+
         // Cambiar el estado del vehículo
+        Vehiculo tempV = vehiculoOpt.get();
         tempV.setActivo(!tempV.getActivo());
 
         // Guardar cambios en la base de datos
         Vehiculo v_actualizado = vehiculoRepository.save(tempV);
 
-        // Mapear a DTO para devolverlo
-        var response = vehiculoMapper.vehiculoToCreateEditResponse(v_actualizado);
-
-        return Optional.of(response);
+        // Mapear a DTO y devolver respuesta exitosa
+        responseWrapper.setData(vehiculoMapper.vehiculoToCreateEditResponse(v_actualizado));
+        return responseWrapper;
     }
 
+
     //Metodo para listar todos los vehiculos de un usuario (Las tres opciones null, activo =true y activo=false) TODO
-    public List<CrearEditarVehiculoResponse> listarVehiculos(Long usuarioId, Optional<Boolean> activo) {
+    public GenericResponse<List<CrearEditarVehiculoResponse>> listarVehiculos(Long usuarioId, Optional<Boolean> activo) {
+        GenericResponse<List<CrearEditarVehiculoResponse>> responseWrapper = new GenericResponse<>();
+
         // Llamar al repositorio para obtener los vehículos filtrados según el estado
         List<Vehiculo> vehiculos = vehiculoRepository.listarVehiculosUsuarioConFiltro(usuarioId, activo);
 
-        // Convertir la lista de entidades Vehiculo a DTOs usando lambdas y `toList()`
+        // Si no hay vehículos, devolver un mensaje adecuado
+        if (vehiculos.isEmpty()) {
+            responseWrapper.setError(new ErrorResponse("No se encontraron vehículos"));
+            return responseWrapper;
+        }
+
+        // Convertir la lista de vehículos a DTOs
         List<CrearEditarVehiculoResponse> listaDTO = vehiculos.stream()
-                // Convertir cada vehiculo a DTO
                 .map(vehiculo -> vehiculoMapper.vehiculoToCreateEditResponse(vehiculo))
                 .toList();
-        // ListaDTO es una lista de vehiculos que puede estar vacia
-        return listaDTO;
+
+        // Devolver la lista de vehículos en la respuesta exitosa
+        responseWrapper.setData(listaDTO);
+        return responseWrapper;
     }
+
 
 
 }

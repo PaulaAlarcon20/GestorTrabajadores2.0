@@ -5,6 +5,7 @@ import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
 import com.calendario.trabajadores.model.dto.usuario.EditarUsuarioRequest;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
+import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -29,7 +30,7 @@ public class UserController {
     private UserService userService;
 
     //Endpoints
-    //Crear usuario (O.K)
+    //Crear usuario
     @Operation(summary = "Creación de usuario", description = "Endpoint para crear un usuario")
     @PostMapping("/user/create")
     @ApiResponses(value = {
@@ -40,17 +41,23 @@ public class UserController {
     }
     )
     public ResponseEntity<?> create(@RequestBody CrearUsuarioRequest request) {
-        //Forzamos que el usuario registrado sea un usuario normal (capa extra de seguridad)
+        // Forzamos que el usuario registrado sea un usuario normal (capa extra de seguridad)
         request.rol = "user";
-        Optional<UsuarioResponse> usuario = userService.crearUsuario(request);
-        if (usuario.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "el usuario ya existe"));
+
+        // Llamamos al servicio para crear el usuario
+        var usuario = userService.crearUsuario(request);
+
+        // Si no se pudo crear el usuario (error), devolvemos el error con el mensaje adecuado
+        if (!usuario.isSuccess()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(usuario.getError().getStatus(),
+                    usuario.getError().getMessage()));
         }
-        return ResponseEntity.ok(usuario.get());
+
+        // Si el usuario se creó correctamente, devolvemos la respuesta con los datos del usuario creado
+        return ResponseEntity.ok(usuario);
     }
 
-    //Crear usuario admin (O.K)
+    //Crear usuario admin
     @Operation(summary = "Creación de admin", description = "Endpoint para crear un admin")
     @PostMapping("/user/adminCreate")
     @ApiResponses(value = {
@@ -60,19 +67,21 @@ public class UserController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
+    //ResponseEntity<GenericResponse<UsuarioResponse>>
     public ResponseEntity<?> createAdmin(@RequestBody CrearUsuarioRequest request) {
         //Forzamos que el usuario registrado sea un usuario normal (capa extra de seguridad)
         request.rol = "admin";
-        Optional<UsuarioResponse> usuario = userService.crearUsuario(request);
-        if (usuario.isEmpty()) {
+        // Llamamos al servicio para crear el usuario
+        GenericResponse<UsuarioResponse> usuario = userService.crearUsuario(request);
+        if (!usuario.isSuccess()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "el usuario ya existe"));
+                    .body(Map.of(usuario.getError().getStatus(), usuario.getError().getMessage()));
         }
-        return ResponseEntity.ok(usuario.get());
+        return ResponseEntity.ok(usuario.getData());
     }
 
-    //Editar datos de usuario (O.K)
-    @Operation(summary = "Editar datos de usuario", description = "Endpoint para editar datos de usuario")
+    //Editar datos de un usuario
+    @Operation(summary = "Editar datos de un usuario", description = "Endpoint para editar datos de un usuario")
     @PostMapping("/user/edit")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "user modificado",
@@ -81,16 +90,17 @@ public class UserController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
+
     public ResponseEntity<?> editarUsuario(@RequestBody EditarUsuarioRequest request) {
         var usuario = userService.editUsuario(request);
-        if (usuario.isEmpty()) {
+        if (!usuario.isSuccess()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "el usuario no existe"));
+                    .body(Map.of(usuario.getError().getStatus(), usuario.getError().getMessage()));
         }
-        return ResponseEntity.ok(usuario.get());
+        return ResponseEntity.ok(usuario.getData());
     }
 
-    //Dar de baja usuario (desactivar) (O.K)
+    //Dar de baja usuario (desactivar)
     @Operation(summary = "dar de baja usuario", description = "Endpoint para dar de baja usuario")
     @PostMapping("/user/deactivate")
     @ApiResponses(value = {
@@ -101,15 +111,19 @@ public class UserController {
     }
     )
     public ResponseEntity<?> bajaUsuario(@RequestParam Long id) {
-        Optional<UsuarioResponse> usuario = userService.softDelete(id);
-        if (usuario.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "el usuario no existe"));
+        // Llamamos al servicio para realizar la baja del usuario
+        var usuario = userService.softDelete(id);
+        // Si la baja falla (usuario no encontrado o error), devolvemos el error
+        if (!usuario.isSuccess()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(usuario.getError()
+                    .getStatus(), usuario.getError().getMessage()));
         }
-        return ResponseEntity.ok(usuario.get());
+
+        // Si la baja es exitosa, devolvemos la respuesta con los datos del usuario
+        return ResponseEntity.ok(usuario.getData());
     }
 
-    //Reactivar usuario (O.K)
+    //Reactivar usuario
     @Operation(summary = "reactivar usuario", description = "Endpoint para reactivar usuario")
     @PostMapping("/user/reactivate")
     @ApiResponses(value = {
@@ -120,15 +134,15 @@ public class UserController {
     }
     )
     public ResponseEntity<?> reactivar(@RequestParam Long id) {
-        Optional<UsuarioResponse> usuario = userService.reactivar(id);
-        if (usuario.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "el usuario no existe"));
+        var usuario = userService.reactivar(id);
+        if (!usuario.isSuccess()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(usuario.getError()
+                    .getStatus(), usuario.getError().getMessage()));
         }
-        return ResponseEntity.ok(usuario.get());
+        return ResponseEntity.ok(usuario.getData());
     }
 
-    //Listar información de un usuario (obtener el usuario con el id) (O.K)
+    //Listar información de un usuario (obtener el usuario con el id)
     @Operation(summary = "Listar información de un usuario", description = "Endpoint para listar información de un usuario")
     @GetMapping("/user/getById")
     @ApiResponses(value = {
@@ -139,15 +153,15 @@ public class UserController {
     }
     )
     public ResponseEntity<?> getUsuario(@RequestParam Long id) {
-        Optional<UsuarioResponse> usuario = userService.getUsuario(id);
-        if (usuario.isEmpty()) {
+        var usuario = userService.getUsuario(id);
+        if (!usuario.isSuccess()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "el usuario no existe"));
+                    .body(Map.of(usuario.getError().getStatus(), usuario.getError().getMessage()));
         }
-        return ResponseEntity.ok(usuario.get());
+        return ResponseEntity.ok(usuario.getData());
     }
 
-    //Listar información de un usuario (obtener el usuario con el email) (O.K)
+    //Listar información de un usuario (obtener el usuario con el email)
     @Operation(summary = "Listar información de un usuario", description = "Endpoint para listar información de un usuario")
     @GetMapping("/user/getByEmail")
     @ApiResponses(value = {
@@ -158,15 +172,15 @@ public class UserController {
     }
     )
     public ResponseEntity<?> getUsuario(@RequestParam String email) {
-        Optional<UsuarioResponse> usuario = userService.getUsuario(email);
-        if (usuario.isEmpty()) {
+        var usuario = userService.getUsuario(email);
+        if (!usuario.isSuccess()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "el usuario no existe"));
+                    .body(Map.of(usuario.getError().getStatus(), usuario.getError().getMessage()));
         }
-        return ResponseEntity.ok(usuario.get());
+        return ResponseEntity.ok(usuario.getData());
     }
 
-    //Listar usuarios (O.K)
+    //Listar usuarios
     @Operation(summary = "listar usuarios", description = "Endpoint para listar todos los usuarios")
     @GetMapping("/user/list")
     @ApiResponses(value = {
@@ -177,16 +191,16 @@ public class UserController {
     }
     )
     public ResponseEntity<?> listAll(@RequestParam(value = "activo") Optional<Boolean> activo) {
-        Optional<List<UsuarioResponse>> usuario = userService.listar(activo);
-        if (usuario.isEmpty()) {
+        var usuario = userService.listar(activo);
+        if (!usuario.isSuccess()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "..."));
+                    .body(Map.of(usuario.getError().getStatus(), usuario.getError().getMessage()));
         }
-        return ResponseEntity.ok(usuario.get());
+        return ResponseEntity.ok(usuario.getData());
     }
 
 
-    //Listar usuarios con vehiculos (OK)
+    //Listar usuarios con vehiculos
     @Operation(summary = "Listar usuarios con vehiculos", description = "Endpoint para listar usuarios con vehiculos")
     @GetMapping("/user/vehiculos")
     @ApiResponses(value = {
@@ -200,7 +214,7 @@ public class UserController {
         return ResponseEntity.ok(userService.listarUsuariosVehiculos(activo));
     }
 
-    //Borrado total usuario (Uso solo para admin! Para usuarios normales usar bajaUsuario (SoftDelete) (O.K)
+    //Borrado total usuario (Uso solo para admin! Para usuarios normales usar bajaUsuario (SoftDelete)
     @Operation(summary = "borrar usuario", description = "Endpoint para borrar usuario")
     @DeleteMapping("/user/delete")
     @ApiResponses(value = {
@@ -211,12 +225,12 @@ public class UserController {
     }
     )
     public ResponseEntity<?> borrarUsuario(@RequestParam Long id, String email) {
-        Optional<UsuarioResponse> usuario = userService.borrar(id, email);
-        if (usuario.isEmpty()) {
+        GenericResponse<UsuarioResponse> usuario = userService.borrar(id, email);
+        if (!usuario.isSuccess()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "el usuario no existe"));
+                    .body(Map.of(usuario.getError().getStatus(), usuario.getError().getMessage()));
         }
-        return ResponseEntity.ok(usuario.get());
+        return ResponseEntity.ok(usuario.getData());
     }
 
 

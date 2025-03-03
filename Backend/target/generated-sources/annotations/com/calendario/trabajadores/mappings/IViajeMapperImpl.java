@@ -1,7 +1,6 @@
 package com.calendario.trabajadores.mappings;
 
 import com.calendario.trabajadores.model.database.Usuario;
-import com.calendario.trabajadores.model.database.UsuarioViaje;
 import com.calendario.trabajadores.model.database.Vehiculo;
 import com.calendario.trabajadores.model.database.Viaje;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
@@ -9,14 +8,12 @@ import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
 import com.calendario.trabajadores.model.dto.viaje.CrearEditarViajeResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
 import com.calendario.trabajadores.model.dto.viaje.ViajeResponse;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-02-23T14:01:35+0100",
+    date = "2025-02-23T14:14:05+0100",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.4 (Oracle Corporation)"
 )
 @Component
@@ -72,7 +69,7 @@ public class IViajeMapperImpl implements IViajeMapper {
 
         ViajeResponse viajeResponse = new ViajeResponse();
 
-        viajeResponse.setPasajeros( usuarioViajeListToUsuarioResponseList( viajedb.getUsuarioViajes() ) );
+        viajeResponse.setPasajeros( mapPasajeros( viajedb.getUsuarioViajes() ) );
         viajeResponse.setFechaCreacion( viajedb.getFechaCreacion() );
         viajeResponse.setFechaModificacion( viajedb.getFechaModificacion() );
         viajeResponse.setCreadoPor( viajedb.getCreadoPor() );
@@ -89,17 +86,32 @@ public class IViajeMapperImpl implements IViajeMapper {
     }
 
     @Override
-    public List<ViajeResponse> viajesToViajeResponses(List<Viaje> viajes) {
-        if ( viajes == null ) {
+    public UsuarioResponse usuarioToUsuarioResponse(Usuario usuario) {
+        if ( usuario == null ) {
             return null;
         }
 
-        List<ViajeResponse> list = new ArrayList<ViajeResponse>( viajes.size() );
-        for ( Viaje viaje : viajes ) {
-            list.add( viajeToViajeResponse( viaje ) );
-        }
+        UsuarioResponse usuarioResponse = new UsuarioResponse();
 
-        return list;
+        usuarioResponse.setId( usuario.getId() );
+        usuarioResponse.setFechaCreacion( usuario.getFechaCreacion() );
+        usuarioResponse.setFechaModificacion( usuario.getFechaModificacion() );
+        usuarioResponse.setCreadoPor( usuario.getCreadoPor() );
+        usuarioResponse.setModificadoPor( usuario.getModificadoPor() );
+        usuarioResponse.setNombre( usuario.getNombre() );
+        usuarioResponse.setApellido1( usuario.getApellido1() );
+        usuarioResponse.setApellido2( usuario.getApellido2() );
+        usuarioResponse.setEmail( usuario.getEmail() );
+        usuarioResponse.setTelefono( usuario.getTelefono() );
+        usuarioResponse.setCentroTrabajo( usuario.getCentroTrabajo() );
+        usuarioResponse.setPuesto( usuario.getPuesto() );
+        usuarioResponse.setLocalidad( usuario.getLocalidad() );
+        usuarioResponse.setPreferenciasHorarias( usuario.getPreferenciasHorarias() );
+        usuarioResponse.setDisponibilidadHorasExtras( usuario.getDisponibilidadHorasExtras() );
+        usuarioResponse.setRol( usuario.getRol() );
+        usuarioResponse.setActivo( usuario.getActivo() );
+
+        return usuarioResponse;
     }
 
     private Long viajeGuardadoVehiculoId(Viaje viaje) {
@@ -142,31 +154,6 @@ public class IViajeMapperImpl implements IViajeMapper {
         return usuario;
     }
 
-    protected UsuarioResponse usuarioViajeToUsuarioResponse(UsuarioViaje usuarioViaje) {
-        if ( usuarioViaje == null ) {
-            return null;
-        }
-
-        UsuarioResponse usuarioResponse = new UsuarioResponse();
-
-        usuarioResponse.setId( usuarioViaje.getId() );
-
-        return usuarioResponse;
-    }
-
-    protected List<UsuarioResponse> usuarioViajeListToUsuarioResponseList(List<UsuarioViaje> list) {
-        if ( list == null ) {
-            return null;
-        }
-
-        List<UsuarioResponse> list1 = new ArrayList<UsuarioResponse>( list.size() );
-        for ( UsuarioViaje usuarioViaje : list ) {
-            list1.add( usuarioViajeToUsuarioResponse( usuarioViaje ) );
-        }
-
-        return list1;
-    }
-
     protected VehiculoDTO vehiculoToVehiculoDTO(Vehiculo vehiculo) {
         if ( vehiculo == null ) {
             return null;
@@ -185,33 +172,5 @@ public class IViajeMapperImpl implements IViajeMapper {
         vehiculoDTO.setActivo( vehiculo.getActivo() );
 
         return vehiculoDTO;
-    }
-
-    protected UsuarioResponse usuarioToUsuarioResponse(Usuario usuario) {
-        if ( usuario == null ) {
-            return null;
-        }
-
-        UsuarioResponse usuarioResponse = new UsuarioResponse();
-
-        usuarioResponse.setFechaCreacion( usuario.getFechaCreacion() );
-        usuarioResponse.setFechaModificacion( usuario.getFechaModificacion() );
-        usuarioResponse.setCreadoPor( usuario.getCreadoPor() );
-        usuarioResponse.setModificadoPor( usuario.getModificadoPor() );
-        usuarioResponse.setId( usuario.getId() );
-        usuarioResponse.setNombre( usuario.getNombre() );
-        usuarioResponse.setApellido1( usuario.getApellido1() );
-        usuarioResponse.setApellido2( usuario.getApellido2() );
-        usuarioResponse.setEmail( usuario.getEmail() );
-        usuarioResponse.setTelefono( usuario.getTelefono() );
-        usuarioResponse.setCentroTrabajo( usuario.getCentroTrabajo() );
-        usuarioResponse.setPuesto( usuario.getPuesto() );
-        usuarioResponse.setLocalidad( usuario.getLocalidad() );
-        usuarioResponse.setPreferenciasHorarias( usuario.getPreferenciasHorarias() );
-        usuarioResponse.setDisponibilidadHorasExtras( usuario.getDisponibilidadHorasExtras() );
-        usuarioResponse.setRol( usuario.getRol() );
-        usuarioResponse.setActivo( usuario.getActivo() );
-
-        return usuarioResponse;
     }
 }

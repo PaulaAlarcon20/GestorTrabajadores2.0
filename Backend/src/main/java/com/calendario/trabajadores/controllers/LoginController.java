@@ -1,6 +1,8 @@
 package com.calendario.trabajadores.controllers;
 
+import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
+import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.services.user.UserService;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.model.login.LoginRequest;
@@ -39,13 +41,17 @@ public class LoginController {
     }
     )
     //RequestParam especifica que son parámetros de la request
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginModel) {
-        Optional<UsuarioVehiculosResponse> usuario = userService.login(loginModel.username, loginModel.password);
-        if (usuario.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Login incorrecto"));
+    public ResponseEntity<GenericResponse<UsuarioResponse>> login(@RequestBody LoginRequest loginModel) {
+        // Llamamos al servicio de login
+        GenericResponse<UsuarioResponse> usuarioResponse = userService.login(loginModel.username, loginModel.password);
+
+        // Si el usuario no fue encontrado o las credenciales no son correctas, el GenericResponse tendrá un error
+        if (usuarioResponse.getError() != null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(usuarioResponse);
         }
-        return ResponseEntity.ok(usuario.get());
+
+        // Si el login es exitoso, devolvemos la respuesta con el UsuarioVehiculosResponse en GenericResponse
+        return ResponseEntity.ok(usuarioResponse);
     }
 
     //Logout de usuario
@@ -59,12 +65,17 @@ public class LoginController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
-    public ResponseEntity<?> logout(@RequestBody LoginRequest loginModel) {
-        Optional<UsuarioVehiculosResponse> usuario = userService.logout(loginModel.username, loginModel.password);
-        if (usuario.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Logout incorrecto"));
+    public ResponseEntity<GenericResponse<UsuarioVehiculosResponse>> logout(@RequestBody LoginRequest loginModel) {
+        // Llamamos al servicio de logout
+        GenericResponse<UsuarioVehiculosResponse> logoutResponse = userService.logout(loginModel.username, loginModel.password);
+
+        // Si el usuario no fue encontrado o las credenciales no son correctas, el GenericResponse tendrá un error
+        if (logoutResponse.getError() != null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(logoutResponse);
         }
-        return ResponseEntity.ok(usuario.get());
+
+        // Si el logout es exitoso, devolvemos la respuesta con el UsuarioVehiculosResponse
+        return ResponseEntity.ok(logoutResponse);
     }
+
 }

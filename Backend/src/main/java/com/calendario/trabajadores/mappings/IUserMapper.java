@@ -4,6 +4,7 @@ import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioRequest;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
 import com.calendario.trabajadores.model.dto.usuario.EditarUsuarioRequest;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -21,4 +22,7 @@ public interface IUserMapper {
     Usuario editRequestToUser(EditarUsuarioRequest request);
 
 
+    UsuarioVehiculosResponse usuarioToUsuarioVehiculosResponse(Usuario usuario);
+
+    UsuarioResponse usuarioToUsuarioResponse(Usuario usuario);
 }

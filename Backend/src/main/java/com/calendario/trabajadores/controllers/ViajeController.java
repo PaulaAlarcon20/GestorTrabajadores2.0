@@ -5,6 +5,7 @@ import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
 import com.calendario.trabajadores.model.dto.viaje.EditarViajeRequest;
 import com.calendario.trabajadores.model.dto.viaje.ViajeResponse;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
+import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.services.user.UserService;
 import com.calendario.trabajadores.services.viaje.ViajeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,7 +48,7 @@ public class ViajeController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
-    public ResponseEntity<?> crearViaje(@RequestBody CrearViajeRequest input) {
+    /*public ResponseEntity<?> crearViaje(@RequestBody CrearViajeRequest input) {
         Optional<CrearEditarViajeResponse> viajeResponse = viajeService.crearViaje(input);
         if (viajeResponse.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -55,6 +56,25 @@ public class ViajeController {
         }
         return ResponseEntity.ok(viajeResponse);
     }
+*/
+    public ResponseEntity<?> crearViaje(@RequestBody CrearViajeRequest input) {
+        // Llamamos al servicio para crear el viaje
+        GenericResponse<CrearEditarViajeResponse> viajeResponse = viajeService.crearViaje(input);
+
+        // Si no se pudo crear el viaje, devolvemos BAD_REQUEST con el error adecuado
+        if (!viajeResponse.isSuccess()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of(viajeResponse.getError().getStatus(), viajeResponse.getError().getMessage()));
+        }
+
+        // Si el viaje se creó correctamente, devolvemos la respuesta con los datos del viaje creado
+        return ResponseEntity.ok(viajeResponse);
+    }
+
+
+
+
+
 
     // Cambiar estado de un viaje  TODO:toggle
     @Operation(summary = "Cambiar estado de un viaje", description = "Endpoint para cambiar el estado de un viaje")
