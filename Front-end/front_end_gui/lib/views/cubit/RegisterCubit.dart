@@ -7,8 +7,9 @@ import 'package:front_end_gui/views/infraestructure/inputs/inputs.dart';
 import 'package:front_end_gui/views/infraestructure/inputs/passwordLogin.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Para convertir el JSON
-
+import 'dart:developer';
 part 'RegisterState.dart';
+
 
 /// Clase RegisterLoginCubit, en donde vamos a desarrollar los métodos de la validación
 class RegisterCubit extends Cubit<RegisterState> {
@@ -18,8 +19,8 @@ class RegisterCubit extends Cubit<RegisterState> {
 
   // Métodos en el cubic de las variables del formulario
   Future<void> onSubmit() async {
-    print('Estado actual formulario al enviarlo, antes de emitir emit -> ${state.formStatus}');
-    print('Enviando formulario... datos -> email: ${state.email.value}, contraseña: ${state.password.value}');
+    log('Estado actual formulario al enviarlo, antes de emitir emit -> ${state.formStatus}');
+    log('Enviando formulario... datos -> email: ${state.email.value}, contraseña: ${state.password.value}');
     emit( // Notifica a flutter blog que el estado ha cambiado
       state.copyWith(  // hace una copia del estado actual, pero con algunos valores modificados
         formStatus : FormStatus.validating, // Se indica que el estado de las validaciones es 'validando'
@@ -49,14 +50,14 @@ class RegisterCubit extends Cubit<RegisterState> {
       );
 
       if (response.statusCode == 200){
-        print('Se inicia sesión...');
+        log('Se inicia sesión...');
         
       } else {
-        print('Error en la autenticación -> ${response.statusCode} /  ${FormStatus.failHttp}',);
+        log('Error en la autenticación -> ${response.statusCode} /  ${FormStatus.failHttp}',);
         emit(state.copyWith(formStatus:  FormStatus.failHttp));
       }
     } catch (e) {
-      print('Error durante petición Http');
+      log('Error durante petición Http');
       //emit(state.copyWith(formStatus: FormStatus.failHttp));
     }
   }

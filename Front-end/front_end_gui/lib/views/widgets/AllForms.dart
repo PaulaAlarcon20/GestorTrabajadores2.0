@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit2.dart';
-import 'package:front_end_gui/views/infraestructure/inputs/disponibilidadHorasExtras.dart';
-import 'package:front_end_gui/views/infraestructure/inputs/inputs.dart';
 import 'package:front_end_gui/views/widgets/Custom_Text_FormField.dart';
 import 'package:front_end_gui/views/widgets/TelefonoInputFormatter.dart';
 
@@ -150,21 +148,12 @@ class _ProfesionalFirstForm extends State<ProfesionalFirstForm> {
   List<String> _puestoTrabajo = ['TCAE','Enfermero','Médico'];
 
 
-  List<Map<String,dynamic>> _preferenciasHorarias = [
-    {"Mañana": "Mañana","": false},
-    {"Tarde": "Tarde","": false},
-    {"Noche": "Noche","": false},
-  ];
   @override
   Widget build(BuildContext context) {
 
     final signUpCubit2 = context.watch<SignUpCubit2>();
     final centroTrabajo = signUpCubit2.state.centroDeTrabajo;
     final localidad = signUpCubit2.state.localidad;
-    final disponibilidadhorasExtras = signUpCubit2.state.disponibilidadHorasExtras;
-
-    //final bool stateForm = registerCubit.state.isValid == true; 
-    final bool stateFormSigUp2 = signUpCubit2.state.isValid2 == true;
 
     return Form(
         key: _formKey,

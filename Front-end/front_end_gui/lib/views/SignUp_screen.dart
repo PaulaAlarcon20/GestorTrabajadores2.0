@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:front_end_gui/views/RegisterView_screen.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit.dart';
@@ -7,7 +5,6 @@ import 'package:front_end_gui/views/cubit/SignUpCubit2.dart';
 import 'package:front_end_gui/views/cubit/SignUpState2.dart';
 import 'package:front_end_gui/views/widgets/AllForms.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 
 
@@ -66,7 +63,7 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    //double screenHeight = MediaQuery.of(context).size.height;
     
     final signUpCubit = context.watch<SignUpCubit>();
     final signUpCubit2 = context.watch<SignUpCubit2>();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'dart:developer';
 class AppTheme {
 
   final int selectionColor;
@@ -17,7 +17,7 @@ class AppTheme {
 
     final Color primaryColor = colorThemes[selectionColor];
     final bool isWhite = primaryColor == Colors.white;
-    print('Valor de isDark: $isWhite');
+    log('Valor de isDark: $isWhite');
 
     final enabledBorder = OutlineInputBorder(
       borderSide: BorderSide(color: isWhite ? const Color.fromARGB(255, 10, 10, 10) : Colors.white),

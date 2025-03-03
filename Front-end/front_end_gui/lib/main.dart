@@ -4,7 +4,7 @@ import 'package:front_end_gui/views/RegisterView_screen.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit2.dart';
-import 'dart:developer';
+
 
 /// Fichero principal de la aplicación que contiene nuestra aplicación
 void main() => runApp(
