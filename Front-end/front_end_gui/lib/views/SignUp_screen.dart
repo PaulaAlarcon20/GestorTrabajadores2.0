@@ -97,7 +97,7 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
               //maincolor: Colors.red
               ),
           child: Padding(
-            padding: EdgeInsets.only(top: 15),
+            padding: EdgeInsets.only(top: 15, bottom: 15),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -110,6 +110,7 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
                   style: TextStyle(
                       fontSize: 17,
                       color: const Color.fromARGB(255, 128, 128, 128)),
+                      
                 )
               ],
             ),

@@ -59,6 +59,17 @@ class AppTheme {
         onSurface: isWhite ? Color(0xFF333333) : Colors.white
         
       ),
+
+      appBarTheme: AppBarTheme(
+        backgroundColor: isWhite ? const Color(0xB3FFFFFF): const Color.fromARGB(255, 65, 64, 64),
+        foregroundColor: isWhite ? Colors.black : Colors.white,
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: Colors.red,
+        selectedItemColor: Colors.black,
+        //selectedIconTheme: IconThemeData(color: Colors.red),
+        unselectedItemColor: Colors.grey
+      ),
       inputDecorationTheme: InputDecorationTheme( 
         enabledBorder: enabledBorder,
         focusedBorder: focusedBorder,
