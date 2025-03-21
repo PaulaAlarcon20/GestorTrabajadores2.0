@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front_end_gui/views/PersonalProfile_screen.dart';
+import 'package:front_end_gui/views/Travel_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -23,7 +24,7 @@ class _HomeScreenGoState extends State<HomeScreenGo> {
   final List<Widget> _screen = [
     Center(child: Text('PÁGINA INICIO'),),
     Center(child: Text('PÁGINA CALENDARIO'),),
-    Center(child: Text('PÁGINA VIAJES'),),
+    Center(child: TravelScreen(),),
     Center(child: PersonalprofileScreen())
   ]; // TODO VAMOS A CAMBIARLO POR WIDGETS O LOGICA DE NAVEGACIÓN
 
@@ -44,7 +45,7 @@ class _HomeScreenGoState extends State<HomeScreenGo> {
         items:  [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
           BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'Turnos'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Buscar'),
+          BottomNavigationBarItem(icon: Icon(Icons.car_crash_outlined), label: 'Viajes'),
           BottomNavigationBarItem(icon: Icon(Icons.person_outline ), label: 'Perfil'), //Colors.lightBlueAccent
         ],
 
