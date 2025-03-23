@@ -1,125 +1,172 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end_gui/views/cubit/RegisterCubit.dart';
 import 'package:front_end_gui/views/widgets/Custom_Text_FormField.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:front_end_gui/views/SignUp_screen.dart';
+import 'package:front_end_gui/views/Home_screen.dart';
 
 /// Pantalla creada para mostrar al usuario el login a la aplicación
 /// Vista formada por widget con orden en forma de columna, en el cual se le
 /// incrustan 'cajas' y el widget dinámico RegisterForm
 class RegisterView extends StatelessWidget {
  
-  //const RegisterView({super.key});
+  const RegisterView({super.key});
+  
 
   @override
   Widget build(BuildContext context) {
-    return  Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: const[
-            SizedBox(height: 52),
-            FlutterLogo(size: 50),
-            RegisterForm(),
-            SizedBox(height: 20,)
-          ],
+
+    //double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    return  Scaffold(
+
+      //appBar: AppBar(title: const Text('Nuevo usuario'),),
+      body: BlocProvider( // Inyecta el cubic en el árbol de widgets y permite que los hijos accedan
+        create:  (context) => RegisterCubit(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal:10),
+          child: SingleChildScrollView( // Define que hijos pueden acceder al cubit
+            child: SizedBox(
+              //height: Me,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: screenHeight * 0.30),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                        color: Colors.black,
+                      )
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: Image.asset(
+                        'assets/images/imagen1.jpg',
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                        
+                      ),
+                    ),
+                  ),
+                  //(height: 5),
+                  RegisterForm(),
+                  SizedBox(height: screenHeight * 0.01),
+                 
+                ],
+              ),
+            ),
+          ),
         ),
-      ),
+      )
     );
   }
+
+
 }
 
 
-
-class RegisterForm extends StatefulWidget {
+class RegisterForm extends StatelessWidget {
   const RegisterForm({super.key});
 
   @override
-  State<RegisterForm> createState() => _RegisterFormState();
-}
-
-/// Widget dinámico que contiene un formulario, en donde se hace uso de un
-/// widget personalizado llamado CustomTextFormField, el cual recibe por parametros
-/// los parametros necesarios para las validaciones (label, onChange, hiontText, validator, obscureText)
-class _RegisterFormState extends State<RegisterForm> {
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String email = "";
-  String password = "";
-
-  // Función que realiza la petición POST al backend para el login (en proceso)
-  Future<void> login() async {
-    final url = Uri.parse('http://localhost:8080/login'); // Replace with your backend URL
-
-    try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'username': email, 'password': password}),
-      );
-
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        print('Login successful: $responseData'); // Handle success (e.g., save token, navigate)
-      } else {
-        print('Login failed: ${response.body}'); // Handle failure
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    final registerCubit = context.watch<RegisterCubit>(); // Escucha los cambio sy se reconstruye automaticamente
+    final email = registerCubit.state.email;
+    final password = registerCubit.state.password;
+    final isLoading = registerCubit.state.formStatus == FormStatus.validating;
+    //final bool mododark = Theme.of(context).brightness == Brightness.light;
+    final bool modoDark = Theme.of(context).brightness == Brightness.dark;
+    final bool stateForm = registerCubit.state.isValid == true; 
+    
     return Form(
-      key: _formKey,
+
       child: Column(
         children: [
-
-          const SizedBox(height: 8),
+          SizedBox(height: screenWidth * 0.08),
+          SizedBox(
+            child: CustomTextFormfield(
+              
+              //erroreMessage: 'Este campo necesita ayuda',
+              //Icons.person_outline    - Icons.account_circle - 
+              prefixIcon:  Icons.account_circle,
+              label: 'Correo electrónico',
+              onChanged: (value) {
+                registerCubit.emailChanged(value);
+              },
+              //hintText: 'usuario@gmail.com', 
+              erroreMessage: email.errorMessage,
+              obscureText: false,),
+          ),
+          SizedBox(height: screenWidth * 0.02),
+    
           CustomTextFormfield(
-            label: 'Correo electrónico',
-            onChanged: (value) => email = value,
-            hintText: 'usuario@gmail.com', 
-            validator: (value) {
-              if(value == null || value.isEmpty) return 'Campo requerido'; 
-              if(value.trim().isEmpty) return 'Campo requerido'; 
-
-              final emailRegExp = RegExp(
-                r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$',
-              );
-              if(!emailRegExp.hasMatch(value!)) return 'Formato incorrecto';
- 
-              return null;
-            },
-            obscureText: false,),
-          const SizedBox(height: 8),
-
-          CustomTextFormfield(
+            
+            prefixIcon: Icons.lock,
             label: 'Contraseña', 
-            onChanged: (value) => password = value,
-            hintText: 'Contraseña', 
-            validator: (value) {
-              if (value!.length < 9) return 'Más de 9 caracteres';
-              return  null;
+            onChanged: (value) {
+              registerCubit.passwordChanged(value);
             },
+            //hintText: 'Contraseña', 
+            erroreMessage: password.errorMessage, // En este widget no va a haber validación password
             obscureText: true,),
-          const SizedBox(height: 8),
+          SizedBox(height: screenWidth * 0.05),
 
 
-          FilledButton.tonalIcon(
-            onPressed: () {
+          SizedBox(
+            height: screenHeight * 0.054,
+            width: screenWidth * 0.5,
+            
+            child: FilledButton.tonalIcon(
+              onPressed: stateForm
+                ? () {
+                  registerCubit.onSubmit();
+                  Navigator.pushReplacement(
+                    context, 
+                    MaterialPageRoute(builder: (context) => HomeScreen()));
+                  }
+                : null,
 
-              final isValid = _formKey.currentState!.validate();
-              if (!isValid) return;
-              login();
+              //icon:  const Icon(Icons.save),
+              label: isLoading
+                ? const CircularProgressIndicator(color: Colors.white, strokeWidth: 2.0, strokeAlign: BorderSide.strokeAlignInside,) 
+                :  Text('Iniciar sesión', style: TextStyle( fontSize: screenWidth * 0.045)),
+              ),
+          ),
 
-              print('$email, $password');
-            },
-            icon:  const Icon(Icons.save),
-            label: Text('Iniciar sesión'),
+          SizedBox(height: screenWidth * 0.02 ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  
+                  context,
+                  MaterialPageRoute(builder: (context) => SignupForm())
+                );
+              },
+              child: Text(
+              '¿No tienes cuenta? Registrate', 
+              style: TextStyle(
+                color: modoDark ? Colors.black : Colors.white,
+                fontSize: screenHeight * 0.02,
+                decoration:  TextDecoration.underline,
+                decorationThickness: 1,
+                decorationColor: modoDark ? Colors.black : Colors.white
+                
+                
+              ),),
             )
+          ),
+
         ],
       ));
   }
 }
+
+
