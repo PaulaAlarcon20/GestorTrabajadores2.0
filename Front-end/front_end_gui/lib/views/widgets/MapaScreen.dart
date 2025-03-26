@@ -57,8 +57,10 @@ class _MapaScreenState extends State<MapaScreen> {
       child: GoogleMap(
         initialCameraPosition: CameraPosition(target: _origen, zoom: 12),
         onMapCreated: (GoogleMapController controller) {
-          _mapController = controller;
-          _cargarRuta();
+         if(_mapController == null){
+           _mapController = controller;
+           _cargarRuta();
+         }
         },
         markers: {
           Marker(markerId: MarkerId("origen"), position: _origen),
