@@ -4,9 +4,16 @@ import 'package:front_end_gui/views/RegisterView_screen.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit2.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 /// Fichero principal de la aplicación que contiene nuestra aplicación
-void main() => runApp(
+
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Asegura la inicialización correcta
+  await initializeDateFormatting('es_ES', null); // Inicializa la localización en español
+
+runApp(
   MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => SignUpCubit()),
@@ -15,8 +22,6 @@ void main() => runApp(
       
       child: const MyApp(),
     ));
-
-initializeDateFormatting(String s, param1) {
 }
 
 class MyApp extends StatelessWidget {

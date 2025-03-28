@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:front_end_gui/config/theme/app_theme.dart';
 import 'package:front_end_gui/views/widgets/Calendar_widget.dart'; // Importar el widget del calendario
 
 class CalendarScreen extends StatelessWidget {
