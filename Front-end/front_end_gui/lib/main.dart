@@ -5,7 +5,6 @@ import 'package:front_end_gui/views/cubit/SignUpCubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit2.dart';
 
-
 /// Fichero principal de la aplicación que contiene nuestra aplicación
 void main() => runApp(
   MultiBlocProvider(
@@ -16,6 +15,9 @@ void main() => runApp(
       
       child: const MyApp(),
     ));
+
+initializeDateFormatting(String s, param1) {
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
