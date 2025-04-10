@@ -1,5 +1,6 @@
 package com.calendario.trabajadores.controllers;
 
+import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
 import com.calendario.trabajadores.model.dto.vehiculo.CrearEditarVehiculoResponse;
 import com.calendario.trabajadores.model.dto.vehiculo.CrearVehiculoRequest;
 import com.calendario.trabajadores.model.dto.vehiculo.EditarVehiculoRequest;
@@ -107,6 +108,26 @@ public class VehiculoController {
                             schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
+    //Metodo para obtener un usuario por su id
+    public ResponseEntity<GenericResponse<UsuarioResponse>> getUsuario(Long id) {
+        // Llamar al servicio para obtener el usuario
+        GenericResponse<UsuarioResponse> usuarioResponse = userService.getUsuario(id);
+
+        // Si no se encontro el usuario, devolver un error con el estado NOT_FOUND
+        if (!usuarioResponse.isSuccess()) {
+            // Crear un nuevo GenericResponse para envolver el ErrorResponse
+            GenericResponse<UsuarioResponse> errorResponseWrapper = new GenericResponse<>();
+            errorResponseWrapper.setError(usuarioResponse.getError());
+
+            // Devolver el error con el codigo de estado HTTP NOT_FOUND
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponseWrapper);
+        }
+
+        // Si el usuario existe, devolver los datos en un GenericResponse exitoso
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioResponse);
+    }
+
+    /*Version anterior de listAll
     public ResponseEntity<GenericResponse<List<CrearEditarVehiculoResponse>>> listAll(
             @RequestParam(value = "usuarioId") Long usuarioId,
             @RequestParam(value = "activo", required = false) Optional<Boolean> activo) {
@@ -118,22 +139,71 @@ public class VehiculoController {
         }
 
         return ResponseEntity.ok(respuestaServicio);
+    }*/
+
+    // Endpoint para obtener un vehículo por su ID *F*
+    @Operation(summary = "Obtener vehículo por ID", description = "Endpoint para obtener un vehículo por su ID único")
+    @GetMapping("/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vehículo encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarVehiculoResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Vehículo no encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<GenericResponse<CrearEditarVehiculoResponse>> obtenerVehiculoPorId(@PathVariable Long id) {
+        GenericResponse<CrearEditarVehiculoResponse> response = vehiculoService.obtenerVehiculoPorId(id);
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 
-    /*Version anterior de listAll
-    public ResponseEntity<GenericResponse<List<CrearEditarVehiculoResponse>>> listAll(
-        @RequestParam(value = "usuarioId") Long usuarioId,
-        @RequestParam(value = "activo", required = false) Optional<Boolean> activo) {
 
-    GenericResponse<List<CrearEditarVehiculoResponse>> respuestaServicio = vehiculoService.listarVehiculos(usuarioId, activo);
-
-    if (respuestaServicio.getError() != null) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuestaServicio);
+    // Endpoint para obtener un vehículo por su matrícula *F
+    @Operation(summary = "Obtener vehículo por matrícula", description = "Endpoint para obtener un vehículo por su matrícula única")
+    @GetMapping("/matricula/{matricula}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vehículo encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarVehiculoResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Vehículo no encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<GenericResponse<CrearEditarVehiculoResponse>> obtenerVehiculoPorMatricula(@PathVariable String matricula) {
+        GenericResponse<CrearEditarVehiculoResponse> response = vehiculoService.obtenerVehiculoPorMatricula(matricula);
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 
-    return ResponseEntity.ok(respuestaServicio);
-}
-     */
+
+    // Endpoint para eliminar un vehículo por ID *F
+    // esto lo elimina de la base de datos y no deberia poderlo hacer un usuario
+    //un usuario deberia poder activar/desactivar el vehiculo, pero no borrarlo de la bbdd
+    @Operation(summary = "Eliminación de vehículo", description = "Endpoint para eliminar un vehículo de forma definitiva por su ID")
+    @DeleteMapping("/vehiculo/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vehículo eliminado con éxito",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = GenericResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Vehículo no encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "No autorizado para eliminar el vehículo",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<GenericResponse<Void>> borrarVehiculo(@PathVariable Long id) {
+        // Llamamos al servicio para eliminar el vehículo
+        GenericResponse<Void> response = vehiculoService.eliminarVehiculo(id);
+
+        // Si el vehículo no existe, respondemos con un error 404
+        if (response.getError() != null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        // Si el vehículo fue eliminado exitosamente, respondemos con un 200
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
 
 }

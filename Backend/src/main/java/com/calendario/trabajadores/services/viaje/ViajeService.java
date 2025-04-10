@@ -109,7 +109,7 @@ public class ViajeService {
     }
 
     //Editar datos de un viaje
-    // TODO EDITAR DATOS DE UN VIAJE : añadir validacion de no se peude editar un viaje en curso o finalizado.
+    // TODO EDITAR DATOS DE UN VIAJE : añadir validacion de no se puede editar un viaje en curso o finalizado.
     //No se incluye estado porque no debe ser editado por el usuarioL
     public Optional<CrearEditarViajeResponse> editarViaje(Long id, EditarViajeRequest param) {
         // Buscar el viaje en la base de datos
