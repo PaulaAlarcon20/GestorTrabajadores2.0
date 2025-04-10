@@ -30,7 +30,6 @@ public class LoginController {
 
     //Endpoints
     //Login de usuario
-    //TODO: Añadir cookies de sesion
     @Operation(summary = "Login de usuario", description = "Endpoint para el login de usuario")
     @PostMapping("/login")
     @ApiResponses(value = {
@@ -55,7 +54,6 @@ public class LoginController {
     }
 
     //Logout de usuario
-    //TODO: logout
     @Operation(summary = "Logout de usuario", description = "Endpoint para el logout de usuario")
     @PostMapping("/logout")
     @ApiResponses(value = {

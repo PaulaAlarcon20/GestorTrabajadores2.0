@@ -3,6 +3,7 @@ package com.calendario.trabajadores.controllers;
 import com.calendario.trabajadores.model.dto.vehiculo.CrearEditarVehiculoResponse;
 import com.calendario.trabajadores.model.dto.vehiculo.CrearVehiculoRequest;
 import com.calendario.trabajadores.model.dto.vehiculo.EditarVehiculoRequest;
+import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.services.vehiculo.VehiculoService;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +33,7 @@ public class VehiculoController {
     @Autowired
     private UserService userService;
 
-    //No necesito el constructor porque ya tengo la inyeccion de dependencias con @Autowired ***********
+    //No necesito el constructor porque ya tengo la inyeccion de dependencias con @Autowired
     public VehiculoController(VehiculoService vehiculoService, UserService userService) {
         this.vehiculoService = vehiculoService;
         this.userService = userService;
@@ -48,12 +49,13 @@ public class VehiculoController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))}
     )
     public ResponseEntity<?> CrearVehiculo(@RequestBody CrearVehiculoRequest input) {
-        Optional<CrearEditarVehiculoResponse> respuestaServicio = vehiculoService.crearVehiculo(input);
-        if (respuestaServicio.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "el vehiculo ya existe"));
+        //Dejo de trabajar con optional y empiezo a trabajar con GenericResponse
+        GenericResponse<CrearEditarVehiculoResponse> respuestaServicio = vehiculoService.crearVehiculo(input);
+        //Cambio isEmpty por getError() != null para dar ahora la traza del error
+        if (respuestaServicio.getError() != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuestaServicio);
         }
-        return ResponseEntity.ok(respuestaServicio.get());
+        return ResponseEntity.ok(respuestaServicio);
     }
 
     //Editar los datos de un vehiculo
@@ -65,13 +67,14 @@ public class VehiculoController {
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))}
     )
-    public ResponseEntity<?> editarVehiculo(@RequestBody EditarVehiculoRequest input) {
-        Optional<CrearEditarVehiculoResponse> respuestaServicio = vehiculoService.modificarVehiculo(input);
-        if (respuestaServicio.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "error al editar al vehiculo"));
+    public ResponseEntity<GenericResponse<CrearEditarVehiculoResponse>> editarVehiculo(@RequestBody EditarVehiculoRequest input) {
+        GenericResponse<CrearEditarVehiculoResponse> respuestaServicio = vehiculoService.modificarVehiculo(input);
+
+        if (respuestaServicio.getError() != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuestaServicio);
         }
-        return ResponseEntity.ok(respuestaServicio.get());
+
+        return ResponseEntity.ok(respuestaServicio);
     }
 
     //Toggle Vehiculo (Activar o Desactivar un vehiculo)
@@ -84,12 +87,11 @@ public class VehiculoController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))}
     )
     public ResponseEntity<?> toggleVehiculo(@RequestBody Long id) {
-        Optional<CrearEditarVehiculoResponse> respuestaServicio = vehiculoService.toggleVehiculo(id);
-        if (respuestaServicio.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "error al cambiar estado del vehiculo"));
+        GenericResponse<CrearEditarVehiculoResponse> respuestaServicio = vehiculoService.toggleVehiculo(id);
+        if (respuestaServicio.getError() != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuestaServicio);
         }
-        return ResponseEntity.ok(respuestaServicio.get());
+        return ResponseEntity.ok(respuestaServicio);
     }
 
     //TODO:Listar todos los vehiculos de un usuario (Las tres opciones)
@@ -105,17 +107,33 @@ public class VehiculoController {
                             schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
-    public ResponseEntity<?> listAll(@RequestParam(value = "usuarioId") Long usuarioId,
-                                     //Se supone que tengo que añadir ativo como filtrado porque si no me devuelve todos
-                                     //los vehiculos sin filtrar?
-                                     @RequestParam(value = "activo", required = false) Optional<Boolean> activo) {
-        List<CrearEditarVehiculoResponse> respuestaServicio = vehiculoService.listarVehiculos(usuarioId, activo);
-        if (respuestaServicio.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "..."));
+    public ResponseEntity<GenericResponse<List<CrearEditarVehiculoResponse>>> listAll(
+            @RequestParam(value = "usuarioId") Long usuarioId,
+            @RequestParam(value = "activo", required = false) Optional<Boolean> activo) {
+
+        GenericResponse<List<CrearEditarVehiculoResponse>> respuestaServicio = vehiculoService.listarVehiculos(usuarioId, activo);
+
+        if (respuestaServicio.getError() != null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuestaServicio);
         }
+
         return ResponseEntity.ok(respuestaServicio);
     }
+
+    /*Version anterior de listAll
+    public ResponseEntity<GenericResponse<List<CrearEditarVehiculoResponse>>> listAll(
+        @RequestParam(value = "usuarioId") Long usuarioId,
+        @RequestParam(value = "activo", required = false) Optional<Boolean> activo) {
+
+    GenericResponse<List<CrearEditarVehiculoResponse>> respuestaServicio = vehiculoService.listarVehiculos(usuarioId, activo);
+
+    if (respuestaServicio.getError() != null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuestaServicio);
+    }
+
+    return ResponseEntity.ok(respuestaServicio);
+}
+     */
 
 
 }
