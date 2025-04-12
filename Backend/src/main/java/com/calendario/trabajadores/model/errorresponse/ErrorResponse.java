@@ -19,7 +19,7 @@ public class ErrorResponse {
     @Schema(description = "Type of the exception", example = "java.lang.IllegalArgumentException")
     private String exceptionType;
 
-    //Constructoresq
+    //Constructores
     //Constructor por defecto
     public ErrorResponse() {
         this.status = "ok";

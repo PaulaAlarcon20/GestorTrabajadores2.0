@@ -1,4 +1,9 @@
 package com.calendario.trabajadores.repository.turno;
 
-public class CustomTurnoRepository {
+import com.calendario.trabajadores.model.database.Turno;
+
+import java.util.List;
+
+public interface CustomTurnoRepository {
+    List<Turno> buscarTurnosActivos();
 }

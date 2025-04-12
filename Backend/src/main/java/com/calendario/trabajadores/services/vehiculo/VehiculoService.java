@@ -127,7 +127,7 @@ public class VehiculoService {
     }
 
 
-    //Metodo para listar todos los vehiculos de un usuario (Las tres opciones null, activo =true y activo=false) TODO
+    //Metodo para listar todos los vehiculos de un usuario (Las tres opciones null, activo =true y activo=false)
     public GenericResponse<List<CrearEditarVehiculoResponse>> listarVehiculos(Long usuarioId, Optional<Boolean> activo) {
         GenericResponse<List<CrearEditarVehiculoResponse>> responseWrapper = new GenericResponse<>();
 

@@ -233,5 +233,21 @@ public class UserController {
         return ResponseEntity.ok(usuario.getData());
     }
 
+    //Listar usuarios con viajes asociados   /*F*
+    @Operation(summary = "Listar usuarios con viajes", description = "Endpoint para listar usuarios con viajes asociados")
+    @GetMapping("/user/viajes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista creada",
+                    content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UsuarioResponse.class)))) , // Cambié UsuarioViajesResponse por UsuarioResponse
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<?> listarUsuariosViajes(@RequestParam(value = "activo") Optional<Boolean> activo) {
+        // Asumiendo que el servicio devuelve un GenericResponse<List<UsuarioResponse>> como se definió antes
+        GenericResponse<List<UsuarioResponse>> response = userService.listar(activo);  // Cambié listarUsuariosViajes por listar
+        return ResponseEntity.ok(response);
+    }
+
+
 
 }
