@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 //(replace = AutoConfigureTestDatabase.Replace.ANY)
 //@AutoConfigureTestDatabase
 @ActiveProfiles("test")
@@ -25,14 +26,6 @@ class UserServiceTest {
     @Autowired
     private UserService userService;
     private Long id;
-
-    @BeforeEach
-    void setUp() {
-    }
-
-    @AfterEach
-    void tearDown() {
-    }
 
     @Test
     void login() {
@@ -56,7 +49,7 @@ class UserServiceTest {
         userRequest.rol = "user";
         userRequest.password = "123";
         var response = userService.crearUsuario(userRequest);
-        var id = response.getData().id;
+        id = response.getData().id;
         assertNotNull(id);
         assertEquals("Paco",response.getData().nombre);
     }
@@ -74,7 +67,11 @@ class UserServiceTest {
     }
 
     @Test
+    @Order(2)
     void getUsuario() {
+        var response = userService.getUsuario(id);
+        var nombre = response.getData().nombre;
+        assertEquals("Paco", nombre);
     }
 
     @Test
