@@ -192,9 +192,9 @@ public class VehiculoController {
             @ApiResponse(responseCode = "403", description = "No autorizado para eliminar el vehículo",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public ResponseEntity<GenericResponse<Void>> borrarVehiculo(@PathVariable Long id) {
+    public ResponseEntity<GenericResponse<String>> borrarVehiculo(@PathVariable Long id) {
         // Llamamos al servicio para eliminar el vehículo
-        GenericResponse<Void> response = vehiculoService.eliminarVehiculo(id);
+        GenericResponse<String> response = vehiculoService.eliminarVehiculo(id);
 
         // Si el vehículo no existe, respondemos con un error 404
         if (response.getError() != null) {
@@ -204,6 +204,4 @@ public class VehiculoController {
         // Si el vehículo fue eliminado exitosamente, respondemos con un 200
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
-
 }

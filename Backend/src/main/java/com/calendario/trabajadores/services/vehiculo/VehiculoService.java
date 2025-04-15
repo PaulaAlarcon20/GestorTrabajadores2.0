@@ -149,8 +149,53 @@ public class VehiculoService {
         responseWrapper.setData(listaDTO);
         return responseWrapper;
     }
+    /*F*/
+    // Obtener un vehiculo por ID
+    public GenericResponse<CrearEditarVehiculoResponse> obtenerVehiculoPorId(Long id) {
+        GenericResponse<CrearEditarVehiculoResponse> responseWrapper = new GenericResponse<>();
 
+        Optional<Vehiculo> vehiculoOpt = vehiculoRepository.findById(id);
+        if (vehiculoOpt.isEmpty()) {
+            responseWrapper.setError(new ErrorResponse("Vehículo no encontrado con ID: " + id));
+            return responseWrapper;
+        }
 
+        CrearEditarVehiculoResponse dto = vehiculoMapper.vehiculoToCreateEditResponse(vehiculoOpt.get());
+        responseWrapper.setData(dto);
+        return responseWrapper;
+    }
+
+    // Obtener un vehiculo por matricula
+    /*F*/
+    public GenericResponse<CrearEditarVehiculoResponse> obtenerVehiculoPorMatricula(String matricula) {
+        GenericResponse<CrearEditarVehiculoResponse> responseWrapper = new GenericResponse<>();
+
+        Optional<Vehiculo> vehiculoOpt = vehiculoRepository.findVehiculoByMatricula(matricula);
+        if (vehiculoOpt.isEmpty()) {
+            responseWrapper.setError(new ErrorResponse("Vehículo no encontrado con matrícula: " + matricula));
+            return responseWrapper;
+        }
+
+        CrearEditarVehiculoResponse dto = vehiculoMapper.vehiculoToCreateEditResponse(vehiculoOpt.get());
+        responseWrapper.setData(dto);
+        return responseWrapper;
+    }
+
+    // Eliminar un vehiculo por ID
+    /*F*/
+    public GenericResponse<String> eliminarVehiculo(Long id) {
+        GenericResponse<String> responseWrapper = new GenericResponse<>();
+
+        Optional<Vehiculo> vehiculoOpt = vehiculoRepository.findById(id);
+        if (vehiculoOpt.isEmpty()) {
+            responseWrapper.setError(new ErrorResponse("No se puede eliminar: vehículo no encontrado con ID: " + id));
+            return responseWrapper;
+        }
+
+        vehiculoRepository.deleteById(id);
+        responseWrapper.setData("Vehículo eliminado correctamente.");
+        return responseWrapper;
+    }
 
 }
 
