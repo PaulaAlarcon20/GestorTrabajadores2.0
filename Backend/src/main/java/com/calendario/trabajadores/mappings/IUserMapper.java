@@ -1,10 +1,7 @@
 package com.calendario.trabajadores.mappings;
 
 import com.calendario.trabajadores.model.database.Usuario;
-import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioRequest;
-import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
-import com.calendario.trabajadores.model.dto.usuario.EditarUsuarioRequest;
-import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
+import com.calendario.trabajadores.model.dto.usuario.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -25,4 +22,7 @@ public interface IUserMapper {
     UsuarioVehiculosResponse usuarioToUsuarioVehiculosResponse(Usuario usuario);
 
     UsuarioResponse usuarioToUsuarioResponse(Usuario usuario);
+    // Mapea la lista de viajes a la propiedad 'viajes'
+    @Mapping(source = "usuario.viajes", target = "viajes")
+    UsuarioViajeResponse userToUsuarioViajeResponse(Usuario usuario);
 }

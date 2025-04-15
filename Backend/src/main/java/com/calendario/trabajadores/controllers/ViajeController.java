@@ -38,8 +38,32 @@ public class ViajeController {
         this.userService = userService;
     }
 
-    //Crear un nuevo viaje
-    @Operation(summary = "Crear un viaje", description = "Endpoint crear viaje")
+    //Crear un nuevo viaje        *F*
+    @Operation(summary = "Creación de viaje", description = "Endpoint para crear un viaje")
+    @PostMapping("/viaje/crear")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Viaje creado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarViajeResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))}
+    )
+    public ResponseEntity<?> crearViaje(@RequestBody CrearViajeRequest input) {
+        // Llamamos al servicio para crear el viaje
+        GenericResponse<CrearEditarViajeResponse> viajeResponse = viajeService.crearViaje(input);
+
+        // Verificamos si hay error en la respuesta del servicio
+        if (viajeResponse.getError() != null) {
+            // Si ocurrió un error, devolvemos una respuesta con código 400 y el error
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(viajeResponse);
+        }
+
+        // Si la creación fue exitosa, devolvemos la respuesta con los datos del viaje creado
+        return ResponseEntity.ok(viajeResponse);
+    }
+
+
+
+    /*@Operation(summary = "Crear un viaje", description = "Endpoint crear viaje")
     @PostMapping("/viaje/crear")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Viaje creado",
@@ -48,15 +72,6 @@ public class ViajeController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     }
     )
-    /*public ResponseEntity<?> crearViaje(@RequestBody CrearViajeRequest input) {
-        Optional<CrearEditarViajeResponse> viajeResponse = viajeService.crearViaje(input);
-        if (viajeResponse.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "no se ha podido crear el viaje"));
-        }
-        return ResponseEntity.ok(viajeResponse);
-    }
-*/
     public ResponseEntity<?> crearViaje(@RequestBody CrearViajeRequest input) {
         // Llamamos al servicio para crear el viaje
         GenericResponse<CrearEditarViajeResponse> viajeResponse = viajeService.crearViaje(input);
@@ -69,11 +84,7 @@ public class ViajeController {
 
         // Si el viaje se creó correctamente, devolvemos la respuesta con los datos del viaje creado
         return ResponseEntity.ok(viajeResponse);
-    }
-
-
-
-
+    }*/
 
 
     // Cambiar estado de un viaje  TODO:toggle

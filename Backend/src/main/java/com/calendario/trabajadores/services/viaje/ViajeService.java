@@ -9,6 +9,8 @@ import com.calendario.trabajadores.model.dto.viaje.CrearEditarViajeResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
 import com.calendario.trabajadores.model.dto.viaje.EditarViajeRequest;
 import com.calendario.trabajadores.model.dto.viaje.ViajeResponse;
+import com.calendario.trabajadores.model.errorresponse.GenericResponse;
+import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 import com.calendario.trabajadores.repository.vehiculo.IVehiculoRepository;
 import com.calendario.trabajadores.repository.viaje.IViajeRepository;
@@ -37,8 +39,41 @@ public class ViajeService {
         this.viajeMapper = viajeMapper;
     }
 
-    //Crear un viaje
-    public Optional<CrearEditarViajeResponse> crearViaje(CrearViajeRequest request) {
+    //Crear un viaje *F*
+    public GenericResponse<CrearEditarViajeResponse> crearViaje(CrearViajeRequest request) {
+        GenericResponse<CrearEditarViajeResponse> responseWrapper = new GenericResponse<>();
+
+        // Buscamos las entidades conductor y vehiculo en la base de datos por sus IDs
+        Optional<Usuario> responseUsuario = usuarioRepository.findById(request.getIdConductor());
+        Optional<Vehiculo> responseVehiculo = vehiculoRepository.findById(request.getIdVehiculo());
+
+        // Verificamos si el conductor o el vehículo no existen
+        if (responseUsuario.isEmpty() || responseVehiculo.isEmpty()) {
+            // Si no existen, devolvemos un error
+            responseWrapper.setError(new ErrorResponse("Conductor o Vehículo no encontrado"));
+            return responseWrapper;
+        }
+
+        // Si ambos existen, obtenemos las entidades
+        Usuario conductor = responseUsuario.get();
+        Vehiculo vehiculo = responseVehiculo.get();
+
+        // Creamos el nuevo viaje con los datos del request y los objetos obtenidos
+        var nuevoViaje = viajeMapper.crearViajeRequestToViaje(request);
+
+        // Guardamos el viaje en la base de datos
+        Viaje viajeGuardado = viajeRepository.save(nuevoViaje);
+
+        // Mapeamos el viaje guardado a la respuesta
+        CrearEditarViajeResponse response = viajeMapper.viajeToCrearEditarViajeResponse(viajeGuardado);
+
+        // Devolvemos la respuesta exitosa con los datos
+        responseWrapper.setData(response);
+        return responseWrapper;
+    }
+
+
+    /*public Optional<CrearEditarViajeResponse> crearViaje(CrearViajeRequest request) {
         //Buscamos las entidades conductor y vehiculo en la base de datos (getId)
         Optional<Usuario> responseUsuario = usuarioRepository.findById(request.getIdConductor());
         Optional<Vehiculo> responseVehiculo = vehiculoRepository.findById(request.getIdVehiculo());
@@ -59,7 +94,7 @@ public class ViajeService {
 
         // Retornamos la respuesta como un Optional
         return Optional.of(response);
-    }
+    }*/
 
     // Cambiar el estado de un viaje con validaciones //TODO: REVISAR TOGGLE CAMBIO DE ESTADO
     //public Optional<ViajeResponse> cambiarEstadoViaje(Long idViaje, EstadoViaje nuevoEstado)
