@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:front_end_gui/views/CalendarScreen.dart';
 import 'package:front_end_gui/views/PersonalProfile_screen.dart';
 import 'package:front_end_gui/views/Travel_screen.dart';
+import 'package:front_end_gui/views/gestionTurnos/GestionTurnos.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -18,18 +19,25 @@ class HomeScreenGo extends StatefulWidget {
 }
 
 class _HomeScreenGoState extends State<HomeScreenGo> {
-
-
   int _position = 0;
 
   final List<Widget> _screen = [
-    Center(child: Text('PÁGINA INICIO'),),
-    Center(child: CalendarScreen(),),
-    Center(child: TravelScreen(),),
+    Center(
+      child: Text('PÁGINA INICIO'),
+    ),
+    Center(
+      child: CalendarScreen(),
+    ),
+    Center(
+      child: GestionTurnos(),
+    ),
+    Center(
+      child: TravelScreen(),
+    ),
     Center(child: PersonalprofileScreen())
   ]; // TODO VAMOS A CAMBIARLO POR WIDGETS O LOGICA DE NAVEGACIÓN
 
-  void _itemTapped(int index){
+  void _itemTapped(int index) {
     setState(() {
       _position = index;
     });
@@ -43,15 +51,20 @@ class _HomeScreenGoState extends State<HomeScreenGo> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _position,
         onTap: _itemTapped,
-        items:  [
+        items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'Turnos'), 
-          BottomNavigationBarItem(icon: Icon(Icons.car_crash_outlined), label: 'Viajes'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline ), label: 'Perfil'), //Colors.lightBlueAccent
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_month), label: 'Turnos'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.app_registration_rounded),
+              label: 'Gestión Turnos'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.car_crash_outlined), label: 'Viajes'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline),
+              label: 'Perfil'), //Colors.lightBlueAccent
         ],
-
-      )  ,
+      ),
     );
   }
-
 }
