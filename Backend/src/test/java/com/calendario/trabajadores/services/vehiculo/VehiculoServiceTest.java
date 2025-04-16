@@ -90,8 +90,8 @@ class VehiculoServiceTest {
     // 3. Test para modificar un vehículo
     @Test
     @DisplayName("ModifyVehicle")
-    @Order(2)
-    void modificarVehiculo(3) {
+    @Order(3)
+    void modificarVehiculo() {
         //Se crea un vehiculo para poder modificarlo
         var vehiculo = new CrearVehiculoRequest();
         vehiculo.plazas = 3;
