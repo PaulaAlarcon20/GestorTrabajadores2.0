@@ -65,11 +65,33 @@ class VehiculoServiceTest {
         assertEquals("Mazda",response.getData().modeloCoche);
     }
 
-    // 2. Test para modificar un vehículo
+    // 2. Test intentar crear un vehiculo sin la matricula
+    @Test
+    @DisplayName("FailCreateVehicleWithoutMatricula")
+    @Order(2)
+    void crearVehiculoSinMatricula() {
+        // Creamos un nuevo vehiculo sin matrícula
+        var vehiculo = new CrearVehiculoRequest();
+        vehiculo.plazas = 3;
+        vehiculo.modeloCoche = "Mazda";
+        vehiculo.activo = true;
+        // No proporcionamos matrícula
+        vehiculo.idUsuario = id; // Asociamos el vehículo al usuario creado previamente
+
+        // Llamamos al servicio para crear el vehículo
+        var response = vehiculoService.crearVehiculo(vehiculo);
+
+        // Verificamos que la respuesta contiene un error relacionado con la matrícula
+        assertNotNull(response.getError());
+        assertEquals("La matrícula es un campo obligatorio", response.getError().getMessage());
+    }
+
+
+    // 3. Test para modificar un vehículo
     @Test
     @DisplayName("ModifyVehicle")
     @Order(2)
-    void modificarVehiculo() {
+    void modificarVehiculo(3) {
         //Se crea un vehiculo para poder modificarlo
         var vehiculo = new CrearVehiculoRequest();
         vehiculo.plazas = 3;
@@ -102,10 +124,10 @@ class VehiculoServiceTest {
 
     }
 
-    // 3. Test para alternar el estado activo/inactivo de un vehiculo
+    // 4. Test para alternar el estado activo/inactivo de un vehiculo
     @Test
     @DisplayName("ToggleVehicleStatus")
-    @Order(3)
+    @Order(4)
     void toggleVehiculo() {
         // Primero crea un vehiculo
         var vehiculo = new CrearVehiculoRequest();
@@ -125,10 +147,10 @@ class VehiculoServiceTest {
         assertEquals(false, responseToggle.getData().getActivo());
     }
 
-    // 4. Test para listar los vehiculos
+    // 5. Test para listar los vehiculos
     @Test
     @DisplayName("ListVehicles")
-    @Order(4)
+    @Order(5)
     void listarVehiculos() {
         // Creamos un vehiculo para asegurarnos de que habra vehiculos en la base de datos
         var vehiculo = new CrearVehiculoRequest();
@@ -154,10 +176,10 @@ class VehiculoServiceTest {
         assertTrue(response.getData().stream().allMatch(v -> v.getActivo()), "Todos los vehículos listados deben estar activos");
     }
 
-    // 5. Test para obtener un vehiculo por ID
+    // 6. Test para obtener un vehiculo por ID
     @Test
     @DisplayName("GetVehicleById")
-    @Order(5)
+    @Order(6)
     void obtenerVehiculoPorId() {
         // Crear vehiculo
         var vehiculo = new CrearVehiculoRequest();
@@ -175,10 +197,10 @@ class VehiculoServiceTest {
         assertEquals("Mazda", response.getData().getModeloCoche());
     }
 
-    // 6. Test para obtener un vehiculo por matricula
+    // 7. Test para obtener un vehiculo por matricula
     @Test
     @DisplayName("GetVehicleByLicensePlate")
-    @Order(6)
+    @Order(7)
     void obtenerVehiculoPorMatricula() {
         // Crear vehiculo
         var vehiculo = new CrearVehiculoRequest();
@@ -196,10 +218,10 @@ class VehiculoServiceTest {
         assertEquals("Mazda", response.getData().getModeloCoche());
     }
 
-    // 7. Test para eliminar un vehiculo
+    // 8. Test para eliminar un vehiculo
     @Test
     @DisplayName("DeleteVehicle")
-    @Order(7)
+    @Order(8)
     void eliminarVehiculo() {
         // Crear vehiculo
         var vehiculo = new CrearVehiculoRequest();
