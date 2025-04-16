@@ -8,6 +8,7 @@ import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -89,14 +90,18 @@ public class UserService {
         var usuario = userMapper.createRequestToUser(request);
         //Activamos el usuario por defecto
         usuario.setActivo(true);
-        //Guardamos el usuario en la base de datos
-        var usuarioSaved = userRepository.save(usuario);
-        // Mapeamos el usuario guardado a un DTO
-        var response = userMapper.userToCreateEditResponse(usuarioSaved);
+       try { //Guardamos el usuario en la base de datos
+           var usuarioSaved = userRepository.save(usuario);
+           // Mapeamos el usuario guardado a un DTO
+           var response = userMapper.userToCreateEditResponse(usuarioSaved);
 
-        // Envolvemos la respuesta en GenericResponse y la devolvemos
-        wrapperResponse.setData(response);
-        return wrapperResponse;
+           // Envolvemos la respuesta en GenericResponse y la devolvemos
+           wrapperResponse.setData(response);
+           return wrapperResponse;
+       } catch (DataIntegrityViolationException Ex){
+           wrapperResponse.setError(new ErrorResponse(Ex.getMessage()));
+           return wrapperResponse;
+       }
     }
 
 
@@ -292,29 +297,6 @@ public class UserService {
 
     }
 
-    //Metodo para borrar un usuario (IMPORTANTE: los usuarios no deben usar este. Riesgo de borrado de la base de datos)
-    public GenericResponse<UsuarioResponse> borrar(Long id, String email) {
-        var usuario = userRepository.findById(id);
-        if (usuario.isEmpty()) {
-            var error = new GenericResponse<UsuarioResponse>();
-            error.setError(new ErrorResponse("Usuario no encontrado"));
-            return error;
-        }
-        if (!usuario.get().getEmail().equals(email)) {
-            var error = new GenericResponse<UsuarioResponse>();
-            error.setError(new ErrorResponse("El email no coincide con el del usuario"));
-            return error;
-        }
-        //Borrado total del usuario de la bbdd
-        userRepository.delete(usuario.get());
-        // Mapeamos la respuesta y la envolvemos en GenericResponse
-        var response = userMapper.userToCreateEditResponse(usuario.get());
-        var wrapperResponse = new GenericResponse<UsuarioResponse>();
-        wrapperResponse.setData(response);
-
-        return wrapperResponse;
-    }
-
     //listar los viajes de un usuario: *F*
     public GenericResponse<List<UsuarioViajeResponse>> listarUsuariosViajes(Boolean activo) {
         List<UsuarioViajeResponse> lista = new ArrayList<>();
@@ -355,6 +337,29 @@ public class UserService {
             // Si encontramos, devolvemos los datos
             wrapperResponse.setData(lista);
         }
+
+        return wrapperResponse;
+    }
+
+    //Metodo para borrar un usuario (IMPORTANTE: los usuarios no deben usar este. Riesgo de borrado de la base de datos)
+    public GenericResponse<UsuarioResponse> borrar(Long id, String email) {
+        var usuario = userRepository.findById(id);
+        if (usuario.isEmpty()) {
+            var error = new GenericResponse<UsuarioResponse>();
+            error.setError(new ErrorResponse("Usuario no encontrado"));
+            return error;
+        }
+        if (!usuario.get().getEmail().equals(email)) {
+            var error = new GenericResponse<UsuarioResponse>();
+            error.setError(new ErrorResponse("El email no coincide con el del usuario"));
+            return error;
+        }
+        //Borrado total del usuario de la bbdd
+        userRepository.delete(usuario.get());
+        // Mapeamos la respuesta y la envolvemos en GenericResponse
+        var response = userMapper.userToCreateEditResponse(usuario.get());
+        var wrapperResponse = new GenericResponse<UsuarioResponse>();
+        wrapperResponse.setData(response);
 
         return wrapperResponse;
     }
