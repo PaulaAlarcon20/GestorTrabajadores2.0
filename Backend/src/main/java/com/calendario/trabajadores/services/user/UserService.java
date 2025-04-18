@@ -79,12 +79,18 @@ public class UserService {
 
     //Metodo para crear un usuario
     public GenericResponse<UsuarioResponse> crearUsuario(CrearUsuarioRequest request) {
+
         //Buscar por email si el usuario ya existe
         var usuarioExists = userRepository.findUsuarioByEmail(request.getEmail());
         var wrapperResponse = new GenericResponse<UsuarioResponse>();
         if (usuarioExists.isPresent()) {
             wrapperResponse.setError(new ErrorResponse("El usuario con el email proporcionado ya existe"));
             return wrapperResponse;
+        }
+        // Validamos que el nombre no sea nulo
+        if (request.getNombre() == null || request.getNombre().isEmpty()) {
+            wrapperResponse.setError(new ErrorResponse("El campo 'nombre' es obligatorio"));
+            return wrapperResponse;  // Retorna con un error si el nombre es nulo o vacío
         }
         //Si no existe, creamos un nuevo usuario
         var usuario = userMapper.createRequestToUser(request);

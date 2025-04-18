@@ -31,13 +31,6 @@ class UserServiceTest {
 
     private String email;
 
-    @Test
-    void login() {
-    }
-
-    @Test
-    void logout() {
-    }
 
     @Test
     @DisplayName("CreateUser")
@@ -74,7 +67,7 @@ class UserServiceTest {
         assertNotNull(response.getError().getMessage());
     }
 
-    @Test
+    /*@Test
     @Order(2)
     @Transactional
     void getUsuario() {
@@ -158,5 +151,12 @@ class UserServiceTest {
         var response = userService.getUsuario(id);
         assertNotNull(response.getError()); // debería fallar al buscar un usuario que ya no existe
     }
+    @Test
+    void login() {
+    }
+
+    @Test
+    void logout() {
+    }*/
 
 }

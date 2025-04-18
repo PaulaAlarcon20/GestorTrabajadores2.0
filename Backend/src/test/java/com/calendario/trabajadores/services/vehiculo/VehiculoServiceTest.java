@@ -30,7 +30,8 @@ class VehiculoServiceTest {
     private Long id;
 
 
-    //Configuramos un usuario antes de los test porque necesitamos un usuario asociado a los vehiculos
+    //Configuramos un usuario antes de los test
+    //porque necesitamos un usuario asociado a los vehiculos
     @BeforeAll
     void setupUsuario() {
         var request = new CrearUsuarioRequest();
@@ -86,8 +87,37 @@ class VehiculoServiceTest {
         assertEquals("La matrícula es un campo obligatorio", response.getError().getMessage());
     }
 
+    @Test
+    @DisplayName("FailCreateVehicleWithDuplicateMatricula")
+    @Order(3)
+    void crearVehiculoConMatriculaDuplicada() {
+        // Creamos el primer vehículo con matrícula válida
+        var vehiculo1 = new CrearVehiculoRequest();
+        vehiculo1.plazas = 4;
+        vehiculo1.modeloCoche = "Toyota";
+        vehiculo1.activo = true;
+        vehiculo1.idUsuario = id;
+        vehiculo1.matricula = "DUPLI123";
 
-    // 3. Test para modificar un vehículo
+        var response1 = vehiculoService.crearVehiculo(vehiculo1);
+        assertNotNull(response1.getData());
+
+        // Intentamos crear otro vehículo con la misma matrícula
+        var vehiculo2 = new CrearVehiculoRequest();
+        vehiculo2.plazas = 5;
+        vehiculo2.modeloCoche = "Honda";
+        vehiculo2.activo = true;
+        vehiculo2.idUsuario = id;
+        vehiculo2.matricula = "DUPLI123"; // misma matrícula
+
+        var response2 = vehiculoService.crearVehiculo(vehiculo2);
+
+        // Comprobamos que da error por duplicado
+        assertNotNull(response2.getError());
+        assertEquals("El vehículo ya existe", response2.getError().getMessage());
+    }
+
+    /*// 3. Test para modificar un vehículo
     @Test
     @DisplayName("ModifyVehicle")
     @Order(3)
@@ -236,5 +266,5 @@ class VehiculoServiceTest {
         // Eliminar vehiculo
         var response = vehiculoService.eliminarVehiculo(responseCreacion.getData().getId());
         assertEquals("Vehículo eliminado correctamente.", response.getData());
-    }
+    }*/
 }

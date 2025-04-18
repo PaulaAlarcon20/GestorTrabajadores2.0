@@ -25,7 +25,7 @@ public class Vehiculo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     public String modeloCoche;
-    @Column(name = "matricula")
+    @Column(name = "matricula", unique = true, nullable = false)
     public String matricula;
     public int plazas;
     @ManyToOne(fetch = FetchType.LAZY)
