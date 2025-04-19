@@ -77,13 +77,20 @@ public class VehiculoService {
 
         Vehiculo vehiculoModel = vehiculoOptional.get();
 
-        // Actualizar solo los campos que se envían en la petición
-        if (!request.getMatricula().isBlank()) {
+        // Actualizar solo los campos que se envian en la petición  /*comentada validacion anterior/*F*/
+        /*if (!request.getMatricula().isBlank()) {
             vehiculoModel.setMatricula(request.getMatricula());
         }
         if (!request.getModeloCoche().isBlank()) {
             vehiculoModel.setModeloCoche(request.getModeloCoche());
+        }*/
+        if (request.getMatricula() != null && !request.getMatricula().isBlank()) {
+            vehiculoModel.setMatricula(request.getMatricula());
         }
+        if (request.getModeloCoche() != null && !request.getModeloCoche().isBlank()) {
+            vehiculoModel.setModeloCoche(request.getModeloCoche());
+        }
+
         if (request.getActivo() != null) {
             vehiculoModel.setActivo(request.getActivo());
         }
@@ -92,7 +99,8 @@ public class VehiculoService {
         }
 
         // Si se proporciona un ID de usuario, se asocia el vehículo al usuario correspondiente
-        if (request.getIdUsuario() != 0) {
+        //if (request.getIdUsuario() != 0) {      /*F*/
+        if (request.getIdUsuario() != null && request.getIdUsuario() != 0) {
             Usuario tempUser = new Usuario();
             tempUser.setId(request.getIdUsuario());
             vehiculoModel.setUsuario(tempUser);
