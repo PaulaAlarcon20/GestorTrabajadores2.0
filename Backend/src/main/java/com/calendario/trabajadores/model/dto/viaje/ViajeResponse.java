@@ -12,6 +12,8 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,10 +32,9 @@ public class ViajeResponse extends CamposComunes {
 
     public String origen;
     public String destino;
-    //fecha de salida
-    public Date fecha;
-    //hora de salida
-    public Date hora;
+    public LocalDate fechaSalida;
+
+    public LocalTime horaSalida;
     //Integer y no int para poder ser null
     public Integer plazas;
     public Boolean activo;

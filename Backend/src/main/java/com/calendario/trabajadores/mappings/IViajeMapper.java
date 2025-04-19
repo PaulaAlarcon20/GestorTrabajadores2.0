@@ -15,20 +15,19 @@ import org.mapstruct.Named;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Mapper(componentModel = "spring")
 public interface IViajeMapper {
 
     @Mapping(target = "idVehiculo", source = "vehiculo.id")
     @Mapping(target = "idConductor", source = "conductor.id")
-    @Mapping(source = "fecha", target = "fechaSalida")
-    @Mapping(source = "hora", target = "horaSalida")
+    @Mapping(source = "fechaSalida", target = "fechaSalida") // Usar 'fechaSalida' en lugar de 'fecha'
+    @Mapping(source = "horaSalida", target = "horaSalida") // Usar 'horaSalida' en lugar de 'hora'
     CrearEditarViajeResponse viajeToCrearEditarViajeResponse(Viaje viajeGuardado);
 
     @Mapping(source = "idVehiculo", target = "vehiculo.id")
     @Mapping(source = "idConductor", target = "conductor.id")
-    @Mapping(source = "fechaSalida", target = "fecha")
-    @Mapping(source = "horaSalida", target = "hora")
+    @Mapping(source = "fechaSalida", target = "fechaSalida") // Usar 'fechaSalida' correctamente
+    @Mapping(source = "horaSalida", target = "horaSalida") // Usar 'horaSalida' correctamente
     @Mapping(target = "usuarioViajes", ignore = true)
     @Mapping(target = "fechaCreacion", ignore = true)
     @Mapping(target = "fechaModificacion", ignore = true)
@@ -51,9 +50,10 @@ public interface IViajeMapper {
     UsuarioResponse usuarioToUsuarioResponse(Usuario usuario);
 
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "fecha", source = "fecha")
-    @Mapping(target = "hora", source = "hora")
+    @Mapping(target = "fechaSalida", source = "fechaSalida") // Usar 'fechaSalida'
+    @Mapping(target = "horaSalida", source = "horaSalida") // Usar 'horaSalida'
     @Mapping(target = "vehiculoId", source = "vehiculo.id")
     @Mapping(target = "conductorId", source = "conductor.id")
     ViajeDTO viajeToViajeDTO(Viaje viaje);
 }
+

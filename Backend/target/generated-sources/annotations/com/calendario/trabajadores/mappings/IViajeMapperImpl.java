@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-19T17:53:15+0200",
+    date = "2025-04-19T19:41:27+0200",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.4 (Oracle Corporation)"
 )
 @Component
@@ -32,8 +32,8 @@ public class IViajeMapperImpl implements IViajeMapper {
 
         crearEditarViajeResponse.setIdVehiculo( viajeGuardadoVehiculoId( viajeGuardado ) );
         crearEditarViajeResponse.setIdConductor( viajeGuardadoConductorId( viajeGuardado ) );
-        crearEditarViajeResponse.setFechaSalida( viajeGuardado.getFecha() );
-        crearEditarViajeResponse.setHoraSalida( viajeGuardado.getHora() );
+        crearEditarViajeResponse.setFechaSalida( viajeGuardado.getFechaSalida() );
+        crearEditarViajeResponse.setHoraSalida( viajeGuardado.getHoraSalida() );
         crearEditarViajeResponse.setOrigen( viajeGuardado.getOrigen() );
         crearEditarViajeResponse.setDestino( viajeGuardado.getDestino() );
         crearEditarViajeResponse.setPlazas( viajeGuardado.getPlazas() );
@@ -53,8 +53,8 @@ public class IViajeMapperImpl implements IViajeMapper {
 
         viaje.setVehiculo( crearViajeRequestToVehiculo( request ) );
         viaje.setConductor( crearViajeRequestToUsuario( request ) );
-        viaje.setFecha( request.getFechaSalida() );
-        viaje.setHora( request.getHoraSalida() );
+        viaje.setFechaSalida( request.getFechaSalida() );
+        viaje.setHoraSalida( request.getHoraSalida() );
         viaje.setOrigen( request.getOrigen() );
         viaje.setDestino( request.getDestino() );
         if ( request.getPlazas() != null ) {
@@ -81,8 +81,8 @@ public class IViajeMapperImpl implements IViajeMapper {
         viajeResponse.setConductor( usuarioToUsuarioResponse( viajedb.getConductor() ) );
         viajeResponse.setOrigen( viajedb.getOrigen() );
         viajeResponse.setDestino( viajedb.getDestino() );
-        viajeResponse.setFecha( viajedb.getFecha() );
-        viajeResponse.setHora( viajedb.getHora() );
+        viajeResponse.setFechaSalida( viajedb.getFechaSalida() );
+        viajeResponse.setHoraSalida( viajedb.getHoraSalida() );
         viajeResponse.setPlazas( viajedb.getPlazas() );
 
         return viajeResponse;
@@ -127,8 +127,8 @@ public class IViajeMapperImpl implements IViajeMapper {
         ViajeDTO viajeDTO = new ViajeDTO();
 
         viajeDTO.setId( viaje.getId() );
-        viajeDTO.setFecha( viaje.getFecha() );
-        viajeDTO.setHora( viaje.getHora() );
+        viajeDTO.setFechaSalida( viaje.getFechaSalida() );
+        viajeDTO.setHoraSalida( viaje.getHoraSalida() );
         viajeDTO.setVehiculoId( viajeGuardadoVehiculoId( viaje ) );
         viajeDTO.setConductorId( viajeGuardadoConductorId( viaje ) );
         viajeDTO.setOrigen( viaje.getOrigen() );

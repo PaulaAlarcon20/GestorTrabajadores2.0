@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Getter
@@ -13,8 +15,9 @@ import java.util.Date;
 @AllArgsConstructor
 public class ViajeDTO {
     private Long id;
-    private Date fecha;
-    private Date hora;
+    public LocalDate fechaSalida;
+
+    public LocalTime horaSalida;
     private String origen;
     private String destino;
     private int plazas;
