@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,8 +26,9 @@ public class Viaje extends CamposComunes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-    public Date fecha;
-    public Date hora;
+    public LocalDate fechaSalida;
+
+    public LocalTime horaSalida;
     public String origen;
     public String destino;
     public int plazas;

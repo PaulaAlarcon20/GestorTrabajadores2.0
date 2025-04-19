@@ -10,10 +10,12 @@ D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calend
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\repository\viaje\CustomViajeRepositoryImpl.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\database\EstadoViaje.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\controllers\LoginController.java
+D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\converters\LocalDateConverter.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\errorresponse\ErrorResponse.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\repository\viaje\IViajeRepository.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\repository\usuario\IUsuarioRepository.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\services\vehiculo\VehiculoService.java
+D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\converters\LocalTimeConverter.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\errorresponse\GenericResponse.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\mappings\IViajeMapper.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\database\UsuarioViaje.java

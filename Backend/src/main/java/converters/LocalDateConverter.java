@@ -5,18 +5,20 @@ import jakarta.persistence.Converter;
 
 import java.sql.Date;
 import java.time.LocalDate;
-
-@Converter(autoApply = true)  // Esto hace que el conversor se aplique a todas las entidades que lo necesiten
+// El conversor se aplique a todas las entidades que lo necesitam
+@Converter(autoApply = true)
 public class LocalDateConverter implements AttributeConverter<LocalDate, Date> {
 
     @Override
     public Date convertToDatabaseColumn(LocalDate localDate) {
-        return (localDate == null) ? null : Date.valueOf(localDate);  // Convierte LocalDate a java.sql.Date
+        // Convierte LocalDate a java.sql.Date
+        return (localDate == null) ? null : Date.valueOf(localDate);
     }
 
     @Override
     public LocalDate convertToEntityAttribute(Date date) {
-        return (date == null) ? null : date.toLocalDate();  // Convierte java.sql.Date a LocalDate
+        // Convierte java.sql.Date a LocalDate
+        return (date == null) ? null : date.toLocalDate();
     }
 }
 

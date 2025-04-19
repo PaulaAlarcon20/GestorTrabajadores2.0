@@ -174,10 +174,10 @@ public class ViajeService {
             viaje.setDestino(param.getDestino());
         }
         if (param.getFechaSalida() != null) {
-            viaje.setFecha(param.getFechaSalida());
+            viaje.setFechaSalida(param.getFechaSalida());
         }
         if (param.getHoraSalida() != null) {
-            viaje.setHora(param.getHoraSalida());
+            viaje.setHoraSalida(param.getHoraSalida());
         }
         if (param.getIdVehiculo() != null) {
             viaje.getVehiculo().setId(param.getIdVehiculo());
