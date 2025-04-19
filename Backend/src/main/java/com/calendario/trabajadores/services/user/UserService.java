@@ -56,9 +56,9 @@ public class UserService {
         return wrapperResponse;
     }
 
-    //Metodo para hacer logout
-    public GenericResponse<UsuarioVehiculosResponse> logout(String username, String password) {
-        var wrapperResponse = new GenericResponse<UsuarioVehiculosResponse>();
+    // Método para hacer logout
+    public GenericResponse<UsuarioResponse> logout(String username, String password) {
+        var wrapperResponse = new GenericResponse<UsuarioResponse>();
 
         // Buscar el usuario por el email (username)
         Optional<Usuario> usuario = userRepository.findUsuarioByEmail(username);
@@ -68,14 +68,13 @@ public class UserService {
             return wrapperResponse;
         }
 
-        // Si el login es correcto, mapeamos los datos usando IUserMapper
-        UsuarioVehiculosResponse tempDTO = userMapper.usuarioToUsuarioVehiculosResponse(usuario.get());
+        // Si el usuario existe, mapeamos los datos a UsuarioResponse (sin vehículos)
+        UsuarioResponse tempDTO = userMapper.usuarioToUsuarioResponse(usuario.get());
 
         // Devolvemos el DTO con el mensaje de éxito en GenericResponse
         wrapperResponse.setData(tempDTO);
         return wrapperResponse;
     }
-
 
     //Metodo para crear un usuario
     public GenericResponse<UsuarioResponse> crearUsuario(CrearUsuarioRequest request) {
@@ -299,8 +298,6 @@ public class UserService {
             wrapperResponse.setData(lista);
         }
         return wrapperResponse;
-
-
     }
 
     //listar los viajes de un usuario: *F*

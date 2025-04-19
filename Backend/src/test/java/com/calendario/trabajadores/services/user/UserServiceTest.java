@@ -22,141 +22,206 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 //(replace = AutoConfigureTestDatabase.Replace.ANY)
 //@AutoConfigureTestDatabase
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // si quisiera usar la bbdd real
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserServiceTest {
+
     @Autowired
     private UserService userService;
+
     private Long id;
-
-    private String email;
-
+    private final String email = "paco@gmail.com";
+    private final String password = "123";
 
     @Test
-    @DisplayName("CreateUser")
+    @DisplayName("1. Crear usuario exitosamente")
     @Order(1)
     void crearUsuario() {
         var userRequest = new CrearUsuarioRequest();
         userRequest.activo = true;
         userRequest.nombre = "Paco";
-        userRequest.apellido1 = "Longaniza";
+        userRequest.apellido1 = "Manzanares";
         userRequest.apellido2 = "Corta";
-        userRequest.email = "paco@gmail.com";
+        userRequest.email = email;
         userRequest.localidad = "Leon";
         userRequest.rol = "user";
-        userRequest.password = "123";
+        userRequest.password = password;
+
         var response = userService.crearUsuario(userRequest);
         id = response.getData().id;
         assertNotNull(id);
-        assertEquals("Paco",response.getData().nombre);
+        assertEquals("Paco", response.getData().nombre);
     }
+
     @Test
-    @DisplayName("FailCreateUser")
-    @Order(3)
-    void crearUsuarioFail() {
+    @DisplayName("2. Crear usuario existente (debe fallar)")
+    @Order(2)
+    void crearUsuarioExistente() {
         var userRequest = new CrearUsuarioRequest();
         userRequest.activo = true;
-        userRequest.nombre = "Paco";
-        userRequest.apellido1 = "Longaniza";
-        userRequest.apellido2 = "Corta";
-        userRequest.email = "paco2@gmail.com";
+        userRequest.nombre = "Repetido";
+        userRequest.apellido1 = "Apellido";
+        userRequest.apellido2 = "Apellido";
+        userRequest.email = email; // Mismo email
         userRequest.localidad = "Leon";
         userRequest.rol = "user";
-        var response = userService.crearUsuario(userRequest);
-        //Esperar un error, campo de contraseña faltante
-        assertNotNull(response.getError().getMessage());
-    }
+        userRequest.password = "otraClave";
 
-    /*@Test
-    @Order(2)
-    @Transactional
-    void getUsuario() {
-        var response = userService.getUsuario(id);
-        var nombre = response.getData().nombre;
-        assertEquals("Paco", nombre);
+        var response = userService.crearUsuario(userRequest);
+        assertNotNull(response.getError());
+        assertEquals("El usuario con el email proporcionado ya existe", response.getError().getMessage());
     }
 
     @Test
-    @DisplayName("Editar usuario")
+    @DisplayName("3. Crear usuario sin contraseña (debe fallar)")
+    @Order(3)
+    void crearUsuarioSinPassword() {
+        var userRequest = new CrearUsuarioRequest();
+        userRequest.activo = true;
+        userRequest.nombre = "SinClave";
+        userRequest.apellido1 = "Error";
+        userRequest.apellido2 = "Grave";
+        userRequest.email = "error@gmail.com";
+        userRequest.localidad = "Leon";
+        userRequest.rol = "user";
+
+        var response = userService.crearUsuario(userRequest);
+        assertNotNull(response.getError());
+    }
+
+    @Test
     @Order(4)
     @Transactional
-    void editUsuario() {
-        var userRequest = new EditarUsuarioRequest();
-        userRequest.activo = true;
-        userRequest.nombre = "Paco";
-        userRequest.apellido1 = "Actualizado";
-        userRequest.apellido2 = "Modificado";
-        userRequest.email = "paco@gmail.com"; // mismo email
-        userRequest.localidad = "Madrid";
-        userRequest.rol = "admin";
-        userRequest.password = "123";
+    @DisplayName("4. Obtener usuario por ID")
+    void getUsuarioPorId() {
+        var response = userService.getUsuario(id);
+        assertEquals("Paco", response.getData().nombre);
+    }
 
-        var response = userService.editUsuario(userRequest);
+    @Test
+    @Order(5)
+    @Transactional
+    @DisplayName("5. Obtener usuario por email")
+    void getUsuarioPorEmail() {
+        var response = userService.getUsuario(email);
+        assertNotNull(response.getData());
+        assertEquals("Paco", response.getData().nombre);
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("6. Editar usuario correctamente")
+    void editarUsuario() {
+        var editRequest = new EditarUsuarioRequest();
+        editRequest.id = id;
+        editRequest.nombre = "Paco";
+        editRequest.apellido1 = "Actualizado";
+        editRequest.apellido2 = "Cambiado";
+        editRequest.email = email;
+        editRequest.localidad = "Madrid";
+        editRequest.rol = "admin";
+        editRequest.password = password;
+        editRequest.activo = true;
+
+        var response = userService.editUsuario(editRequest);
         assertEquals("Actualizado", response.getData().apellido1);
         assertEquals("admin", response.getData().rol);
     }
 
     @Test
-    @DisplayName("Eliminar usuario lógicamente")
-    @Order(5)
-    @Transactional
-    void softDelete() {
-        userService.softDelete(id); // Asume que desactiva el usuario
-        var response = userService.getUsuario(id);
-        assertEquals(false, response.getData().activo);
-    }
-    @Test
-    @DisplayName("Reactivar usuario")
-    @Order(6)
-    @Transactional
-    void reactivar() {
-        userService.reactivar(id); // Reactiva usuario
-        var response = userService.getUsuario(id);
-        assertEquals(true, response.getData().activo);
-    }
-    @Test
-    @DisplayName("Listar todos los usuarios")
     @Order(7)
-    void listar() {
-        var lista = userService.listar(Optional.empty());
-        assertNotNull(lista);
-        assertTrue(lista.getData() != null && !lista.getData().isEmpty());
+    @Transactional
+    @DisplayName("7. Soft delete del usuario")
+    void desactivarUsuario() {
+        var response = userService.softDelete(id);
+        assertFalse(response.getData().activo);
     }
 
     @Test
-    @DisplayName("Listar usuarios con vehículos")
     @Order(8)
-    void listarUsuariosVehiculos() {
-        // pasamos el Optional vacio
-        var lista = userService.listarUsuariosVehiculos(Optional.empty());
-        assertNotNull(lista);
-        // o assertFalse(lista.getData().isEmpty())
-        assertTrue(lista.getData() != null);
+    @Transactional
+    @DisplayName("8. Reactivar usuario")
+    void reactivarUsuario() {
+        var response = userService.reactivar(id);
+        assertTrue(response.getData().activo);
     }
+
     @Test
-    @DisplayName("Listar usuarios con viajes")
     @Order(9)
-    void listarUsuariosViajes() {
-        var lista = userService.listarUsuariosViajes(null);
-        assertNotNull(lista);
-        assertTrue(lista.getData() != null);
+    @Transactional
+    @DisplayName("9. Listar todos los usuarios")
+    void listarUsuarios() {
+        var lista = userService.listar(Optional.empty());
+        assertNotNull(lista.getData());
+        assertFalse(lista.getData().isEmpty());
     }
 
-
     @Test
-    @DisplayName("Borrar usuario definitivamente")
     @Order(10)
-    void borrar() {
-        userService.borrar(id, email); // borra completamente de la base de datos
-        var response = userService.getUsuario(id);
-        assertNotNull(response.getError()); // debería fallar al buscar un usuario que ya no existe
-    }
-    @Test
-    void login() {
+    @Transactional
+    @DisplayName("10. Login exitoso")
+    void loginExitoso() {
+        var response = userService.login(email, password);
+        assertNotNull(response.getData());
+        assertEquals(email, response.getData().email);
     }
 
     @Test
-    void logout() {
-    }*/
+    @Order(11)
+    @DisplayName("11. Login con contraseña incorrecta")
+    void loginPasswordIncorrecta() {
+        var response = userService.login(email, "claveErrónea");
+        assertNotNull(response.getError());
+        assertEquals("Contraseña incorrecta", response.getError().getMessage());
+    }
 
+    @Test
+    @Order(12)
+    @DisplayName("12. Login con usuario no existente")
+    void loginUsuarioNoExiste() {
+        var response = userService.login("noexiste@gmail.com", "clave");
+        assertNotNull(response.getError());
+        assertEquals("Usuario no encontrado", response.getError().getMessage());
+    }
+
+    @Test
+    @Order(13)
+    @Transactional
+    @DisplayName("13. Logout exitoso")
+    void logoutExitoso() {
+        var response = userService.logout(email, password);
+        assertNotNull(response.getData());
+        assertEquals(email, response.getData().email);
+    }
+
+    @Test
+    @Order(14)
+    @Transactional
+    @DisplayName("14. Listar usuarios con vehículos")
+    void listarUsuariosConVehiculos() {
+        var response = userService.listarUsuariosVehiculos(Optional.empty());
+        assertNotNull(response.getData());
+    }
+
+    @Test
+    @Order(15)
+    @Transactional
+    @DisplayName("15. Listar usuarios con viajes")
+    void listarUsuariosConViajes() {
+        var response = userService.listarUsuariosViajes(null);
+        assertNotNull(response.getData());
+    }
+
+    @Test
+    @Order(16)
+    @Transactional
+    @DisplayName("16. Borrar usuario definitivamente")
+    void borrarUsuarioDefinitivamente() {
+        var response = userService.borrar(id, email);
+        assertNotNull(response.getData());
+
+        var check = userService.getUsuario(id);
+        assertNotNull(check.getError());
+    }
 }

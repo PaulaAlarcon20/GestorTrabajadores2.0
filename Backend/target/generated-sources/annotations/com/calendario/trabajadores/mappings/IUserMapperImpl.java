@@ -1,7 +1,6 @@
 package com.calendario.trabajadores.mappings;
 
 import com.calendario.trabajadores.model.database.Usuario;
-import com.calendario.trabajadores.model.database.Vehiculo;
 import com.calendario.trabajadores.model.database.Viaje;
 import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioRequest;
 import com.calendario.trabajadores.model.dto.usuario.EditarUsuarioRequest;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-18T13:43:37+0200",
+    date = "2025-04-19T17:14:58+0200",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.4 (Oracle Corporation)"
 )
 @Component
@@ -105,20 +104,27 @@ public class IUserMapperImpl implements IUserMapper {
     }
 
     @Override
-    public UsuarioVehiculosResponse usuarioToUsuarioVehiculosResponse(Usuario usuario) {
-        if ( usuario == null ) {
+    public UsuarioVehiculosResponse usuarioToUsuarioVehiculosResponse(Usuario usuario, List<VehiculoDTO> vehiculos) {
+        if ( usuario == null && vehiculos == null ) {
             return null;
         }
 
         UsuarioVehiculosResponse usuarioVehiculosResponse = new UsuarioVehiculosResponse();
 
-        usuarioVehiculosResponse.setId( usuario.getId() );
-        usuarioVehiculosResponse.setNombre( usuario.getNombre() );
-        usuarioVehiculosResponse.setApellido1( usuario.getApellido1() );
-        usuarioVehiculosResponse.setApellido2( usuario.getApellido2() );
-        usuarioVehiculosResponse.setEmail( usuario.getEmail() );
-        usuarioVehiculosResponse.setVehiculos( vehiculoListToVehiculoDTOList( usuario.getVehiculos() ) );
-        usuarioVehiculosResponse.setActivo( usuario.getActivo() );
+        if ( usuario != null ) {
+            usuarioVehiculosResponse.setId( usuario.getId() );
+            usuarioVehiculosResponse.setNombre( usuario.getNombre() );
+            usuarioVehiculosResponse.setApellido1( usuario.getApellido1() );
+            usuarioVehiculosResponse.setApellido2( usuario.getApellido2() );
+            usuarioVehiculosResponse.setEmail( usuario.getEmail() );
+            usuarioVehiculosResponse.setActivo( usuario.getActivo() );
+        }
+        List<VehiculoDTO> list = vehiculos;
+        if ( list != null ) {
+            usuarioVehiculosResponse.setVehiculos( new ArrayList<VehiculoDTO>( list ) );
+        }
+
+        setVehiculosNullSafe( usuarioVehiculosResponse );
 
         return usuarioVehiculosResponse;
     }
@@ -200,39 +206,6 @@ public class IUserMapperImpl implements IUserMapper {
         List<ViajeDTO> list1 = new ArrayList<ViajeDTO>( list.size() );
         for ( Viaje viaje : list ) {
             list1.add( viajeToViajeDTO( viaje ) );
-        }
-
-        return list1;
-    }
-
-    protected VehiculoDTO vehiculoToVehiculoDTO(Vehiculo vehiculo) {
-        if ( vehiculo == null ) {
-            return null;
-        }
-
-        VehiculoDTO vehiculoDTO = new VehiculoDTO();
-
-        vehiculoDTO.setFechaCreacion( vehiculo.getFechaCreacion() );
-        vehiculoDTO.setFechaModificacion( vehiculo.getFechaModificacion() );
-        vehiculoDTO.setCreadoPor( vehiculo.getCreadoPor() );
-        vehiculoDTO.setModificadoPor( vehiculo.getModificadoPor() );
-        vehiculoDTO.setId( vehiculo.getId() );
-        vehiculoDTO.setModeloCoche( vehiculo.getModeloCoche() );
-        vehiculoDTO.setMatricula( vehiculo.getMatricula() );
-        vehiculoDTO.setPlazas( vehiculo.getPlazas() );
-        vehiculoDTO.setActivo( vehiculo.getActivo() );
-
-        return vehiculoDTO;
-    }
-
-    protected List<VehiculoDTO> vehiculoListToVehiculoDTOList(List<Vehiculo> list) {
-        if ( list == null ) {
-            return null;
-        }
-
-        List<VehiculoDTO> list1 = new ArrayList<VehiculoDTO>( list.size() );
-        for ( Vehiculo vehiculo : list ) {
-            list1.add( vehiculoToVehiculoDTO( vehiculo ) );
         }
 
         return list1;

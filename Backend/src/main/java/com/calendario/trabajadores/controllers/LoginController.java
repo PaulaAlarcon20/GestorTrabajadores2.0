@@ -53,26 +53,25 @@ public class LoginController {
         return ResponseEntity.ok(usuarioResponse);
     }
 
-    //Logout de usuario
+    // Logout de usuario
     @Operation(summary = "Logout de usuario", description = "Endpoint para el logout de usuario")
     @PostMapping("/logout")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cerrada sesión",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioVehiculosResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Sesión cerrada con éxito",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponse.class))),
             @ApiResponse(responseCode = "401", description = "Credenciales inválidas",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    }
-    )
-    public ResponseEntity<GenericResponse<UsuarioVehiculosResponse>> logout(@RequestBody LoginRequest loginModel) {
+    })
+    public ResponseEntity<GenericResponse<UsuarioResponse>> logout(@RequestBody LoginRequest loginModel) {
         // Llamamos al servicio de logout
-        GenericResponse<UsuarioVehiculosResponse> logoutResponse = userService.logout(loginModel.username, loginModel.password);
+        GenericResponse<UsuarioResponse> logoutResponse = userService.logout(loginModel.username, loginModel.password);
 
         // Si el usuario no fue encontrado o las credenciales no son correctas, el GenericResponse tendrá un error
         if (logoutResponse.getError() != null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(logoutResponse);
         }
 
-        // Si el logout es exitoso, devolvemos la respuesta con el UsuarioVehiculosResponse
+        // Si el logout es exitoso, devolvemos la respuesta con el UsuarioResponse
         return ResponseEntity.ok(logoutResponse);
     }
 
