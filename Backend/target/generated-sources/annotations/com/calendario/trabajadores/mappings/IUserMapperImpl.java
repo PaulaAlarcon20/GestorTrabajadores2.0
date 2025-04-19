@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-19T13:09:46+0200",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.42.0.z20250331-1358, environment: Java 21.0.6 (Eclipse Adoptium)"
+    date = "2025-04-19T13:37:19+0200",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 17.0.12 (Microsoft)"
 )
 @Component
 public class IUserMapperImpl implements IUserMapper {
@@ -28,23 +28,23 @@ public class IUserMapperImpl implements IUserMapper {
 
         UsuarioResponse usuarioResponse = new UsuarioResponse();
 
-        usuarioResponse.setCreadoPor( userDB.getCreadoPor() );
         usuarioResponse.setFechaCreacion( userDB.getFechaCreacion() );
         usuarioResponse.setFechaModificacion( userDB.getFechaModificacion() );
+        usuarioResponse.setCreadoPor( userDB.getCreadoPor() );
         usuarioResponse.setModificadoPor( userDB.getModificadoPor() );
-        usuarioResponse.setActivo( userDB.getActivo() );
+        usuarioResponse.setId( userDB.getId() );
+        usuarioResponse.setNombre( userDB.getNombre() );
         usuarioResponse.setApellido1( userDB.getApellido1() );
         usuarioResponse.setApellido2( userDB.getApellido2() );
-        usuarioResponse.setCentroTrabajo( userDB.getCentroTrabajo() );
-        usuarioResponse.setDisponibilidadHorasExtras( userDB.getDisponibilidadHorasExtras() );
         usuarioResponse.setEmail( userDB.getEmail() );
-        usuarioResponse.setId( userDB.getId() );
-        usuarioResponse.setLocalidad( userDB.getLocalidad() );
-        usuarioResponse.setNombre( userDB.getNombre() );
-        usuarioResponse.setPreferenciasHorarias( userDB.getPreferenciasHorarias() );
-        usuarioResponse.setPuesto( userDB.getPuesto() );
-        usuarioResponse.setRol( userDB.getRol() );
         usuarioResponse.setTelefono( userDB.getTelefono() );
+        usuarioResponse.setCentroTrabajo( userDB.getCentroTrabajo() );
+        usuarioResponse.setPuesto( userDB.getPuesto() );
+        usuarioResponse.setLocalidad( userDB.getLocalidad() );
+        usuarioResponse.setPreferenciasHorarias( userDB.getPreferenciasHorarias() );
+        usuarioResponse.setDisponibilidadHorasExtras( userDB.getDisponibilidadHorasExtras() );
+        usuarioResponse.setRol( userDB.getRol() );
+        usuarioResponse.setActivo( userDB.getActivo() );
 
         return usuarioResponse;
     }
@@ -58,18 +58,18 @@ public class IUserMapperImpl implements IUserMapper {
         Usuario usuario = new Usuario();
 
         usuario.setContraseña( request.getPassword() );
-        usuario.setActivo( request.getActivo() );
+        usuario.setNombre( request.getNombre() );
         usuario.setApellido1( request.getApellido1() );
         usuario.setApellido2( request.getApellido2() );
-        usuario.setCentroTrabajo( request.getCentroTrabajo() );
-        usuario.setDisponibilidadHorasExtras( request.getDisponibilidadHorasExtras() );
         usuario.setEmail( request.getEmail() );
-        usuario.setLocalidad( request.getLocalidad() );
-        usuario.setNombre( request.getNombre() );
-        usuario.setPreferenciasHorarias( request.getPreferenciasHorarias() );
-        usuario.setPuesto( request.getPuesto() );
-        usuario.setRol( request.getRol() );
         usuario.setTelefono( request.getTelefono() );
+        usuario.setCentroTrabajo( request.getCentroTrabajo() );
+        usuario.setPuesto( request.getPuesto() );
+        usuario.setLocalidad( request.getLocalidad() );
+        usuario.setPreferenciasHorarias( request.getPreferenciasHorarias() );
+        usuario.setDisponibilidadHorasExtras( request.getDisponibilidadHorasExtras() );
+        usuario.setRol( request.getRol() );
+        usuario.setActivo( request.getActivo() );
 
         return usuario;
     }
@@ -83,19 +83,19 @@ public class IUserMapperImpl implements IUserMapper {
         Usuario usuario = new Usuario();
 
         usuario.setContraseña( request.getPassword() );
-        usuario.setActivo( request.getActivo() );
+        usuario.setId( request.getId() );
+        usuario.setNombre( request.getNombre() );
         usuario.setApellido1( request.getApellido1() );
         usuario.setApellido2( request.getApellido2() );
-        usuario.setCentroTrabajo( request.getCentroTrabajo() );
-        usuario.setDisponibilidadHorasExtras( request.getDisponibilidadHorasExtras() );
         usuario.setEmail( request.getEmail() );
-        usuario.setId( request.getId() );
-        usuario.setLocalidad( request.getLocalidad() );
-        usuario.setNombre( request.getNombre() );
-        usuario.setPreferenciasHorarias( request.getPreferenciasHorarias() );
-        usuario.setPuesto( request.getPuesto() );
-        usuario.setRol( request.getRol() );
         usuario.setTelefono( request.getTelefono() );
+        usuario.setCentroTrabajo( request.getCentroTrabajo() );
+        usuario.setPuesto( request.getPuesto() );
+        usuario.setLocalidad( request.getLocalidad() );
+        usuario.setPreferenciasHorarias( request.getPreferenciasHorarias() );
+        usuario.setDisponibilidadHorasExtras( request.getDisponibilidadHorasExtras() );
+        usuario.setRol( request.getRol() );
+        usuario.setActivo( request.getActivo() );
 
         return usuario;
     }
@@ -108,13 +108,13 @@ public class IUserMapperImpl implements IUserMapper {
 
         UsuarioVehiculosResponse usuarioVehiculosResponse = new UsuarioVehiculosResponse();
 
-        usuarioVehiculosResponse.setActivo( usuario.getActivo() );
+        usuarioVehiculosResponse.setId( usuario.getId() );
+        usuarioVehiculosResponse.setNombre( usuario.getNombre() );
         usuarioVehiculosResponse.setApellido1( usuario.getApellido1() );
         usuarioVehiculosResponse.setApellido2( usuario.getApellido2() );
         usuarioVehiculosResponse.setEmail( usuario.getEmail() );
-        usuarioVehiculosResponse.setId( usuario.getId() );
-        usuarioVehiculosResponse.setNombre( usuario.getNombre() );
         usuarioVehiculosResponse.setVehiculos( vehiculoListToVehiculoDTOList( usuario.getVehiculos() ) );
+        usuarioVehiculosResponse.setActivo( usuario.getActivo() );
 
         return usuarioVehiculosResponse;
     }
@@ -127,23 +127,23 @@ public class IUserMapperImpl implements IUserMapper {
 
         UsuarioResponse usuarioResponse = new UsuarioResponse();
 
-        usuarioResponse.setCreadoPor( usuario.getCreadoPor() );
         usuarioResponse.setFechaCreacion( usuario.getFechaCreacion() );
         usuarioResponse.setFechaModificacion( usuario.getFechaModificacion() );
+        usuarioResponse.setCreadoPor( usuario.getCreadoPor() );
         usuarioResponse.setModificadoPor( usuario.getModificadoPor() );
-        usuarioResponse.setActivo( usuario.getActivo() );
+        usuarioResponse.setId( usuario.getId() );
+        usuarioResponse.setNombre( usuario.getNombre() );
         usuarioResponse.setApellido1( usuario.getApellido1() );
         usuarioResponse.setApellido2( usuario.getApellido2() );
-        usuarioResponse.setCentroTrabajo( usuario.getCentroTrabajo() );
-        usuarioResponse.setDisponibilidadHorasExtras( usuario.getDisponibilidadHorasExtras() );
         usuarioResponse.setEmail( usuario.getEmail() );
-        usuarioResponse.setId( usuario.getId() );
-        usuarioResponse.setLocalidad( usuario.getLocalidad() );
-        usuarioResponse.setNombre( usuario.getNombre() );
-        usuarioResponse.setPreferenciasHorarias( usuario.getPreferenciasHorarias() );
-        usuarioResponse.setPuesto( usuario.getPuesto() );
-        usuarioResponse.setRol( usuario.getRol() );
         usuarioResponse.setTelefono( usuario.getTelefono() );
+        usuarioResponse.setCentroTrabajo( usuario.getCentroTrabajo() );
+        usuarioResponse.setPuesto( usuario.getPuesto() );
+        usuarioResponse.setLocalidad( usuario.getLocalidad() );
+        usuarioResponse.setPreferenciasHorarias( usuario.getPreferenciasHorarias() );
+        usuarioResponse.setDisponibilidadHorasExtras( usuario.getDisponibilidadHorasExtras() );
+        usuarioResponse.setRol( usuario.getRol() );
+        usuarioResponse.setActivo( usuario.getActivo() );
 
         return usuarioResponse;
     }
@@ -155,15 +155,15 @@ public class IUserMapperImpl implements IUserMapper {
 
         VehiculoDTO vehiculoDTO = new VehiculoDTO();
 
-        vehiculoDTO.setCreadoPor( vehiculo.getCreadoPor() );
         vehiculoDTO.setFechaCreacion( vehiculo.getFechaCreacion() );
         vehiculoDTO.setFechaModificacion( vehiculo.getFechaModificacion() );
+        vehiculoDTO.setCreadoPor( vehiculo.getCreadoPor() );
         vehiculoDTO.setModificadoPor( vehiculo.getModificadoPor() );
-        vehiculoDTO.setActivo( vehiculo.getActivo() );
         vehiculoDTO.setId( vehiculo.getId() );
-        vehiculoDTO.setMatricula( vehiculo.getMatricula() );
         vehiculoDTO.setModeloCoche( vehiculo.getModeloCoche() );
+        vehiculoDTO.setMatricula( vehiculo.getMatricula() );
         vehiculoDTO.setPlazas( vehiculo.getPlazas() );
+        vehiculoDTO.setActivo( vehiculo.getActivo() );
 
         return vehiculoDTO;
     }
