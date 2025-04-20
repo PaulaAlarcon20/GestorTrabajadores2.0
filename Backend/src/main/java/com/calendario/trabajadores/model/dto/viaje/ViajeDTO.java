@@ -26,4 +26,5 @@ public class ViajeDTO {
     private Long conductorId;
     // Solo el ID del vehiculo para no cargar toda la entidad
     private Long vehiculoId;
+    private Boolean activo;
 }

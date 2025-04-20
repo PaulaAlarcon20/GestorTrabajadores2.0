@@ -96,7 +96,7 @@ public class ViajeService {
         return Optional.of(response);
     }*/
 
-    // Cambiar el estado de un viaje con validaciones //TODO: REVISAR TOGGLE CAMBIO DE ESTADO
+    // Cambiar el estado de un viaje con validaciones
     //public Optional<ViajeResponse> cambiarEstadoViaje(Long idViaje, EstadoViaje nuevoEstado)
     public Optional<CrearEditarViajeResponse> cambiarEstadoViaje(Long idViaje, String action) {
         // Buscar el viaje por ID
@@ -215,7 +215,7 @@ public class ViajeService {
         return Optional.empty();  // No se puede editar el viaje
     }
 
-    // Mapeo dinámico: Actualizamos solo los campos no nulos usando reflexión TODO: usar una mapper para esto
+    // Mapeo dinámico: Actualizamos solo los campos no nulos usando reflexión
     actualizarCampo(viaje::setConductor, param.getIdConductor());
     actualizarCampo(viaje::setOrigen, param.getOrigen());
     actualizarCampo(viaje::setDestino, param.getDestino());
@@ -242,7 +242,7 @@ private <T> void actualizarCampo(Consumer<T> setter, T value) {
 */
 
 
-    //Listar todos los viajes (uso para admin) TODO: REVISAR / USAR COOKIES DE SESION
+    //Listar todos los viajes (uso para admin)
     //Lista todos los viajes y hace filtrado por rol (admin) y por estado del viaje
     public List<CrearEditarViajeResponse> listarViajes(Long usuarioId, String rol, EstadoViaje estado) {
         List<Viaje> viajes;

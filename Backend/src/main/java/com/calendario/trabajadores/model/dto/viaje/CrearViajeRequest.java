@@ -27,6 +27,5 @@ public class CrearViajeRequest {
     private LocalTime horaSalida;
     //Integer y no int para poder ser null
     private Integer plazas;
-    private Boolean activo;  //**** Inluyo activo? TODO:Supuestamente no si se crea activo por defecto
-    //algo mas es activo, o inicializado por defecto? como usuario o vehiculo??
+    private Boolean activo;
 }

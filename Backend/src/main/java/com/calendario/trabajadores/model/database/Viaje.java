@@ -31,6 +31,7 @@ public class Viaje extends CamposComunes {
     private String origen;
     private String destino;
     private int plazas;
+    private Boolean activo = true;
     @Enumerated(EnumType.STRING)
     private EstadoViaje estado;
 

@@ -95,7 +95,6 @@ public class VehiculoController {
         return ResponseEntity.ok(respuestaServicio);
     }
 
-    //TODO:Listar todos los vehiculos de un usuario (Las tres opciones)
     @Operation(summary = "listar todos los vehiculos de un usuario", description = "Endpoint para listar todos vehiculos" +
             " de un usuario")
     @GetMapping("/vehiculo/list")

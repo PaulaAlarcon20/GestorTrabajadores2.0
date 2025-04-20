@@ -30,14 +30,12 @@ public class CrearEditarViajeResponse {
     private LocalTime horaSalida;
     //Integer y no int para poder ser null
     private Integer plazas;
-    private Boolean activo;  //**** Incluir activo?
+    private Boolean activo;
     @CreationTimestamp
     @Column(updatable = false)
     private Date fechaCreacion;
 
     @UpdateTimestamp
     private Date fechaModificacion;
-
-
 
 }

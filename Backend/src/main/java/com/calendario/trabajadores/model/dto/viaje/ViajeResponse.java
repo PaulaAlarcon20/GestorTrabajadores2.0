@@ -39,6 +39,4 @@ public class ViajeResponse extends CamposComunes {
     private Integer plazas;
     private Boolean activo;
 
-
-
 }

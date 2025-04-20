@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-20T21:23:06+0200",
+    date = "2025-04-20T21:42:49+0200",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.4 (Oracle Corporation)"
 )
 @Component
@@ -38,6 +38,7 @@ public class IViajeMapperImpl implements IViajeMapper {
         crearEditarViajeResponse.setOrigen( viajeGuardado.getOrigen() );
         crearEditarViajeResponse.setDestino( viajeGuardado.getDestino() );
         crearEditarViajeResponse.setPlazas( viajeGuardado.getPlazas() );
+        crearEditarViajeResponse.setActivo( viajeGuardado.getActivo() );
         crearEditarViajeResponse.setFechaCreacion( viajeGuardado.getFechaCreacion() );
         crearEditarViajeResponse.setFechaModificacion( viajeGuardado.getFechaModificacion() );
 
@@ -61,6 +62,7 @@ public class IViajeMapperImpl implements IViajeMapper {
         if ( request.getPlazas() != null ) {
             viaje.setPlazas( request.getPlazas() );
         }
+        viaje.setActivo( request.getActivo() );
 
         return viaje;
     }
@@ -85,6 +87,7 @@ public class IViajeMapperImpl implements IViajeMapper {
         viajeResponse.setFechaSalida( viajedb.getFechaSalida() );
         viajeResponse.setHoraSalida( viajedb.getHoraSalida() );
         viajeResponse.setPlazas( viajedb.getPlazas() );
+        viajeResponse.setActivo( viajedb.getActivo() );
 
         return viajeResponse;
     }
@@ -136,6 +139,7 @@ public class IViajeMapperImpl implements IViajeMapper {
         viajeDTO.setDestino( viaje.getDestino() );
         viajeDTO.setPlazas( viaje.getPlazas() );
         viajeDTO.setEstado( viaje.getEstado() );
+        viajeDTO.setActivo( viaje.getActivo() );
 
         return viajeDTO;
     }

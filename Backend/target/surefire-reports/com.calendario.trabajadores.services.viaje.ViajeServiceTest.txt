@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: com.calendario.trabajadores.services.viaje.ViajeServiceTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.090 s <<< FAILURE! -- in com.calendario.trabajadores.services.viaje.ViajeServiceTest
-com.calendario.trabajadores.services.viaje.ViajeServiceTest.testEditarViaje -- Time elapsed: 0.013 s <<< ERROR!
+Tests run: 5, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.086 s <<< FAILURE! -- in com.calendario.trabajadores.services.viaje.ViajeServiceTest
+com.calendario.trabajadores.services.viaje.ViajeServiceTest.testEditarViaje -- Time elapsed: 0.012 s <<< ERROR!
 java.util.NoSuchElementException: No value present
 	at java.base/java.util.Optional.get(Optional.java:143)
 	at com.calendario.trabajadores.services.viaje.ViajeServiceTest.testEditarViaje(ViajeServiceTest.java:120)
@@ -25,7 +25,7 @@ org.hibernate.LazyInitializationException: failed to lazily initialize a collect
 	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
 	at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:682)
 	at com.calendario.trabajadores.mappings.IViajeMapper.mapPasajeros(IViajeMapper.java:46)
-	at com.calendario.trabajadores.mappings.IViajeMapperImpl.viajeToViajeResponse(IViajeMapperImpl.java:76)
+	at com.calendario.trabajadores.mappings.IViajeMapperImpl.viajeToViajeResponse(IViajeMapperImpl.java:78)
 	at com.calendario.trabajadores.services.viaje.ViajeService.listarDatosViaje(ViajeService.java:273)
 	at com.calendario.trabajadores.services.viaje.ViajeServiceTest.testListarDatosViaje(ViajeServiceTest.java:178)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)

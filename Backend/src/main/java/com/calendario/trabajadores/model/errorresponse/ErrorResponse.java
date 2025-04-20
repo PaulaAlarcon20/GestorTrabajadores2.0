@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(description = "Error response model") //TODO: crear javadoc de todo (mejor al final) y revisar
+@Schema(description = "Error response model")
 public class ErrorResponse {
     //Atributos
     //Estado de la respuesta ("ok" o "error")

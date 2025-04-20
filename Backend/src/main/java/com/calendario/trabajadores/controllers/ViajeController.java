@@ -87,7 +87,7 @@ public class ViajeController {
     }*/
 
 
-    // Cambiar estado de un viaje  TODO:toggle
+    // Cambiar estado de un viaje
     @Operation(summary = "Cambiar estado de un viaje", description = "Endpoint para cambiar el estado de un viaje")
     @PatchMapping("/viaje/estado")   //PATCH para actualizar solo el estado NO POST NI GET
     @ApiResponses(value = {
@@ -111,7 +111,7 @@ public class ViajeController {
                     .body(new ErrorResponse("Viaje no encontrado o acción no permitida"));
         }
 
-        // Si todo va bien, retornamos el viaje actualizado
+        // Si va bien, retornamos el viaje actualizado
         return ResponseEntity.ok(viajeResponse.get());
     }
 
@@ -176,7 +176,7 @@ public class ViajeController {
 
 
 
-    /*//Listar todos los viajes (uso para admin) (No revisado) TODO: usando cookies de sesion, un unico endpoint que
+    /*//Listar todos los viajes (uso para admin)
     // diferencia si es admin o no, + estado viaje (enum) para filtrar
     @Operation(summary = "Listar todos los viajes", description = "Endpoint para listar todos los viajes con filtro por estado y rol de usuario")
     @GetMapping("/viaje/listar")
@@ -205,6 +205,4 @@ public class ViajeController {
         return ResponseEntity.ok(viajesResponse);
     }
     */
-
-
 }

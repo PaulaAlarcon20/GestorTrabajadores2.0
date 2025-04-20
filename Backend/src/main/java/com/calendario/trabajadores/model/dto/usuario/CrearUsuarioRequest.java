@@ -29,7 +29,7 @@ public class CrearUsuarioRequest {
     private String preferenciasHorarias;
     private Boolean disponibilidadHorasExtras;
     private String rol;
-    private Boolean activo;  //**** TODO:Revisar
+    private Boolean activo;
 
 }
 

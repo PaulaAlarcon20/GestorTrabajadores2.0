@@ -27,5 +27,5 @@ public class EditarViajeRequest {
     private LocalTime horaSalida;
     //Integer y no int para poder ser null
     private Integer plazas;
-    //public Boolean activo;  //**** Inluyo activo? TODO:Pregunta
+    private Boolean activo;
 }
