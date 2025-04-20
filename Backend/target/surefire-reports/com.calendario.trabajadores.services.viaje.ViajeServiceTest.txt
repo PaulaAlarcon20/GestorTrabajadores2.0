@@ -1,0 +1,34 @@
+-------------------------------------------------------------------------------
+Test set: com.calendario.trabajadores.services.viaje.ViajeServiceTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.090 s <<< FAILURE! -- in com.calendario.trabajadores.services.viaje.ViajeServiceTest
+com.calendario.trabajadores.services.viaje.ViajeServiceTest.testEditarViaje -- Time elapsed: 0.013 s <<< ERROR!
+java.util.NoSuchElementException: No value present
+	at java.base/java.util.Optional.get(Optional.java:143)
+	at com.calendario.trabajadores.services.viaje.ViajeServiceTest.testEditarViaje(ViajeServiceTest.java:120)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.calendario.trabajadores.services.viaje.ViajeServiceTest.testListarDatosViaje -- Time elapsed: 0.017 s <<< ERROR!
+org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: com.calendario.trabajadores.model.database.Viaje.usuarioViajes: could not initialize proxy - no Session
+	at org.hibernate.collection.spi.AbstractPersistentCollection.throwLazyInitializationException(AbstractPersistentCollection.java:635)
+	at org.hibernate.collection.spi.AbstractPersistentCollection.withTemporarySessionIfNeeded(AbstractPersistentCollection.java:219)
+	at org.hibernate.collection.spi.AbstractPersistentCollection.initialize(AbstractPersistentCollection.java:614)
+	at org.hibernate.collection.spi.AbstractPersistentCollection.read(AbstractPersistentCollection.java:138)
+	at org.hibernate.collection.spi.PersistentBag.iterator(PersistentBag.java:369)
+	at java.base/java.util.Spliterators$IteratorSpliterator.estimateSize(Spliterators.java:1959)
+	at java.base/java.util.Spliterator.getExactSizeIfKnown(Spliterator.java:414)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:508)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:921)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:682)
+	at com.calendario.trabajadores.mappings.IViajeMapper.mapPasajeros(IViajeMapper.java:46)
+	at com.calendario.trabajadores.mappings.IViajeMapperImpl.viajeToViajeResponse(IViajeMapperImpl.java:76)
+	at com.calendario.trabajadores.services.viaje.ViajeService.listarDatosViaje(ViajeService.java:273)
+	at com.calendario.trabajadores.services.viaje.ViajeServiceTest.testListarDatosViaje(ViajeServiceTest.java:178)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

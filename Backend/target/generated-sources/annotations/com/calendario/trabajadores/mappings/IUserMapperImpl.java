@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-19T19:51:43+0200",
+    date = "2025-04-20T21:23:06+0200",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.4 (Oracle Corporation)"
 )
 @Component
@@ -70,9 +70,9 @@ public class IUserMapperImpl implements IUserMapper {
         usuario.setPuesto( request.getPuesto() );
         usuario.setLocalidad( request.getLocalidad() );
         usuario.setPreferenciasHorarias( request.getPreferenciasHorarias() );
-        usuario.setDisponibilidadHorasExtras( request.getDisponibilidadHorasExtras() );
         usuario.setRol( request.getRol() );
         usuario.setActivo( request.getActivo() );
+        usuario.setDisponibilidadHorasExtras( request.getDisponibilidadHorasExtras() );
 
         return usuario;
     }
@@ -96,9 +96,9 @@ public class IUserMapperImpl implements IUserMapper {
         usuario.setPuesto( request.getPuesto() );
         usuario.setLocalidad( request.getLocalidad() );
         usuario.setPreferenciasHorarias( request.getPreferenciasHorarias() );
-        usuario.setDisponibilidadHorasExtras( request.getDisponibilidadHorasExtras() );
         usuario.setRol( request.getRol() );
         usuario.setActivo( request.getActivo() );
+        usuario.setDisponibilidadHorasExtras( request.getDisponibilidadHorasExtras() );
 
         return usuario;
     }

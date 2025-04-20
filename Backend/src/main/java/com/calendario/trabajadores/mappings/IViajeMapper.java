@@ -20,14 +20,14 @@ public interface IViajeMapper {
 
     @Mapping(target = "idVehiculo", source = "vehiculo.id")
     @Mapping(target = "idConductor", source = "conductor.id")
-    @Mapping(source = "fechaSalida", target = "fechaSalida") // Usar 'fechaSalida' en lugar de 'fecha'
-    @Mapping(source = "horaSalida", target = "horaSalida") // Usar 'horaSalida' en lugar de 'hora'
+    @Mapping(source = "fechaSalida", target = "fechaSalida")
+    @Mapping(source = "horaSalida", target = "horaSalida")
     CrearEditarViajeResponse viajeToCrearEditarViajeResponse(Viaje viajeGuardado);
 
     @Mapping(source = "idVehiculo", target = "vehiculo.id")
     @Mapping(source = "idConductor", target = "conductor.id")
-    @Mapping(source = "fechaSalida", target = "fechaSalida") // Usar 'fechaSalida' correctamente
-    @Mapping(source = "horaSalida", target = "horaSalida") // Usar 'horaSalida' correctamente
+    @Mapping(source = "fechaSalida", target = "fechaSalida")
+    @Mapping(source = "horaSalida", target = "horaSalida")
     @Mapping(target = "usuarioViajes", ignore = true)
     @Mapping(target = "fechaCreacion", ignore = true)
     @Mapping(target = "fechaModificacion", ignore = true)

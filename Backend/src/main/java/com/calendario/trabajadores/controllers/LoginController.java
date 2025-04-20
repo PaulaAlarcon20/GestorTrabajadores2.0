@@ -42,7 +42,7 @@ public class LoginController {
     //RequestParam especifica que son parámetros de la request
     public ResponseEntity<GenericResponse<UsuarioResponse>> login(@RequestBody LoginRequest loginModel) {
         // Llamamos al servicio de login
-        GenericResponse<UsuarioResponse> usuarioResponse = userService.login(loginModel.username, loginModel.password);
+        GenericResponse<UsuarioResponse> usuarioResponse = userService.login(loginModel.getUsername(), loginModel.getPassword());
 
         // Si el usuario no fue encontrado o las credenciales no son correctas, el GenericResponse tendrá un error
         if (usuarioResponse.getError() != null) {
@@ -64,7 +64,7 @@ public class LoginController {
     })
     public ResponseEntity<GenericResponse<UsuarioResponse>> logout(@RequestBody LoginRequest loginModel) {
         // Llamamos al servicio de logout
-        GenericResponse<UsuarioResponse> logoutResponse = userService.logout(loginModel.username, loginModel.password);
+        GenericResponse<UsuarioResponse> logoutResponse = userService.logout(loginModel.getUsername(), loginModel.getPassword());
 
         // Si el usuario no fue encontrado o las credenciales no son correctas, el GenericResponse tendrá un error
         if (logoutResponse.getError() != null) {

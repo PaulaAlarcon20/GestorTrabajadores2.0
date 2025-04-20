@@ -17,6 +17,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CrearEditarViajeResponse {
+    private Long id;
     private Long idVehiculo;
 
     private Long idConductor;

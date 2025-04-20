@@ -39,34 +39,36 @@ class UserServiceTest {
     @Order(1)
     void crearUsuario() {
         var userRequest = new CrearUsuarioRequest();
-        userRequest.activo = true;
-        userRequest.nombre = "Paco";
-        userRequest.apellido1 = "Manzanares";
-        userRequest.apellido2 = "Corta";
-        userRequest.email = email;
-        userRequest.localidad = "Leon";
-        userRequest.rol = "user";
-        userRequest.password = password;
+        userRequest.setActivo(true);
+        userRequest.setNombre("Paco");
+        userRequest.setApellido1("Manzanares");
+        // apellido2 es ahora opcional
+        userRequest.setApellido2(null); // O simplemente no incluirlo
+        userRequest.setEmail(email);
+        userRequest.setLocalidad("Leon");
+        userRequest.setRol("user");
+        userRequest.setPassword(password);
 
         var response = userService.crearUsuario(userRequest);
-        id = response.getData().id;
+        id = response.getData().getId();
         assertNotNull(id);
-        assertEquals("Paco", response.getData().nombre);
+        assertEquals("Paco", response.getData().getNombre());
     }
+
 
     @Test
     @DisplayName("2. Crear usuario existente (debería fallar)")
     @Order(2)
     void crearUsuarioExistente() {
         var userRequest = new CrearUsuarioRequest();
-        userRequest.activo = true;
-        userRequest.nombre = "Repetido";
-        userRequest.apellido1 = "Apellido";
-        userRequest.apellido2 = "Apellido";
-        userRequest.email = email; // Mismo email
-        userRequest.localidad = "Leon";
-        userRequest.rol = "user";
-        userRequest.password = "otraClave";
+        userRequest.setActivo(true);
+        userRequest.setNombre("Repetido");
+        userRequest.setApellido1("Apellido");
+        userRequest.setApellido2("Apellido");
+        userRequest.setEmail(email); // Mismo email
+        userRequest.setLocalidad("Leon");
+        userRequest.setRol("user");
+        userRequest.setPassword("otraClave");
 
         var response = userService.crearUsuario(userRequest);
         assertNotNull(response.getError());
@@ -78,17 +80,26 @@ class UserServiceTest {
     @Order(3)
     void crearUsuarioSinPassword() {
         var userRequest = new CrearUsuarioRequest();
-        userRequest.activo = true;
-        userRequest.nombre = "SinClave";
-        userRequest.apellido1 = "Error";
-        userRequest.apellido2 = "Grave";
-        userRequest.email = "error@gmail.com";
-        userRequest.localidad = "Leon";
-        userRequest.rol = "user";
+        userRequest.setActivo(true);
+        userRequest.setNombre("SinClave");
+        userRequest.setApellido1("Error");
+        userRequest.setApellido2("Grave");
+        userRequest.setEmail("error@gmail.com");
+        userRequest.setLocalidad("Leon");
+        userRequest.setRol("user");
+
+        // No asignamos la contraseña
+        userRequest.setPassword("");
 
         var response = userService.crearUsuario(userRequest);
+
+        // Verificamos que haya un error
         assertNotNull(response.getError());
+
+        // Verificamos que el mensaje de error sea el esperado
+        assertEquals("El campo 'contraseña' es obligatorio", response.getError().getMessage());
     }
+
 
     @Test
     @Order(4)
@@ -96,7 +107,7 @@ class UserServiceTest {
     @DisplayName("4. Obtener usuario por ID")
     void getUsuarioPorId() {
         var response = userService.getUsuario(id);
-        assertEquals("Paco", response.getData().nombre);
+        assertEquals("Paco", response.getData().getNombre());
     }
 
     @Test
@@ -106,7 +117,7 @@ class UserServiceTest {
     void getUsuarioPorEmail() {
         var response = userService.getUsuario(email);
         assertNotNull(response.getData());
-        assertEquals("Paco", response.getData().nombre);
+        assertEquals("Paco", response.getData().getNombre());
     }
 
     @Test
@@ -114,19 +125,19 @@ class UserServiceTest {
     @DisplayName("6. Editar usuario correctamente")
     void editarUsuario() {
         var editRequest = new EditarUsuarioRequest();
-        editRequest.id = id;
-        editRequest.nombre = "Paco";
-        editRequest.apellido1 = "Actualizado";
-        editRequest.apellido2 = "Cambiado";
-        editRequest.email = email;
-        editRequest.localidad = "Madrid";
-        editRequest.rol = "admin";
-        editRequest.password = password;
-        editRequest.activo = true;
+        editRequest.setId(id);
+        editRequest.setNombre("Paco");
+        editRequest.setApellido1("Actualizado");
+        editRequest.setApellido2("Cambiado");
+        editRequest.setEmail(email);
+        editRequest.setLocalidad("Madrid");
+        editRequest.setRol("admin");
+        editRequest.setPassword(password);
+        editRequest.setActivo(true);
 
         var response = userService.editUsuario(editRequest);
-        assertEquals("Actualizado", response.getData().apellido1);
-        assertEquals("admin", response.getData().rol);
+        assertEquals("Actualizado", response.getData().getApellido1());
+        assertEquals("admin", response.getData().getRol());
     }
 
     @Test
@@ -135,7 +146,7 @@ class UserServiceTest {
     @DisplayName("7. Soft delete del usuario")
     void desactivarUsuario() {
         var response = userService.softDelete(id);
-        assertFalse(response.getData().activo);
+        assertFalse(response.getData().getActivo());
     }
 
     @Test
@@ -144,7 +155,7 @@ class UserServiceTest {
     @DisplayName("8. Reactivar usuario")
     void reactivarUsuario() {
         var response = userService.reactivar(id);
-        assertTrue(response.getData().activo);
+        assertTrue(response.getData().getActivo());
     }
 
     @Test
@@ -164,7 +175,7 @@ class UserServiceTest {
     void loginExitoso() {
         var response = userService.login(email, password);
         assertNotNull(response.getData());
-        assertEquals(email, response.getData().email);
+        assertEquals(email, response.getData().getEmail());
     }
 
     @Test
@@ -192,7 +203,7 @@ class UserServiceTest {
     void logoutExitoso() {
         var response = userService.logout(email, password);
         assertNotNull(response.getData());
-        assertEquals(email, response.getData().email);
+        assertEquals(email, response.getData().getEmail());
     }
 
     @Test

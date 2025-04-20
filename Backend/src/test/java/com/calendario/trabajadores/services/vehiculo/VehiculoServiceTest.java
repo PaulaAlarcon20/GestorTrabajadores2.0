@@ -14,8 +14,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.Optional;
 
 @SpringBootTest
@@ -30,21 +28,26 @@ class VehiculoServiceTest {
     private UserService userService;
     private Long id;
 
-
     //Configuramos un usuario antes de los test
     //porque necesitamos un usuario asociado a los vehiculos
     @BeforeAll
     void setupUsuario() {
         var request = new CrearUsuarioRequest();
-        request.nombre = "Paco";
-        request.apellido1 = "Longaniza";
-        request.email = "paco@gmail.com";
-        request.password = "123";
-        request.rol = "user";
-        request.activo = true;
+        request.setNombre("Paco");
+        request.setApellido1("Longaniza");
+        request.setEmail("paco@gmail.com");
+        request.setPassword("123");
+        request.setRol("user");
+        request.setActivo(true);
+
+        // Llamada al servicio para crear el usuario
         var response = userService.crearUsuario(request);
-        // Se guarda el ID del usuario creado.
-        id = response.getData().getId();
+        var result = response.getData();
+        // Verificamos si hay un error en la respuesta
+        assertNotNull(result.getId(), "Los datos de la respuesta no pueden ser nulos");
+
+        // Se guarda el ID del usuario creado
+        id = result.getId();
     }
 
     // 1. Test para crear un vehiculo
@@ -54,13 +57,14 @@ class VehiculoServiceTest {
     @Transactional
     void crearVehiculo() {
         var vehiculo = new CrearVehiculoRequest();
-        vehiculo.plazas = 3;
-        vehiculo.modeloCoche = "Mazda";
-        vehiculo.activo = true;
-        vehiculo.idUsuario = id;
-        vehiculo.matricula = "XYZ123_A"; // Matrícula única
+        vehiculo.setPlazas(3);
+        vehiculo.setModeloCoche("Mazda");
+        vehiculo.setActivo(true);
+        vehiculo.setIdUsuario(id);
+        // Matrícula única
+        vehiculo.setMatricula("XYZ123_A");
         var response = vehiculoService.crearVehiculo(vehiculo);
-        assertEquals("Mazda", response.getData().modeloCoche);
+        assertEquals("Mazda", response.getData().getModeloCoche());
     }
 
     // 2. Crear sin matrícula
@@ -70,11 +74,15 @@ class VehiculoServiceTest {
     @Transactional
     void crearVehiculoSinMatricula() {
         var vehiculo = new CrearVehiculoRequest();
-        vehiculo.plazas = 3;
-        vehiculo.modeloCoche = "Mazda";
-        vehiculo.activo = true;
-        vehiculo.idUsuario = id;
+        vehiculo.setPlazas(3);
+        vehiculo.setModeloCoche("Mazda");
+        vehiculo.setActivo(true);
+        vehiculo.setIdUsuario(id);
+
+        // No asignamos matrícula
         var response = vehiculoService.crearVehiculo(vehiculo);
+
+        // Verificamos que se lanza un error debido a la falta de matrícula
         assertNotNull(response.getError());
         assertEquals("La matrícula es un campo obligatorio", response.getError().getMessage());
     }
@@ -87,21 +95,23 @@ class VehiculoServiceTest {
     void crearVehiculoConMatriculaDuplicada() {
         var matricula = "DUPLI123";
         var vehiculo1 = new CrearVehiculoRequest();
-        vehiculo1.plazas = 4;
-        vehiculo1.modeloCoche = "Toyota";
-        vehiculo1.activo = true;
-        vehiculo1.idUsuario = id;
-        vehiculo1.matricula = matricula;
+        vehiculo1.setPlazas(4);
+        vehiculo1.setModeloCoche("Toyota");
+        vehiculo1.setActivo(true);
+        vehiculo1.setIdUsuario(id);
+        vehiculo1.setMatricula(matricula);
         var response1 = vehiculoService.crearVehiculo(vehiculo1);
         assertNotNull(response1.getData());
 
         var vehiculo2 = new CrearVehiculoRequest();
-        vehiculo2.plazas = 5;
-        vehiculo2.modeloCoche = "Honda";
-        vehiculo2.activo = true;
-        vehiculo2.idUsuario = id;
-        vehiculo2.matricula = matricula;
+        vehiculo2.setPlazas(5);
+        vehiculo2.setModeloCoche("Honda");
+        vehiculo2.setActivo(true);
+        vehiculo2.setIdUsuario(id);
+        vehiculo2.setMatricula(matricula);
         var response2 = vehiculoService.crearVehiculo(vehiculo2);
+
+        // Verificamos que se lanza un error cuando intentamos duplicar la matrícula
         assertNotNull(response2.getError());
         assertEquals("El vehículo ya existe", response2.getError().getMessage());
     }
@@ -113,11 +123,11 @@ class VehiculoServiceTest {
     @Transactional
     void toggleVehiculo() {
         var vehiculo = new CrearVehiculoRequest();
-        vehiculo.plazas = 3;
-        vehiculo.modeloCoche = "Mazda";
-        vehiculo.activo = true;
-        vehiculo.idUsuario = id;
-        vehiculo.matricula = "XYZ123_T";
+        vehiculo.setPlazas(3);
+        vehiculo.setModeloCoche("Mazda");
+        vehiculo.setActivo(true);
+        vehiculo.setIdUsuario(id);
+        vehiculo.setMatricula("XYZ123_T");
         var responseCreacion = vehiculoService.crearVehiculo(vehiculo);
         var responseToggle = vehiculoService.toggleVehiculo(responseCreacion.getData().getId());
         assertNotNull(responseToggle.getData());
@@ -131,11 +141,11 @@ class VehiculoServiceTest {
     @Transactional
     void listarVehiculos() {
         var vehiculo = new CrearVehiculoRequest();
-        vehiculo.plazas = 3;
-        vehiculo.modeloCoche = "Mazda";
-        vehiculo.activo = true;
-        vehiculo.idUsuario = id;
-        vehiculo.matricula = "XYZ123_L";
+        vehiculo.setPlazas(3);
+        vehiculo.setModeloCoche("Mazda");
+        vehiculo.setActivo(true);
+        vehiculo.setIdUsuario(id);
+        vehiculo.setMatricula("XYZ123_L");
         vehiculoService.crearVehiculo(vehiculo);
         var response = vehiculoService.listarVehiculos(id, Optional.of(true));
         assertNotNull(response.getData());
@@ -150,11 +160,11 @@ class VehiculoServiceTest {
     @Transactional
     void obtenerVehiculoPorId() {
         var vehiculo = new CrearVehiculoRequest();
-        vehiculo.plazas = 3;
-        vehiculo.modeloCoche = "Mazda";
-        vehiculo.activo = true;
-        vehiculo.idUsuario = id;
-        vehiculo.matricula = "XYZ123_ID";
+        vehiculo.setPlazas(3);
+        vehiculo.setModeloCoche("Mazda");
+        vehiculo.setActivo(true);
+        vehiculo.setIdUsuario(id);
+        vehiculo.setMatricula("XYZ123_ID");
         var responseCreacion = vehiculoService.crearVehiculo(vehiculo);
         var response = vehiculoService.obtenerVehiculoPorId(responseCreacion.getData().getId());
         assertNotNull(response.getData());
@@ -168,11 +178,11 @@ class VehiculoServiceTest {
     @Transactional
     void obtenerVehiculoPorMatricula() {
         var vehiculo = new CrearVehiculoRequest();
-        vehiculo.plazas = 3;
-        vehiculo.modeloCoche = "Mazda";
-        vehiculo.activo = true;
-        vehiculo.idUsuario = id;
-        vehiculo.matricula = "XYZ123_M";
+        vehiculo.setPlazas(3);
+        vehiculo.setModeloCoche("Mazda");
+        vehiculo.setActivo(true);
+        vehiculo.setIdUsuario(id);
+        vehiculo.setMatricula("XYZ123_M");
         vehiculoService.crearVehiculo(vehiculo);
         var response = vehiculoService.obtenerVehiculoPorMatricula("XYZ123_M");
         assertNotNull(response.getData());
@@ -186,11 +196,11 @@ class VehiculoServiceTest {
     @Transactional
     void eliminarVehiculo() {
         var vehiculo = new CrearVehiculoRequest();
-        vehiculo.plazas = 3;
-        vehiculo.modeloCoche = "Mazda";
-        vehiculo.activo = true;
-        vehiculo.idUsuario = id;
-        vehiculo.matricula = "XYZ123_DEL";
+        vehiculo.setPlazas(3);
+        vehiculo.setModeloCoche("Mazda");
+        vehiculo.setActivo(true);
+        vehiculo.setIdUsuario(id);
+        vehiculo.setMatricula("XYZ123_DEL");
         var responseCreacion = vehiculoService.crearVehiculo(vehiculo);
         var response = vehiculoService.eliminarVehiculo(responseCreacion.getData().getId());
         assertEquals("Vehículo eliminado correctamente.", response.getData());
@@ -203,16 +213,16 @@ class VehiculoServiceTest {
     @Transactional
     void modificarVehiculo() {
         var vehiculo = new CrearVehiculoRequest();
-        vehiculo.plazas = 3;
-        vehiculo.modeloCoche = "Mazda";
-        vehiculo.activo = true;
-        vehiculo.idUsuario = id;
-        vehiculo.matricula = "XYZ123_MOD";
+        vehiculo.setPlazas(3);
+        vehiculo.setModeloCoche("Mazda");
+        vehiculo.setActivo(true);
+        vehiculo.setIdUsuario(id);
+        vehiculo.setMatricula("XYZ123_MOD");
         var responseCreacion = vehiculoService.crearVehiculo(vehiculo);
         var vehiculoEditado = new EditarVehiculoRequest();
-        vehiculoEditado.id = responseCreacion.getData().getId();
-        vehiculoEditado.modeloCoche = "Honda";
-        vehiculoEditado.plazas = 5;
+        vehiculoEditado.setId(responseCreacion.getData().getId());
+        vehiculoEditado.setModeloCoche("Honda");
+        vehiculoEditado.setPlazas(5);
         var responseModificacion = vehiculoService.modificarVehiculo(vehiculoEditado);
         assertNotNull(responseModificacion.getData());
         assertEquals("Honda", responseModificacion.getData().getModeloCoche());

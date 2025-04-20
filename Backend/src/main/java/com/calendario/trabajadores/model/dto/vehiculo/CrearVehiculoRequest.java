@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 //CrearVehiculoRequest no necesita el id del vehiculo porque se autogenera
-//Anotaciones de Lombok
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,5 +17,5 @@ public class CrearVehiculoRequest {
     private String matricula;
     private Integer plazas;
     private Long idUsuario;
-    private Boolean activo;
+    private Boolean activo = true;
 }

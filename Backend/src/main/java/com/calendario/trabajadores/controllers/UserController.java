@@ -42,7 +42,7 @@ public class UserController {
     )
     public ResponseEntity<?> create(@RequestBody CrearUsuarioRequest request) {
         // Forzamos que el usuario registrado sea un usuario normal (capa extra de seguridad)
-        request.rol = "user";
+        request.setRol("user");
 
         // Llamamos al servicio para crear el usuario
         var usuario = userService.crearUsuario(request);
@@ -70,7 +70,7 @@ public class UserController {
     //ResponseEntity<GenericResponse<UsuarioResponse>>
     public ResponseEntity<?> createAdmin(@RequestBody CrearUsuarioRequest request) {
         //Forzamos que el usuario registrado sea un usuario normal (capa extra de seguridad)
-        request.rol = "admin";
+        request.setRol("admin");
         // Llamamos al servicio para crear el usuario
         GenericResponse<UsuarioResponse> usuario = userService.crearUsuario(request);
         if (!usuario.isSuccess()) {

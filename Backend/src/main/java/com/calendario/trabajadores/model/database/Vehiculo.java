@@ -19,7 +19,6 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "vehiculos", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"matricula"}),
-
 })
 public class Vehiculo extends CamposComunes {
     //Es un campo identificador de la tabla y además es identity, es decir, se autoincrementa
@@ -36,6 +35,17 @@ public class Vehiculo extends CamposComunes {
     @JsonBackReference
     //public Usuario usuario = new Usuario();
     private Usuario usuario;
-    //vehiculo activo o no
-    private Boolean activo;
+
+    //para que el valor activo no sea nulo en la bbdd @Column(nullable = false)
+    @Column(nullable = false)
+    // Valor predeterminado a true
+    private Boolean activo = true;
+
+    @PrePersist
+    public void prePersist() {
+        if (activo == null) {
+            // Garantizar que vehiculo se inicializa en true si no se asgina explicitamente esa condición
+            activo = true;
+        }
+    }
 }

@@ -79,35 +79,51 @@ public class UserService {
     //Metodo para crear un usuario
     public GenericResponse<UsuarioResponse> crearUsuario(CrearUsuarioRequest request) {
 
-        //Buscar por email si el usuario ya existe
-        var usuarioExists = userRepository.findUsuarioByEmail(request.getEmail());
         var wrapperResponse = new GenericResponse<UsuarioResponse>();
+
+        // Buscar por email si el usuario ya existe
+        var usuarioExists = userRepository.findUsuarioByEmail(request.getEmail());
         if (usuarioExists.isPresent()) {
             wrapperResponse.setError(new ErrorResponse("El usuario con el email proporcionado ya existe"));
-            return wrapperResponse;
+            return wrapperResponse;  // Retorna con un error si el email ya existe
         }
-        // Validamos que el nombre no sea nulo
+
+        // Validación para asegurar que apellido1 no sea nulo o vacío
+        if (request.getApellido1() == null || request.getApellido1().isEmpty()) {
+            wrapperResponse.setError(new ErrorResponse("El campo 'apellido1' es obligatorio"));
+            return wrapperResponse;  // Retorna con un error si apellido1 es nulo o vacío
+        }
+
+        // Validamos que el nombre no sea nulo o vacío
         if (request.getNombre() == null || request.getNombre().isEmpty()) {
             wrapperResponse.setError(new ErrorResponse("El campo 'nombre' es obligatorio"));
             return wrapperResponse;  // Retorna con un error si el nombre es nulo o vacío
         }
-        //Si no existe, creamos un nuevo usuario
-        var usuario = userMapper.createRequestToUser(request);
-        //Activamos el usuario por defecto
-        usuario.setActivo(true);
-       try { //Guardamos el usuario en la base de datos
-           var usuarioSaved = userRepository.save(usuario);
-           // Mapeamos el usuario guardado a un DTO
-           var response = userMapper.userToCreateEditResponse(usuarioSaved);
 
-           // Envolvemos la respuesta en GenericResponse y la devolvemos
-           wrapperResponse.setData(response);
-           return wrapperResponse;
-       } catch (DataIntegrityViolationException Ex){
-           wrapperResponse.setError(new ErrorResponse(Ex.getMessage()));
-           return wrapperResponse;
-       }
+        // Validación para asegurarse de que la contraseña no sea nula o vacía
+        if (request.getPassword() == null || request.getPassword().isEmpty()) {
+            wrapperResponse.setError(new ErrorResponse("El campo 'contraseña' es obligatorio"));
+            return wrapperResponse;  // Retorna con un error si la contraseña es nula o vacía
+        }
+
+        // Si las validaciones pasan, mapeamos la solicitud a un nuevo usuario
+        var usuario = userMapper.createRequestToUser(request);
+
+        // Activamos el usuario por defecto
+        usuario.setActivo(true);
+
+        // Guardamos el usuario en la base de datos
+        var usuarioSaved = userRepository.save(usuario);
+
+        // Mapeamos el usuario guardado a un DTO
+        var response = userMapper.userToCreateEditResponse(usuarioSaved);
+
+        // Envolvemos la respuesta en GenericResponse y la devolvemos
+        wrapperResponse.setData(response);
+        return wrapperResponse;
     }
+
+
 
 
     //Metodo para editar un usuario

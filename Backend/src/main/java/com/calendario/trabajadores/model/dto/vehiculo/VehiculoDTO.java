@@ -16,16 +16,13 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class VehiculoDTO extends CamposComunes {
+public class VehiculoDTO {
 
     private Long id;
     private String modeloCoche;
     private String matricula;
     //Integer y no int para que pueda ser null
     private Integer plazas;
-    //Boolean y no boolean para que pueda ser null
-    private Boolean activo;
-
-
+    //Boolean y no boolean
+    private Boolean activo = true;
 }

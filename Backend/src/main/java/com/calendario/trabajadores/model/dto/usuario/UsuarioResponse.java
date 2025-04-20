@@ -5,6 +5,8 @@ import com.calendario.trabajadores.model.database.Puesto;
 import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
 import com.calendario.trabajadores.model.dto.viaje.ViajeResponse;
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +25,8 @@ public class UsuarioResponse extends CamposComunes {
 
     private Long id;
     private String nombre;
+    @NotNull
+    @NotEmpty
     private String apellido1;
     private String apellido2;
     private String email;

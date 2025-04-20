@@ -25,8 +25,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
-
 @SpringBootTest
 //@AutoConfigureTestDatabase
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -54,14 +52,26 @@ public class ViajeServiceTest {
 
     @BeforeEach
     public void setup() {
+        // Configuramos el usuario (conductor)
         conductor = new Usuario();
         conductor.setNombre("Juan");
+        conductor.setApellido1("Perez");
+        conductor.setEmail("juan.perez@gmail.com");
+        conductor.setContraseña("12345");
+        conductor.setActivo(true);
+        conductor.setRol("user");
         usuarioRepository.save(conductor);
 
+        // Configuración del vehículo con todos los campos obligatorios
         vehiculo = new Vehiculo();
         vehiculo.setModeloCoche("Seat");
+        vehiculo.setMatricula("ABC1234");
+        vehiculo.setPlazas(5);
+        vehiculo.setActivo(true);
+        vehiculo.setUsuario(conductor);
         vehiculoRepository.save(vehiculo);
     }
+
     @Transactional
     @Test
     public void testCrearViaje() {
@@ -81,6 +91,7 @@ public class ViajeServiceTest {
         assertNotNull(response.getData());
         assertEquals("Alicante", response.getData().getOrigen());
     }
+
     @Transactional
     @Test
     public void testEditarViaje() {
@@ -94,18 +105,25 @@ public class ViajeServiceTest {
         request.setHoraSalida(LocalTime.of(9, 0));
         request.setPlazas(4);
 
-        var response = viajeService.crearViaje(request);
-        Long viajeId = viajeRepository.findAll().get(0).getId();
+        var responseCreate = viajeService.crearViaje(request);
+        Long viajeId = responseCreate.getData().getId();
+
+        // Verifica que el viaje fue creado correctamente
+        assertNotNull(viajeId, "El viaje no fue creado correctamente");
 
         // Modificamos el viaje
         EditarViajeRequest editRequest = new EditarViajeRequest();
         editRequest.setDestino("Granada");
 
-        var result = viajeService.editarViaje(viajeId, editRequest);
-
-        assertTrue(result.isPresent());
-        assertEquals("Granada", result.get().getDestino());
+        var response = viajeService.editarViaje(viajeId, editRequest);
+        //ojo viaje optional*
+        var result = response.get();
+        // Verifica que el resultado sea el esperado
+        assertNotNull(result, "El viaje no fue editado correctamente");
+        assertEquals("Granada", result.getDestino(), "El destino no se actualizó correctamente");
     }
+
+
     @Transactional
     @Test
     public void testCambiarEstadoViaje_confirmar() {
@@ -125,6 +143,7 @@ public class ViajeServiceTest {
         assertTrue(result.isPresent());
         assertEquals(EstadoViaje.EN_CURSO, viajeRepository.findById(viaje.getId()).get().getEstado());
     }
+
     @Transactional
     @Test
     public void testCambiarEstadoViaje_finalizar() {

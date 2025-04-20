@@ -49,7 +49,7 @@ public class VehiculoService {
         }
 
         // Comprobación de existencia
-        var vehiculoExists = vehiculoRepository.findVehiculoByMatricula(request.matricula);
+        var vehiculoExists = vehiculoRepository.findVehiculoByMatricula(request.getMatricula());
         if (vehiculoExists.isPresent()) {
             responseWrapper.setError(new ErrorResponse("El vehículo ya existe"));
             return responseWrapper;
@@ -68,7 +68,7 @@ public class VehiculoService {
         GenericResponse<CrearEditarVehiculoResponse> responseWrapper = new GenericResponse<>();
 
         // Buscar el vehículo por ID
-        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findById(request.id);
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findById(request.getId());
 
         if (vehiculoOptional.isEmpty()) {
             responseWrapper.setError(new ErrorResponse("El vehículo no existe"));

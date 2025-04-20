@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-19T19:52:00+0200",
+    date = "2025-04-20T21:23:06+0200",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.4 (Oracle Corporation)"
 )
 @Component
@@ -34,6 +34,7 @@ public class IViajeMapperImpl implements IViajeMapper {
         crearEditarViajeResponse.setIdConductor( viajeGuardadoConductorId( viajeGuardado ) );
         crearEditarViajeResponse.setFechaSalida( viajeGuardado.getFechaSalida() );
         crearEditarViajeResponse.setHoraSalida( viajeGuardado.getHoraSalida() );
+        crearEditarViajeResponse.setId( viajeGuardado.getId() );
         crearEditarViajeResponse.setOrigen( viajeGuardado.getOrigen() );
         crearEditarViajeResponse.setDestino( viajeGuardado.getDestino() );
         crearEditarViajeResponse.setPlazas( viajeGuardado.getPlazas() );
@@ -186,10 +187,6 @@ public class IViajeMapperImpl implements IViajeMapper {
 
         VehiculoDTO vehiculoDTO = new VehiculoDTO();
 
-        vehiculoDTO.setFechaCreacion( vehiculo.getFechaCreacion() );
-        vehiculoDTO.setFechaModificacion( vehiculo.getFechaModificacion() );
-        vehiculoDTO.setCreadoPor( vehiculo.getCreadoPor() );
-        vehiculoDTO.setModificadoPor( vehiculo.getModificadoPor() );
         vehiculoDTO.setId( vehiculo.getId() );
         vehiculoDTO.setModeloCoche( vehiculo.getModeloCoche() );
         vehiculoDTO.setMatricula( vehiculo.getMatricula() );

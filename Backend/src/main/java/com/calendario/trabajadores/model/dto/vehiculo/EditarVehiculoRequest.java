@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-//Anotaciones de Lombok
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,5 +15,5 @@ public class EditarVehiculoRequest {
     private String matricula;
     private Integer plazas;
     private Long idUsuario;
-    private Boolean activo;
+    private Boolean activo = true;
 }

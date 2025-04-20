@@ -1,5 +1,7 @@
 package com.calendario.trabajadores.model.dto.usuario;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
 import lombok.Getter;
@@ -13,10 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioViajeResponse {
-
-    // Informacion del usuario
     private Long id;
     private String nombre;
+    @NotNull
+    @NotEmpty
     private String apellido1;
     private String apellido2;
     private String email;

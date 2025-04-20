@@ -22,12 +22,6 @@ public class CrearEditarVehiculoResponse {
     //Integer y no int para que pueda ser null
     private Integer plazas;
     private UsuarioVehiculosResponse usuario;
-    //Boolean y no boolean para que pueda ser null
-    private Boolean activo;
-    @CreationTimestamp
-    @Column(updatable = false)
-    private Date fechaCreacion;
-
-    @UpdateTimestamp
-    private Date fechaModificacion;
+    //Boolean y no boolean
+    private Boolean activo = true;
 }
