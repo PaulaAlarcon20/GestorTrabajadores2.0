@@ -1,9 +1,13 @@
 package com.calendario.trabajadores.model.database;
 
+import com.calendario.trabajadores.model.common.CamposComunes;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.transaction.TransactionUsageException;
 
@@ -16,44 +20,48 @@ import java.util.List;
 //Utilizo lombok para no tener que escribir los getters y setters
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "usuarios")
-public class Usuario {
+public class Usuario extends CamposComunes {
     //Es un campo identificador de la tabla y además es identity, es decir, se autoincrementa
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
     // Campo obligatorio
     @Column(nullable = false)
-    public String nombre;
+    private String nombre;
     @Column(nullable = false)
-    public String apellido1;
-    public String apellido2;
+    private String apellido1;
+    private String apellido2;
     @Column(nullable = false)
-    public String email;
+    private String email;
     @Column(nullable = false)
-    public String contraseña;
-    public String telefono;
-    public String centroTrabajo;
-    public Puesto puesto;
-    public String localidad;
-    public String preferenciasHorarias;
-    public Boolean disponibilidadHorasExtras;
+    //private String passwordHash; TODO proteccion contraseñas
+    private String contraseña;
+    private String telefono;
+    private String centroTrabajo;
+    private Puesto puesto;
+    private String localidad;
+    private String preferenciasHorarias;
     @Column(nullable = false)
-    public String rol;
+    private String rol;
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
     @JsonManagedReference
-    public List<Vehiculo> vehiculos = new ArrayList();
+    private List<Vehiculo> vehiculos = new ArrayList<>();
     @OneToMany(mappedBy = "conductor", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
-    public List<Viaje> viajes = new ArrayList();
+    private List<Viaje> viajes = new ArrayList<>();
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
-    public List<UsuarioViaje> usuarioViajes = new ArrayList<>();
-    public Boolean activo;
+    private List<UsuarioViaje> usuarioViajes = new ArrayList<>();
+    private Boolean activo = true;
+    private Boolean disponibilidadHorasExtras =true;
+    //Se sustituye al heredar de Campos Comunes
+    /*
+    @CreationTimestamp
     @Column(updatable = false)
     private Date fechaCreacion;
-
     @UpdateTimestamp
     private Date fechaModificacion;
-
     private String creadoPor;
-    private String modificadoPor;
+    private String modificadoPor;*/
 }

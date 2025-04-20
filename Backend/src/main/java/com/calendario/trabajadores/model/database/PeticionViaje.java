@@ -17,12 +17,12 @@ public class PeticionViaje extends CamposComunes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    public Usuario usuario = new Usuario();
+    private Usuario usuario = new Usuario();
     @ManyToOne
     @JoinColumn(name = "viaje_id")
-    public Viaje viaje = new Viaje();
-    public EstadoPeticionViaje estado;
+    private Viaje viaje = new Viaje();
+    private EstadoPeticionViaje estado;
 }

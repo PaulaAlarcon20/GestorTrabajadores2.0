@@ -1,5 +1,6 @@
 package com.calendario.trabajadores.model.database;
 
+import com.calendario.trabajadores.model.common.CamposComunes;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,31 +21,21 @@ import java.util.Date;
         @UniqueConstraint(columnNames = {"matricula"}),
 
 })
-public class Vehiculo {
+public class Vehiculo extends CamposComunes {
     //Es un campo identificador de la tabla y además es identity, es decir, se autoincrementa
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
-    public String modeloCoche;
+    private Long id;
+    private String modeloCoche;
     @Column(name = "matricula", unique = true, nullable = false)
-    public String matricula;
-    public int plazas;
+    private String matricula;
+    private int plazas;
     @ManyToOne(fetch = FetchType.LAZY)
     //Aseguro la relacion de un vehiculo por usuario, no puede ser nulo y el usuario debe ser unico
     @JoinColumn(name = "usuario_id", nullable = false)
     @JsonBackReference
     //public Usuario usuario = new Usuario();
-    public Usuario usuario;
+    private Usuario usuario;
     //vehiculo activo o no
-    public Boolean activo;
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(updatable = false)
-    private Date fechaCreacion;
-
-    @UpdateTimestamp
-    private Date fechaModificacion;
-
-    private String creadoPor;
-    private String modificadoPor;
+    private Boolean activo;
 }

@@ -14,13 +14,13 @@ import java.util.List;
 @AllArgsConstructor
 public class UsuarioVehiculosResponse{
 
-    public Long id;
-    public String nombre;
-    public String apellido1;
-    public String apellido2;
-    public String email;
-    public List<VehiculoDTO> vehiculos;
-    public Boolean activo;
+    private Long id;
+    private String nombre;
+    private String apellido1;
+    private String apellido2;
+    private String email;
+    private List<VehiculoDTO> vehiculos;
+    private Boolean activo;
 
 
 }

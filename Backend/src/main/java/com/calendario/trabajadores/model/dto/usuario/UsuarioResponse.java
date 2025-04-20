@@ -21,18 +21,18 @@ import java.util.List;
 @AllArgsConstructor
 public class UsuarioResponse extends CamposComunes {
 
-    public Long id;
-    public String nombre;
-    public String apellido1;
-    public String apellido2;
-    public String email;
-    public String telefono;
-    public String centroTrabajo;
-    public Puesto puesto;
-    public String localidad;
-    public String preferenciasHorarias;
-    public Boolean disponibilidadHorasExtras;
-    public String rol;
-    public Boolean activo;
+    private Long id;
+    private String nombre;
+    private String apellido1;
+    private String apellido2;
+    private String email;
+    private String telefono;
+    private String centroTrabajo;
+    private Puesto puesto;
+    private String localidad;
+    private String preferenciasHorarias;
+    private Boolean disponibilidadHorasExtras;
+    private String rol;
+    private Boolean activo;
     private List<ViajeDTO> viajes; //*F*
 }

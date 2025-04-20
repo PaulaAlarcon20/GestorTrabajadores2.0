@@ -19,13 +19,13 @@ import java.util.Date;
 
 public class VehiculoDTO extends CamposComunes {
 
-    public Long id;
-    public String modeloCoche;
-    public String matricula;
+    private Long id;
+    private String modeloCoche;
+    private String matricula;
     //Integer y no int para que pueda ser null
-    public Integer plazas;
+    private Integer plazas;
     //Boolean y no boolean para que pueda ser null
-    public Boolean activo;
+    private Boolean activo;
 
 
 }

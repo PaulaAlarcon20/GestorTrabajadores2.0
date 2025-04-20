@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-19T17:56:30+0200",
+    date = "2025-04-19T19:51:43+0200",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.4 (Oracle Corporation)"
 )
 @Component
@@ -188,8 +188,8 @@ public class IUserMapperImpl implements IUserMapper {
         ViajeDTO viajeDTO = new ViajeDTO();
 
         viajeDTO.setId( viaje.getId() );
-        viajeDTO.setFecha( viaje.getFecha() );
-        viajeDTO.setHora( viaje.getHora() );
+        viajeDTO.setFechaSalida( viaje.getFechaSalida() );
+        viajeDTO.setHoraSalida( viaje.getHoraSalida() );
         viajeDTO.setOrigen( viaje.getOrigen() );
         viajeDTO.setDestino( viaje.getDestino() );
         viajeDTO.setPlazas( viaje.getPlazas() );

@@ -25,19 +25,19 @@ import java.util.List;
 
 public class ViajeResponse extends CamposComunes {
 
-    public Long idViaje;
-    public VehiculoDTO vehiculo = new VehiculoDTO();
-    public UsuarioResponse conductor = new UsuarioResponse();
-    public List<UsuarioResponse> pasajeros = new ArrayList<>();
+    private Long idViaje;
+    private VehiculoDTO vehiculo = new VehiculoDTO();
+    private UsuarioResponse conductor = new UsuarioResponse();
+    private List<UsuarioResponse> pasajeros = new ArrayList<>();
 
-    public String origen;
-    public String destino;
-    public LocalDate fechaSalida;
+    private String origen;
+    private String destino;
+    private LocalDate fechaSalida;
 
-    public LocalTime horaSalida;
+    private LocalTime horaSalida;
     //Integer y no int para poder ser null
-    public Integer plazas;
-    public Boolean activo;
+    private Integer plazas;
+    private Boolean activo;
 
 
 

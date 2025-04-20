@@ -55,7 +55,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("2. Crear usuario existente (debe fallar)")
+    @DisplayName("2. Crear usuario existente (debería fallar)")
     @Order(2)
     void crearUsuarioExistente() {
         var userRequest = new CrearUsuarioRequest();

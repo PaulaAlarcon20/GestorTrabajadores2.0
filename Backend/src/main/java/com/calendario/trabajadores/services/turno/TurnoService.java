@@ -2,6 +2,7 @@ package com.calendario.trabajadores.services.turno;
 
 import com.calendario.trabajadores.mappings.ITurnoMapper;
 import com.calendario.trabajadores.model.database.EstadoTurno;
+import com.calendario.trabajadores.model.database.PeticionTurno;
 import com.calendario.trabajadores.model.database.Turno;
 import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.dto.turno.CrearEditarTurnoResponse;
@@ -41,6 +42,18 @@ public class TurnoService {
         // Crear el objeto turno desde el request
         Turno turno = turnoMapper.crearTurnoRequestToTurno(request);
 
+        // Asignar valor por defecto si estadoTurno no está presente en el request
+        if (turno.getEstadoTurno() == null) {
+            // Valor predeterminado PENDIENTE
+            turno.setEstadoTurno(EstadoTurno.SIN_EMPEZAR);
+        }
+
+        // Asignar valor por defecto si peticionTurno no está presente en el request
+        if (turno.getPeticionTurno() == null) {
+            // Valor predeterminado PENDIENTE
+            turno.setPeticionTurno(PeticionTurno.PENDIENTE);
+        }
+
         // Guardamos el turno en la base de datos
         Turno turnoGuardado = turnoRepository.save(turno);
 
@@ -51,6 +64,7 @@ public class TurnoService {
         responseWrapper.setData(response);
         return responseWrapper;
     }
+
 
     // Modificar un turno
     public GenericResponse<CrearEditarTurnoResponse> modificarTurno(EditarTurnoRequest request) {
@@ -73,9 +87,23 @@ public class TurnoService {
         if (request.getHoraFin() != null) {
             turno.setHoraFin(request.getHoraFin());
         }
+
+        // Si no se proporciona estadoTurno, asignamos un valor predeterminado
         if (request.getEstadoTurno() != null) {
             turno.setEstadoTurno(request.getEstadoTurno());
+        } else if (turno.getEstadoTurno() == null) {
+            // Valor predeterminado
+            turno.setEstadoTurno(EstadoTurno.SIN_EMPEZAR);
         }
+
+        // Si no se proporciona peticionTurno, asignamos un valor predeterminado
+        if (request.getPeticionTurno() != null) {
+            turno.setPeticionTurno(request.getPeticionTurno());
+        } else if (turno.getPeticionTurno() == null) {
+            // Valor predeterminado
+            turno.setPeticionTurno(PeticionTurno.PENDIENTE);
+        }
+
         if (request.getNotasPeticion() != null) {
             turno.setNotasPeticion(request.getNotasPeticion());
         }
@@ -90,6 +118,7 @@ public class TurnoService {
         responseWrapper.setData(turnoMapper.turnoToCrearEditarTurnoResponse(turnoActualizado));
         return responseWrapper;
     }
+
 
     // Desactivar un turno (cambiar el estado a "inactivo")
     public GenericResponse<CrearEditarTurnoResponse> toggleTurno(Long id) {

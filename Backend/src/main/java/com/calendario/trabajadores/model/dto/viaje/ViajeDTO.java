@@ -15,9 +15,9 @@ import java.util.Date;
 @AllArgsConstructor
 public class ViajeDTO {
     private Long id;
-    public LocalDate fechaSalida;
+    private LocalDate fechaSalida;
 
-    public LocalTime horaSalida;
+    private LocalTime horaSalida;
     private String origen;
     private String destino;
     private int plazas;

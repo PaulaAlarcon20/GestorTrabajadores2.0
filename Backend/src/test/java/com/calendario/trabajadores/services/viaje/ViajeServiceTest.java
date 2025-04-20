@@ -12,11 +12,11 @@ import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 import com.calendario.trabajadores.repository.vehiculo.IVehiculoRepository;
 import com.calendario.trabajadores.repository.viaje.IViajeRepository;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -25,10 +25,15 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+
 @SpringBootTest
-@Transactional
+//@AutoConfigureTestDatabase
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ActiveProfiles("test")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ViajeServiceTest {
-/*
+
     @Autowired
     private ViajeService viajeService;
 
@@ -50,14 +55,14 @@ public class ViajeServiceTest {
     @BeforeEach
     public void setup() {
         conductor = new Usuario();
-        conductor.setNombre("Juan Tester");
+        conductor.setNombre("Juan");
         usuarioRepository.save(conductor);
 
         vehiculo = new Vehiculo();
-        vehiculo.setModeloCoche("Coche Volador");
+        vehiculo.setModeloCoche("Seat");
         vehiculoRepository.save(vehiculo);
     }
-
+    @Transactional
     @Test
     public void testCrearViaje() {
         CrearViajeRequest request = new CrearViajeRequest();
@@ -76,7 +81,7 @@ public class ViajeServiceTest {
         assertNotNull(response.getData());
         assertEquals("Alicante", response.getData().getOrigen());
     }
-
+    @Transactional
     @Test
     public void testEditarViaje() {
         // Creamos primero un viaje
@@ -101,7 +106,7 @@ public class ViajeServiceTest {
         assertTrue(result.isPresent());
         assertEquals("Granada", result.get().getDestino());
     }
-
+    @Transactional
     @Test
     public void testCambiarEstadoViaje_confirmar() {
         var viaje = new Viaje();
@@ -120,7 +125,7 @@ public class ViajeServiceTest {
         assertTrue(result.isPresent());
         assertEquals(EstadoViaje.EN_CURSO, viajeRepository.findById(viaje.getId()).get().getEstado());
     }
-
+    @Transactional
     @Test
     public void testCambiarEstadoViaje_finalizar() {
         var viaje = new Viaje();
@@ -157,5 +162,5 @@ public class ViajeServiceTest {
         assertEquals("Málaga", result.get().getOrigen());
         assertEquals("Barcelona", result.get().getDestino());
     }
-    */
+
 }

@@ -25,23 +25,37 @@ import java.util.List;
 public class Viaje extends CamposComunes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
-    public LocalDate fechaSalida;
-
-    public LocalTime horaSalida;
-    public String origen;
-    public String destino;
-    public int plazas;
+    private Long id;
+    private LocalDate fechaSalida;
+    private LocalTime horaSalida;
+    private String origen;
+    private String destino;
+    private int plazas;
     @Enumerated(EnumType.STRING)
-    public EstadoViaje estado;
-    @ManyToOne(fetch = FetchType.LAZY) //Relacion de muchos a uno
+    private EstadoViaje estado;
+
+    // Un conductor por viaje, obligatorio
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario conductor;
+
+    // Un vehículo por viaje, obligatorio
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "vehiculo_id", nullable = false)
+    @JsonBackReference
+    private Vehiculo vehiculo;
+
+    /*F/
+    /*@ManyToOne(fetch = FetchType.LAZY) //Relacion de muchos a uno
     @JoinColumn(name = "usuario_id", nullable = false) //Un usuario!!! (no conductor) por viaje, no puede ser nulo
-    public Usuario conductor = new Usuario();
+    private Usuario conductor = new Usuario();
     @ManyToOne(fetch = FetchType.LAZY) //Relacion de muchos a uno
     @JoinColumn(name = "vehiculo_id", nullable = false) //Un vehiculo por viaje, no puede ser nulo
     @JsonBackReference //Para evitar la recursividad
-    public Vehiculo vehiculo = new Vehiculo();
+    private Vehiculo vehiculo = new Vehiculo();*/
+
+    //Usuarios viajeros, ocupantes de plazas
     @OneToMany(mappedBy = "viaje", fetch = FetchType.LAZY, orphanRemoval = false)
-    public List<UsuarioViaje> usuarioViajes = new ArrayList<>();
+    private List<UsuarioViaje> usuarioViajes = new ArrayList<>();
 
 }

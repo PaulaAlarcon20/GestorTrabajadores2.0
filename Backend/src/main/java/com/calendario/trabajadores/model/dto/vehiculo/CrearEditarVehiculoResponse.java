@@ -16,15 +16,14 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CrearEditarVehiculoResponse {
-    //Atributos de CrearEditarVehiculoResponse
-    public Long id;
-    public String modeloCoche;
-    public String matricula;
+    private Long id;
+    private String modeloCoche;
+    private String matricula;
     //Integer y no int para que pueda ser null
-    public Integer plazas;
-    public UsuarioVehiculosResponse usuario;
+    private Integer plazas;
+    private UsuarioVehiculosResponse usuario;
     //Boolean y no boolean para que pueda ser null
-    public Boolean activo;
+    private Boolean activo;
     @CreationTimestamp
     @Column(updatable = false)
     private Date fechaCreacion;

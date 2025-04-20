@@ -13,11 +13,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CrearVehiculoRequest {
-    //Atributos de CrearVehiculoRequest
-    public String modeloCoche;
+    private String modeloCoche;
     @NotBlank(message = "La matrícula es un campo obligatorio")
-    public String matricula;
-    public Integer plazas;
-    public Long idUsuario;
-    public Boolean activo;
+    private String matricula;
+    private Integer plazas;
+    private Long idUsuario;
+    private Boolean activo;
 }

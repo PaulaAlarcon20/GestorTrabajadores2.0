@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LoginRequest {
-    public String username;
-    public String password; //todo: encriptar CONTRASEÑA
+    private String username;
+    private String password; //todo: proteccion CONTRASEÑA
 
 }

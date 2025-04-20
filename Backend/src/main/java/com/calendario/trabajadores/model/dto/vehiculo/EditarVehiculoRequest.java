@@ -10,11 +10,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EditarVehiculoRequest {
-    //Atributos de EditarVehiculoRequest
-    public Long id;
-    public String modeloCoche;
-    public String matricula;
-    public Integer plazas;
-    public Long idUsuario;
-    public Boolean activo;
+    private Long id;
+    private String modeloCoche;
+    private String matricula;
+    private Integer plazas;
+    private Long idUsuario;
+    private Boolean activo;
 }

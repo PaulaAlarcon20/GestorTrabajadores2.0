@@ -15,18 +15,18 @@ import java.util.Date;
 @AllArgsConstructor
 
 public class CrearViajeRequest {
-    public Long idVehiculo;
+    private Long idVehiculo;
 
-    public Long idConductor;
+    private Long idConductor;
 
-    public String origen;
-    public String destino;
+    private String origen;
+    private String destino;
 
-    public LocalDate fechaSalida;
+    private LocalDate fechaSalida;
 
-    public LocalTime horaSalida;
+    private LocalTime horaSalida;
     //Integer y no int para poder ser null
-    public Integer plazas;
-    public Boolean activo;  //**** Inluyo activo? TODO:Supuestamente no si se crea activo por defecto
-    //algo mas es activo por defecto? como usuario o vehiculo??
+    private Integer plazas;
+    private Boolean activo;  //**** Inluyo activo? TODO:Supuestamente no si se crea activo por defecto
+    //algo mas es activo, o inicializado por defecto? como usuario o vehiculo??
 }

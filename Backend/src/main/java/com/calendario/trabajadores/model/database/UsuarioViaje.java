@@ -15,12 +15,13 @@ import lombok.Setter;
 public class UsuarioViaje {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
+    @ManyToOne(optional = false)
+    //El campo usuario no puede ser null
+    //Obligatorio establecer un usuario al crear un UsuarioViaje
+    @JoinColumn(name = "usuario_id",nullable = false)
+    private Usuario usuario = new Usuario();
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    public Usuario usuario = new Usuario();
-    @ManyToOne
-    @JoinColumn(name = "viaje_id")
-    public Viaje viaje = new Viaje();
-
+    @JoinColumn(name = "viaje_id",nullable = false)
+    private Viaje viaje = new Viaje();
 }

@@ -15,17 +15,17 @@ import java.util.Date;
 @AllArgsConstructor
 
 public class EditarViajeRequest {
-    public Long idVehiculo;
+    private Long idVehiculo;
 
-    public Long idConductor;
+    private Long idConductor;
 
-    public String origen;
-    public String destino;
+    private String origen;
+    private String destino;
 
-    public LocalDate fechaSalida;
+    private LocalDate fechaSalida;
 
-    public LocalTime horaSalida;
+    private LocalTime horaSalida;
     //Integer y no int para poder ser null
-    public Integer plazas;
+    private Integer plazas;
     //public Boolean activo;  //**** Inluyo activo? TODO:Pregunta
 }
