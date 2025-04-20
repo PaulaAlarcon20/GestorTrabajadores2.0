@@ -1,16 +1,21 @@
 # GestorTrabajadores
-Plataforma de gestión de trabajadores de la salud, incluye una aplicación móvil para que los empleados puedan acceder a un calendario con sus horarios y turnos de trabajo. Los trabajadores pueden compartir vehículos para desplazarse al trabajo, al estilo de plataformas de carpooling
+Plataforma de gestión de trabajadores de la salud, incluye una aplicación móvil para que los empleados puedan acceder a un calendario con sus horarios y turnos de trabajo.
+Los trabajadores pueden compartir vehículos para desplazarse al trabajo, al estilo de plataformas de carpooling
 
-Comentario temporal: Los atributos en un principio en las clases estaban como public porque al principio estaba intentando facilitarme crear la base del proyecto, nuestro profesor de programación los suele querer protected. Esto debe cambiarse.
  
-Además, en el proyecto estamos usando Lombook, por lo que explico un poco esta sección: al principio, lo más sencillo para agilizar el desarrollo era hacer que los atributos de las clases fueran públicos (public). Para acceder directamente a ellos sin tener que crear getters y setters.
-Con Lombok, es posible generar automáticamente los métodos getter y setter sin tener que escribirlos manualmente. Por eso el uso de @Getter, @Setter, @AllArgsConstructor, @NoArgsConstructor.
+Además, en el proyecto estamos usando Lombook, por lo que explico un poco esta sección:
+al principio, lo más sencillo para agilizar el desarrollo era hacer que los atributos de las clases fueran públicos (public). Para acceder directamente a ellos sin tener que crear getters y setters.
+Con Lombok, es posible generar automáticamente los métodos getter y setter sin tener que escribirlos manualmente.
+Por eso el uso de @Getter, @Setter, @AllArgsConstructor, @NoArgsConstructor.
  
 Explicación de la estructura del backend:
 Tenemos las clases como Turnos, Usuarios, Coches, etc., separadas en dos paquetes: database y common.
- La diferencia principal es que las clases del paquete database son las que están directamente mapeadas a la base de datos. Son entidades reales, con anotaciones como @Entity, @Table, @Column, etc.
+ La diferencia principal es que las clases del paquete database son las que están directamente mapeadas a la base de datos. 
+ Son entidades reales, con anotaciones como @Entity, @Table, @Column, etc.
 Luego, por otro lado, están las clases con las que realmente trabajamos en los controladores y servicios: los DTO.
- No solo porque es más seguro no manipular directamente las entidades de base de datos, sino porque con los DTO podemos controlar qué datos se mandan y reciben. Por ejemplo, puede que sepamos el ID de un usuario, pero no nos interesa mostrárselo a un cliente final en la app. Tampoco nos conviene enseñar campos sensibles o que no aportan nada al caso de uso concreto.
+ No solo porque es más seguro no manipular directamente las entidades de base de datos, 
+ sino porque con los DTO podemos controlar qué datos se mandan y reciben. Por ejemplo, puede que sepamos el ID de un usuario, pero no nos interesa mostrárselo a un cliente final en la app. 
+ Tampoco nos conviene enseñar campos sensibles o que no aportan nada al caso de uso concreto.
 Los DTO (Data Transfer Objects) sirven para transferir información entre el backend y otros componentes (como el frontend), sin exponer directamente nuestras entidades internas. Por eso son los que usamos en la lógica real: en los métodos del servicio y en los controladores.
  
 Entidad de base de datos (Turno, Usuario, etc.)
@@ -40,7 +45,8 @@ Servicio: Aquí vive la lógica de negocio.
 Repositorio: Se comunica con la base de datos.
  
 Por qué utilicé nombres como VehiculoRequest o VehiculoResponse:
-En otras aplicaciones con las que estaba trabajando (por ejemplo en C# con .NET), este tipo de estructura no es obligatoria, y se puede trabajar con menos separación. Pero en Java (y especialmente usando Spring Boot que estamos utilizando), esta convención se considera buena práctica profesional.
+En otras aplicaciones con las que estaba trabajando (por ejemplo en C# con .NET), este tipo de estructura no es obligatoria, 
+y se puede trabajar con menos separación. Pero en Java (y especialmente usando Spring Boot que estamos utilizando), esta convención se considera buena práctica profesional.
 Es cierto que a veces parece un poco repetitivo y un engorro de leer, pero da claridad, seguridad.
 Los objetos con sufijo Request representan los datos que nos manda el cliente para hacer una operación: crear, editar, etc.
 Ejemplo: VehiculoRequest podría tener campos como matricula, modelo, color, etc.
@@ -48,13 +54,17 @@ Los objetos con sufijo Response representan la información que nosotros devolve
 Ejemplo: VehiculoResponse podría devolver modelo, color, y el nombre del usuario que lo tiene asignado, pero no necesariamente el ID interno del coche.
 Así evitamos mandar información innecesaria, y nos aseguramos de que cada parte del sistema ve solo lo que necesita ver.
 
-También se esta utilizando MapStruct y el mapeo automático con @Mapper. En nuestro backend utilizamos MapStruct, una librería de Java que nos permite mapear automáticamente los datos entre clases, especialmente entre las entidades de base de datos y los DTOs (Data Transfer Objects).
-@Mapper(componentModel = "spring") le dice a MapStruct que genere una implementación de esa interfaz como un bean de Spring, de forma que podamos inyectarla con @Autowired en nuestros servicios. 
-Por ejemplo: IUserMapper se encarga de raducir un Usuario a un UsuarioResponse o UsuarioVehiculosResponse. Y viceversa. Adaptar diferencias de nombres, como password (del request) a contraseña (en la entidad), mediante @Mapping(source = "password", target = "contraseña")
+También se esta utilizando MapStruct y el mapeo automático con @Mapper. En nuestro backend utilizamos MapStruct,
+una librería de Java que nos permite mapear automáticamente los datos entre clases, especialmente entre las entidades de base de datos y los DTOs (Data Transfer Objects).
+@Mapper(componentModel = "spring") le dice a MapStruct que genere una implementación de esa interfaz como un bean de Spring, 
+de forma que podamos inyectarla con @Autowired en nuestros servicios. 
+Por ejemplo: IUserMapper se encarga de raducir un Usuario a un UsuarioResponse o UsuarioVehiculosResponse.
+Y viceversa. Adaptar diferencias de nombres, como password (del request) a contraseña (en la entidad), mediante @Mapping(source = "password", target = "contraseña")
  
 En cuanto a la base de datos, cómo funciona:
 Por ahora está configurado para conectarse a una base de datos MySQL que se encuentra en tu la máquina local (localhost), usando el puerto y nombre de base gestionturnos.
-La base de datos no se crea automáticamente desde cero si no existe. MySQL requiere que la base de datos gestionturnos exista previamente, aunque luego Hibernate (el motor ORM que usa Spring Boot) se encargue de crear las tablas y estructuras dentro de ella.
+La base de datos no se crea automáticamente desde cero si no existe. MySQL requiere que la base de datos gestionturnos exista previamente, 
+aunque luego Hibernate (el motor ORM que usa Spring Boot) se encargue de crear las tablas y estructuras dentro de ella.
 Hay que crear manualmente la base de datos vacía con el nombre gestionturnos desde MySQL o phpMyAdmin:
 CREATE DATABASE gestionturnos;
 Spring Boot creará o actualizará automáticamente las tablas en la base de datos, basándose en las entidades de nuestro código que tengan @Entity.
@@ -142,23 +152,35 @@ Calendario visual
 Sistema de prioridades en peticiones (urgencias, peticiones programadas, etc.).
 
 
+El atributo activo y el estado del turno representado por el enum EstadoTurno no es lo mismo.
+
+Diferencia entre activo y EstadoTurno:
+activo (Boolean):
+
+
+Indica si un turno está disponible para ser gestionado o no, independientemente de su progreso.
+
+
+Valores posibles:
+
+
+true: El turno está activo, es decir, está disponible para ser gestionado, asignado, visualizado, etc.
+
+
+false: El turno está inactivo, es decir, no está disponible para ser gestionado. Esto puede ser útil cuando el turno se cancela o ya no es necesario. (es decir, para que no se borre de la base de datos y se mantenga aunque no se esté usando)
 
 
 
+EstadoTurno (Enum):
 
 
+Representa el progreso o fase de un turno específico.
 
 
+SIN_EMPEZAR:
 
 
+EN_CURSO:
 
 
-
-![image](https://github.com/user-attachments/assets/e5899ed8-4d42-4a38-9c53-a84d4903ae2a)
-
-Resultado ok de la llamada de Postman que realiza la conexión con la bbdd:
-
-![image](https://github.com/user-attachments/assets/b2d3b60d-da3f-4085-86dd-b33840ef389d)
-
--------------------------------------------------------------------------------------------
-
+FINALIZADO: El turno ha sido completado, pero podría ser marcado como inactivo si ya no es relevante.
