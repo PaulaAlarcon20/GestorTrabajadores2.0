@@ -25,6 +25,7 @@
 - Documentación con **Swagger**
 - Conversor de fechas/horas reutilizable
 - Pantallas de gestión de viajes y vehículos (frontend de compañeros)
+- Readme con documentación backend.
 
 ---
 
