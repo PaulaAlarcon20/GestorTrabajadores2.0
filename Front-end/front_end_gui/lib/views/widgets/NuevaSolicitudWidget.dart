@@ -9,14 +9,12 @@ class NuevaSolicitudWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //validadores
-    final _formKey = GlobalKey<FormState>();
-
-    //final TextEditingController _fechaCambio = TextEditingController();
+    final formKey = GlobalKey<FormState>();
 
     return Padding(
         padding: EdgeInsets.all(8),
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -31,18 +29,6 @@ class NuevaSolicitudWidget extends StatelessWidget {
               SizedBox(
                 height: 16,
               ),
-              SizedBox(
-                height: 16,
-              ),
-              /*_buildTextField(
-                  controller: _fechaCambio,
-                  label: "fecha cambio",
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Debe rellenar los campos";
-                    }
-                    return null;
-                  }),*/
               DropDownWidgetTurnos(),
               SizedBox(
                 height: 16,
@@ -50,7 +36,7 @@ class NuevaSolicitudWidget extends StatelessWidget {
               Center(
                 child: ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
+                      if (formKey.currentState!.validate()) {
                         Navigator.pop(context);
                       }
                     },
@@ -71,25 +57,3 @@ class NuevaSolicitudWidget extends StatelessWidget {
         ));
   }
 }
-
-/*
-  Widget _buildTextField(
-      {required String label,
-      required TextEditingController controller,
-      required String? Function(String?) validator}) {
-    return TextFormField(
-      decoration: InputDecoration(
-          labelText: label,
-          labelStyle: TextStyle(
-            fontFamily: "Quicksand",
-            color: Colors.black,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.blue, width: 1),
-              borderRadius: BorderRadius.circular(10))),
-      validator: validator,
-    );
-  }*/

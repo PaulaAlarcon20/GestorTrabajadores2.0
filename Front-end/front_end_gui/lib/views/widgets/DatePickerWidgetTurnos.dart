@@ -8,11 +8,10 @@ class Datepickerwidgetturnos extends StatefulWidget {
 
 class _DatePickerWidgetState extends State<Datepickerwidgetturnos> {
   FormFieldValidator<String>? validator;
-
-  @override
   final TextEditingController _fechaCambioController = TextEditingController();
   String _fecha = "";
 
+  @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return TextFormField(
