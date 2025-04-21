@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_end_gui/views/widgets/DatePickerWidgetTurnos.dart';
 import 'package:front_end_gui/views/widgets/DropDownWidgetTurnos.dart';
 
 class NuevaSolicitudWidget extends StatelessWidget {
@@ -10,7 +11,7 @@ class NuevaSolicitudWidget extends StatelessWidget {
     //validadores
     final _formKey = GlobalKey<FormState>();
 
-    final TextEditingController _fechaCambio = TextEditingController();
+    //final TextEditingController _fechaCambio = TextEditingController();
 
     return Padding(
         padding: EdgeInsets.all(8),
@@ -26,10 +27,14 @@ class NuevaSolicitudWidget extends StatelessWidget {
                   fontSize: 24,
                 ),
               ),
+              Datepickerwidgetturnos(),
               SizedBox(
                 height: 16,
               ),
-              _buildTextField(
+              SizedBox(
+                height: 16,
+              ),
+              /*_buildTextField(
                   controller: _fechaCambio,
                   label: "fecha cambio",
                   validator: (value) {
@@ -37,10 +42,7 @@ class NuevaSolicitudWidget extends StatelessWidget {
                       return "Debe rellenar los campos";
                     }
                     return null;
-                  }),
-              SizedBox(
-                height: 16,
-              ),
+                  }),*/
               DropDownWidgetTurnos(),
               SizedBox(
                 height: 16,
@@ -68,7 +70,9 @@ class NuevaSolicitudWidget extends StatelessWidget {
           ),
         ));
   }
+}
 
+/*
   Widget _buildTextField(
       {required String label,
       required TextEditingController controller,
@@ -88,5 +92,4 @@ class NuevaSolicitudWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(10))),
       validator: validator,
     );
-  }
-}
+  }*/

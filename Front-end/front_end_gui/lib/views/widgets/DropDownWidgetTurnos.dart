@@ -15,6 +15,7 @@ class DropDownWidgetTurnos extends StatefulWidget {
 }
 
 class _DropDownWidgetState extends State<DropDownWidgetTurnos> {
+  FormFieldValidator<String>? validator;
   String dropdownValue = list.first;
 
   @override
@@ -32,10 +33,15 @@ class _DropDownWidgetState extends State<DropDownWidgetTurnos> {
           errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
           hintText: 'Debe seleccionar un turno',
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+      validator: (value) {
+        if (value == null || value.isEmpty || value == "Seleccione turno") {
+          return "Debe rellenar los campos";
+        }
+        return null;
+      },
       isExpanded: true,
       borderRadius: BorderRadius.circular(10),
       onChanged: (String? value) {
-        if (value == "Seleccione turno") {}
         setState(() {
           dropdownValue = value!;
         });
