@@ -7,13 +7,16 @@ import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
 import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
 import com.calendario.trabajadores.model.dto.viaje.CrearEditarViajeResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
+import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
 import com.calendario.trabajadores.model.dto.viaje.ViajeResponse;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-02-23T14:14:05+0100",
+    date = "2025-04-19T17:14:58+0200",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.4 (Oracle Corporation)"
 )
 @Component
@@ -110,8 +113,30 @@ public class IViajeMapperImpl implements IViajeMapper {
         usuarioResponse.setDisponibilidadHorasExtras( usuario.getDisponibilidadHorasExtras() );
         usuarioResponse.setRol( usuario.getRol() );
         usuarioResponse.setActivo( usuario.getActivo() );
+        usuarioResponse.setViajes( viajeListToViajeDTOList( usuario.getViajes() ) );
 
         return usuarioResponse;
+    }
+
+    @Override
+    public ViajeDTO viajeToViajeDTO(Viaje viaje) {
+        if ( viaje == null ) {
+            return null;
+        }
+
+        ViajeDTO viajeDTO = new ViajeDTO();
+
+        viajeDTO.setId( viaje.getId() );
+        viajeDTO.setFecha( viaje.getFecha() );
+        viajeDTO.setHora( viaje.getHora() );
+        viajeDTO.setVehiculoId( viajeGuardadoVehiculoId( viaje ) );
+        viajeDTO.setConductorId( viajeGuardadoConductorId( viaje ) );
+        viajeDTO.setOrigen( viaje.getOrigen() );
+        viajeDTO.setDestino( viaje.getDestino() );
+        viajeDTO.setPlazas( viaje.getPlazas() );
+        viajeDTO.setEstado( viaje.getEstado() );
+
+        return viajeDTO;
     }
 
     private Long viajeGuardadoVehiculoId(Viaje viaje) {
@@ -172,5 +197,18 @@ public class IViajeMapperImpl implements IViajeMapper {
         vehiculoDTO.setActivo( vehiculo.getActivo() );
 
         return vehiculoDTO;
+    }
+
+    protected List<ViajeDTO> viajeListToViajeDTOList(List<Viaje> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<ViajeDTO> list1 = new ArrayList<ViajeDTO>( list.size() );
+        for ( Viaje viaje : list ) {
+            list1.add( viajeToViajeDTO( viaje ) );
+        }
+
+        return list1;
     }
 }

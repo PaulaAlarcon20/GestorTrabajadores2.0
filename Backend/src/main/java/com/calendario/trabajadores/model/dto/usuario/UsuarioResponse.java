@@ -2,6 +2,8 @@ package com.calendario.trabajadores.model.dto.usuario;
 
 import com.calendario.trabajadores.model.common.CamposComunes;
 import com.calendario.trabajadores.model.database.Puesto;
+import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
+import com.calendario.trabajadores.model.dto.viaje.ViajeResponse;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,6 +34,5 @@ public class UsuarioResponse extends CamposComunes {
     public Boolean disponibilidadHorasExtras;
     public String rol;
     public Boolean activo;
-
-
+    private List<ViajeDTO> viajes; //*F*
 }

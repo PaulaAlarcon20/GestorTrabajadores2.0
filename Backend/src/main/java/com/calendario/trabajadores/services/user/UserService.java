@@ -1,31 +1,33 @@
 package com.calendario.trabajadores.services.user;
 
 import com.calendario.trabajadores.mappings.IUserMapper;
+import com.calendario.trabajadores.mappings.IViajeMapper;
 import com.calendario.trabajadores.model.database.Usuario;
-import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioRequest;
-import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
-import com.calendario.trabajadores.model.dto.usuario.EditarUsuarioRequest;
-import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
+import com.calendario.trabajadores.model.dto.usuario.*;
+import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    //Inyeccion de dependencias
-
+    // Inyección de dependencias
     private final IUsuarioRepository userRepository;
     private final IUserMapper userMapper;
+    private final IViajeMapper viajeMapper; // Inyectamos el IViajeMapper
 
-    //Contructor de UserService
-
-    public UserService(IUsuarioRepository userRepository, IUserMapper userMapper) {
+    // Constructor de UserService
+    public UserService(IUsuarioRepository userRepository, IUserMapper userMapper, IViajeMapper viajeMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.viajeMapper = viajeMapper; // Asignamos el IViajeMapper
     }
 
     //Metodo para hacer login
@@ -54,9 +56,9 @@ public class UserService {
         return wrapperResponse;
     }
 
-    //Metodo para hacer logout TODO:logout
-    public GenericResponse<UsuarioVehiculosResponse> logout(String username, String password) {
-        var wrapperResponse = new GenericResponse<UsuarioVehiculosResponse>();
+    // Método para hacer logout
+    public GenericResponse<UsuarioResponse> logout(String username, String password) {
+        var wrapperResponse = new GenericResponse<UsuarioResponse>();
 
         // Buscar el usuario por el email (username)
         Optional<Usuario> usuario = userRepository.findUsuarioByEmail(username);
@@ -66,17 +68,17 @@ public class UserService {
             return wrapperResponse;
         }
 
-        // Si el login es correcto, mapeamos los datos usando IUserMapper
-        UsuarioVehiculosResponse tempDTO = userMapper.usuarioToUsuarioVehiculosResponse(usuario.get());
+        // Si el usuario existe, mapeamos los datos a UsuarioResponse (sin vehículos)
+        UsuarioResponse tempDTO = userMapper.usuarioToUsuarioResponse(usuario.get());
 
         // Devolvemos el DTO con el mensaje de éxito en GenericResponse
         wrapperResponse.setData(tempDTO);
         return wrapperResponse;
     }
 
-
     //Metodo para crear un usuario
     public GenericResponse<UsuarioResponse> crearUsuario(CrearUsuarioRequest request) {
+
         //Buscar por email si el usuario ya existe
         var usuarioExists = userRepository.findUsuarioByEmail(request.getEmail());
         var wrapperResponse = new GenericResponse<UsuarioResponse>();
@@ -84,18 +86,27 @@ public class UserService {
             wrapperResponse.setError(new ErrorResponse("El usuario con el email proporcionado ya existe"));
             return wrapperResponse;
         }
+        // Validamos que el nombre no sea nulo
+        if (request.getNombre() == null || request.getNombre().isEmpty()) {
+            wrapperResponse.setError(new ErrorResponse("El campo 'nombre' es obligatorio"));
+            return wrapperResponse;  // Retorna con un error si el nombre es nulo o vacío
+        }
         //Si no existe, creamos un nuevo usuario
         var usuario = userMapper.createRequestToUser(request);
         //Activamos el usuario por defecto
         usuario.setActivo(true);
-        //Guardamos el usuario en la base de datos
-        var usuarioSaved = userRepository.save(usuario);
-        // Mapeamos el usuario guardado a un DTO
-        var response = userMapper.userToCreateEditResponse(usuarioSaved);
+       try { //Guardamos el usuario en la base de datos
+           var usuarioSaved = userRepository.save(usuario);
+           // Mapeamos el usuario guardado a un DTO
+           var response = userMapper.userToCreateEditResponse(usuarioSaved);
 
-        // Envolvemos la respuesta en GenericResponse y la devolvemos
-        wrapperResponse.setData(response);
-        return wrapperResponse;
+           // Envolvemos la respuesta en GenericResponse y la devolvemos
+           wrapperResponse.setData(response);
+           return wrapperResponse;
+       } catch (DataIntegrityViolationException Ex){
+           wrapperResponse.setError(new ErrorResponse(Ex.getMessage()));
+           return wrapperResponse;
+       }
     }
 
 
@@ -198,9 +209,53 @@ public class UserService {
         return wrapperResponse;
     }
 
-    //En lugar de tener varios metodos para encontrar según los parametros que tenga, creamos un método que
-    //sea capaz de devolvernos una lista de usuarios según los parametros que le pasemos TODO:revisar generic response en esta
     public GenericResponse<List<UsuarioResponse>> listar(Optional<Boolean> activo) {
+        List<Usuario> lista;
+        List<UsuarioResponse> listaResponse;
+
+        // Si no se pasa el parámetro activo, devolvemos todos los usuarios
+        if (activo.isEmpty()) {
+            lista = userRepository.findAll();
+        } else {
+            // Si se pasa el parámetro activo, devolvemos los usuarios activos o inactivos
+            lista = userRepository.findByActivo(activo.get());
+        }
+
+        var wrapperResponse = new GenericResponse<List<UsuarioResponse>>();
+
+        if (lista.isEmpty()) {
+            wrapperResponse.setError(new ErrorResponse("No se encontraron usuarios"));
+        } else {
+            // Mapeamos los usuarios a UsuarioResponse
+            listaResponse = lista.stream()
+                    .map(usuario -> {
+                        // Mapeo del usuario
+                        UsuarioResponse usuarioResponse = userMapper.userToCreateEditResponse(usuario);
+
+                        // Mapeo de los viajes del usuario a ViajeDTO
+                        List<ViajeDTO> viajesDTO = usuario.getViajes().stream()
+                                .map(viaje -> viajeMapper.viajeToViajeDTO(viaje)) // Aquí usamos el mapeo correcto
+                                .collect(Collectors.toList());
+
+                        // Asignamos los viajes al usuario
+                        usuarioResponse.setViajes(viajesDTO);
+
+                        return usuarioResponse;
+                    })
+                    .collect(Collectors.toList());
+
+            wrapperResponse.setData(listaResponse);
+        }
+
+        return wrapperResponse;
+    }
+
+
+
+//Antiguo metodo listar *J*
+//En lugar de tener varios metodos para encontrar según los parametros que tenga, creamos un método que
+//sea capaz de devolvernos una lista de usuarios según los parametros que le pasemos
+    /*public GenericResponse<List<UsuarioResponse>> listar(Optional<Boolean> activo) {
         List<Usuario> lista;
         List<UsuarioResponse> listaResponse;
         if (activo.isEmpty()) {
@@ -221,7 +276,7 @@ public class UserService {
 
         }
         return wrapperResponse;
-    }
+    }*/
 
 
     //Metodo para listar usuarios con vehiculos
@@ -243,11 +298,53 @@ public class UserService {
             wrapperResponse.setData(lista);
         }
         return wrapperResponse;
-
-
     }
 
-    //Metodo para borrar un usuario (IMPORTANTE: no utilizar con usuarios! Riesgo de borrado de la base de datos)
+    //listar los viajes de un usuario: *F*
+    public GenericResponse<List<UsuarioViajeResponse>> listarUsuariosViajes(Boolean activo) {
+        List<UsuarioViajeResponse> lista = new ArrayList<>();
+
+        // Recuperamos los usuarios con viajes (según si están activos o no)
+        List<Usuario> usuarios;
+        if (activo == null) {
+            // Si no se pasa el parámetro activo, obtenemos todos los usuarios
+            usuarios = userRepository.findAll();
+        } else {
+            // Si se pasa el parámetro activo, filtramos según el estado
+            usuarios = userRepository.findByActivo(activo);
+        }
+
+        // Recorremos cada usuario y mapeamos los datos a DTO
+        for (Usuario usuario : usuarios) {
+            // Usamos el mapeador para convertir el usuario a UsuarioViajeResponse
+            UsuarioViajeResponse usuarioViajeResponse = userMapper.userToUsuarioViajeResponse(usuario);
+
+            // Mapeamos los viajes del usuario a ViajeDTO
+            List<ViajeDTO> viajesDTO = usuario.getViajes().stream()
+                    .map(viaje -> viajeMapper.viajeToViajeDTO(viaje))  // Mapeamos cada viaje a ViajeDTO
+                    .collect(Collectors.toList());
+
+            // Asignamos la lista de viajes al UsuarioViajeResponse
+            usuarioViajeResponse.setViajes(viajesDTO);
+
+            // Añadimos el usuarioViajeResponse a la lista final
+            lista.add(usuarioViajeResponse);
+        }
+
+        // Creamos la respuesta genérica con los datos mapeados
+        var wrapperResponse = new GenericResponse<List<UsuarioViajeResponse>>();
+        if (lista.isEmpty()) {
+            // Si no encontramos usuarios con viajes, devolvemos un error
+            wrapperResponse.setError(new ErrorResponse("No se encontraron usuarios con viajes"));
+        } else {
+            // Si encontramos, devolvemos los datos
+            wrapperResponse.setData(lista);
+        }
+
+        return wrapperResponse;
+    }
+
+    //Metodo para borrar un usuario (IMPORTANTE: los usuarios no deben usar este. Riesgo de borrado de la base de datos)
     public GenericResponse<UsuarioResponse> borrar(Long id, String email) {
         var usuario = userRepository.findById(id);
         if (usuario.isEmpty()) {
@@ -269,6 +366,8 @@ public class UserService {
 
         return wrapperResponse;
     }
+
+
 
 
 }

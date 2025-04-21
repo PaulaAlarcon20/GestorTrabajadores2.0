@@ -1,20 +1,25 @@
 package com.calendario.trabajadores.repository.usuario;
 
+import com.calendario.trabajadores.mappings.IUserMapper;
 import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.database.Vehiculo;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
 import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
     @PersistenceContext
     private EntityManager entityManager;
+    @Autowired
+    private IUserMapper userMapper;
     //Método para buscar un AdministradorServicio por su correo electrónico
     @Override
     public Optional<Usuario> findUsuarioByEmail(String email) {
@@ -24,7 +29,50 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
                 .stream()
                 .findFirst();
     }
-    //Listar usuarios con sus vehiculos
+    @Override
+    public List<UsuarioVehiculosResponse> findAllUsuariosVehiculos() {
+        // Usamos LEFT JOIN para asegurarnos de que no se pierdan usuarios sin vehículos
+        List<Object[]> result = entityManager.createQuery(
+                        "SELECT u, v FROM Usuario u " +
+                                // Los vehículos pueden ser null si no los tienen
+                                "LEFT JOIN u.vehiculos v", Object[].class)
+                .getResultList();
+
+        // Ahora mapeamos los resultados usando el mapper
+        return result.stream()
+                .map(row -> {
+                    Usuario usuario = (Usuario) row[0];
+                    // Los vehículos pueden ser null si no existen
+                    List<VehiculoDTO> vehiculos = (List<VehiculoDTO>) row[1];
+
+                    //  usamos el mapper para convertir el Usuario a UsuarioVehiculosResponse
+                    return userMapper.usuarioToUsuarioVehiculosResponse(usuario, vehiculos);
+                })
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<UsuarioVehiculosResponse> findAllUsuariosVehiculosFiltrados(boolean activo) {
+        // Consulta con LEFT JOIN para obtener los usuarios y sus vehículos filtrados por el estado 'activo'
+        List<Object[]> result = entityManager.createQuery(
+                        "SELECT u, v FROM Usuario u " +
+                                "LEFT JOIN u.vehiculos v WHERE v.activo = :activo", Object[].class)
+                .setParameter("activo", activo)
+                .getResultList();
+
+        // Mapear los resultados usando el mapper
+        return result.stream()
+                .map(row -> {
+                    Usuario usuario = (Usuario) row[0];
+                    List<VehiculoDTO> vehiculos = (List<VehiculoDTO>) row[1];  // Los vehículos pueden ser null si no existen
+
+                    // Usamos el mapper para convertir el Usuario a UsuarioVehiculosResponse
+                    return userMapper.usuarioToUsuarioVehiculosResponse(usuario, vehiculos);
+                })
+                .collect(Collectors.toList());
+    }
+
+    //Antiguos metodos de UsuarioVehiculo
+    /*//Listar usuarios con sus vehiculos
     @Override
     public List<UsuarioVehiculosResponse> findAllUsuariosVehiculos() {
         var resp = entityManager.createQuery("SELECT com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse" +
@@ -34,7 +82,7 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
                 .getResultList();
         return resp;
     }
-    //
+
     @Override
     public List<UsuarioVehiculosResponse> findAllUsuariosVehiculosFiltrados(boolean param) {
         var resp = entityManager.createQuery(
@@ -47,6 +95,6 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
                 .setParameter("activo", param)
                 .getResultList();
         return resp;
-    }
+    }*/
 
 }

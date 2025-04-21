@@ -5,6 +5,7 @@ D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calend
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\controllers\UserController.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\repository\usuario\CustomUsuarioRepositoryImpl.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\repository\vehiculo\CustomVehiculoRepositoryImpl.java
+D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\dto\usuario\UsuarioViajeResponse.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\dto\turno\TurnoDTO.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\repository\viaje\CustomViajeRepositoryImpl.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\database\EstadoViaje.java
@@ -22,6 +23,7 @@ D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calend
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\database\Vehiculo.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\dto\usuario\CrearUsuarioRequest.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\controllers\TurnoController.java
+D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\database\EstadoPeticionViaje.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\repository\viaje\CustomViajeRepository.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\dto\usuario\EditarUsuarioRequest.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\mappings\IVehiculoMapper.java
@@ -34,8 +36,10 @@ D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calend
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\database\Turno.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\mappings\IUserMapper.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\database\Viaje.java
+D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\dto\viaje\ViajeDTO.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\repository\turno\CustomTurnoRepository.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\repository\vehiculo\CustomVehiculoRepository.java
+D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\mappings\ITurnoMapper.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\common\CamposComunes.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\dto\vehiculo\CrearVehiculoRequest.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\dto\vehiculo\EditarVehiculoRequest.java
@@ -47,6 +51,7 @@ D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calend
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\dto\turno\CrearTurnoRequest.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\dto\vehiculo\VehiculoDTO.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\repository\turno\CustomTurnoRepositoryImpl.java
+D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\database\PeticionViaje.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\dto\viaje\ViajeResponse.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\repository\turno\ITurnoRepository.java
 D:\DAM\ProyectosIntelliJ2025\GestorTrabajadores\Backend\src\main\java\com\calendario\trabajadores\model\dto\viaje\CrearViajeRequest.java

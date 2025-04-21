@@ -6,6 +6,7 @@ import com.calendario.trabajadores.model.database.Viaje;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearEditarViajeResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
+import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
 import com.calendario.trabajadores.model.dto.viaje.ViajeResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,14 +18,15 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface IViajeMapper {
-    @Mapping(target = "idVehiculo", source = "vehiculo.id") // Only sets ID
+
+    @Mapping(target = "idVehiculo", source = "vehiculo.id")
     @Mapping(target = "idConductor", source = "conductor.id")
     @Mapping(source = "fecha", target = "fechaSalida")
     @Mapping(source = "hora", target = "horaSalida")
     CrearEditarViajeResponse viajeToCrearEditarViajeResponse(Viaje viajeGuardado);
 
-    @Mapping(source = "idVehiculo", target = "vehiculo.id") // Only sets ID
-    @Mapping(source = "idConductor", target = "conductor.id") // Only sets ID
+    @Mapping(source = "idVehiculo", target = "vehiculo.id")
+    @Mapping(source = "idConductor", target = "conductor.id")
     @Mapping(source = "fechaSalida", target = "fecha")
     @Mapping(source = "horaSalida", target = "hora")
     @Mapping(target = "usuarioViajes", ignore = true)
@@ -34,20 +36,24 @@ public interface IViajeMapper {
     @Mapping(target = "modificadoPor", ignore = true)
     Viaje crearViajeRequestToViaje(CrearViajeRequest request);
 
-    //Mapar la lista de pasajeros
     @Mapping(target = "pasajeros", source = "usuarioViajes", qualifiedByName = "mapPasajeros")
     ViajeResponse viajeToViajeResponse(Viaje viajedb);
-    //Implementacion de mapeo la lista de pasajeros (mapPasajeros)
+
     @Named("mapPasajeros")
     default List<UsuarioResponse> mapPasajeros(List<UsuarioViaje> usuarioViajes) {
         if (usuarioViajes == null) return new ArrayList<>();
         return usuarioViajes.stream()
-                .map(uv -> usuarioToUsuarioResponse(uv.getUsuario())) // Extract Usuario
+                .map(uv -> usuarioToUsuarioResponse(uv.getUsuario()))
                 .collect(Collectors.toList());
     }
-    //Mapear un usuario (no usa lista)
-    //Aquí hago las referencias cuando el nombre de un atributo no corresponde con el del dto
+
     @Mapping(target = "id", source = "id")
     UsuarioResponse usuarioToUsuarioResponse(Usuario usuario);
 
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "fecha", source = "fecha")
+    @Mapping(target = "hora", source = "hora")
+    @Mapping(target = "vehiculoId", source = "vehiculo.id")
+    @Mapping(target = "conductorId", source = "conductor.id")
+    ViajeDTO viajeToViajeDTO(Viaje viaje);
 }

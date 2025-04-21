@@ -9,12 +9,16 @@ import com.calendario.trabajadores.model.dto.vehiculo.EditarVehiculoRequest;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.repository.vehiculo.IVehiculoRepository;
+import jakarta.validation.ConstraintViolation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import jakarta.validation.Validator;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class VehiculoService {
@@ -22,40 +26,42 @@ public class VehiculoService {
     private final IVehiculoRepository vehiculoRepository;
     private final IVehiculoMapper vehiculoMapper;
 
+    private final Validator validator;
+
+
     //Constructor de VehiculoService
 
-    public VehiculoService(IVehiculoRepository vehiculoRepository, IVehiculoMapper vehiculoMapper) {
-
+    public VehiculoService(IVehiculoRepository vehiculoRepository, IVehiculoMapper vehiculoMapper, Validator validator) {
         this.vehiculoRepository = vehiculoRepository;
         this.vehiculoMapper = vehiculoMapper;
+        this.validator = validator;
     }
 
-    //Crear un vehiculo
     public GenericResponse<CrearEditarVehiculoResponse> crearVehiculo(CrearVehiculoRequest request) {
         GenericResponse<CrearEditarVehiculoResponse> responseWrapper = new GenericResponse<>();
 
-        // Busco el vehículo por matrícula para saber si ya existe
-        var vehiculoExists = vehiculoRepository.findVehiculoByMatricula(request.matricula);
+        // Validación manual de anotaciones como @NotBlank
+        Set<ConstraintViolation<CrearVehiculoRequest>> violations = validator.validate(request);
+        if (!violations.isEmpty()) {
+            String errorMsg = violations.iterator().next().getMessage();
+            responseWrapper.setError(new ErrorResponse(errorMsg));
+            return responseWrapper;
+        }
 
-        // Si existe, devolvemos un error
+        // Comprobación de existencia
+        var vehiculoExists = vehiculoRepository.findVehiculoByMatricula(request.matricula);
         if (vehiculoExists.isPresent()) {
             responseWrapper.setError(new ErrorResponse("El vehículo ya existe"));
             return responseWrapper;
         }
 
-        // Si no existe, creamos el vehículo
         Vehiculo vehiculoModel = vehiculoMapper.createRequestToVehiculo(request);
-
-        // Guardamos en la base de datos
         Vehiculo v_guardado = vehiculoRepository.save(vehiculoModel);
-
-        // Mapeamos la respuesta
         var response = vehiculoMapper.vehiculoToCreateEditResponse(v_guardado);
-
-        // Devolvemos la respuesta exitosa
         responseWrapper.setData(response);
         return responseWrapper;
     }
+
 
     //Metodo para modificar un vehiculo
     public GenericResponse<CrearEditarVehiculoResponse> modificarVehiculo(EditarVehiculoRequest request) {
@@ -127,7 +133,7 @@ public class VehiculoService {
     }
 
 
-    //Metodo para listar todos los vehiculos de un usuario (Las tres opciones null, activo =true y activo=false) TODO
+    //Metodo para listar todos los vehiculos de un usuario (Las tres opciones null, activo =true y activo=false)
     public GenericResponse<List<CrearEditarVehiculoResponse>> listarVehiculos(Long usuarioId, Optional<Boolean> activo) {
         GenericResponse<List<CrearEditarVehiculoResponse>> responseWrapper = new GenericResponse<>();
 
@@ -149,8 +155,53 @@ public class VehiculoService {
         responseWrapper.setData(listaDTO);
         return responseWrapper;
     }
+    /*F*/
+    // Obtener un vehiculo por ID
+    public GenericResponse<CrearEditarVehiculoResponse> obtenerVehiculoPorId(Long id) {
+        GenericResponse<CrearEditarVehiculoResponse> responseWrapper = new GenericResponse<>();
 
+        Optional<Vehiculo> vehiculoOpt = vehiculoRepository.findById(id);
+        if (vehiculoOpt.isEmpty()) {
+            responseWrapper.setError(new ErrorResponse("Vehículo no encontrado con ID: " + id));
+            return responseWrapper;
+        }
 
+        CrearEditarVehiculoResponse dto = vehiculoMapper.vehiculoToCreateEditResponse(vehiculoOpt.get());
+        responseWrapper.setData(dto);
+        return responseWrapper;
+    }
+
+    // Obtener un vehiculo por matricula
+    /*F*/
+    public GenericResponse<CrearEditarVehiculoResponse> obtenerVehiculoPorMatricula(String matricula) {
+        GenericResponse<CrearEditarVehiculoResponse> responseWrapper = new GenericResponse<>();
+
+        Optional<Vehiculo> vehiculoOpt = vehiculoRepository.findVehiculoByMatricula(matricula);
+        if (vehiculoOpt.isEmpty()) {
+            responseWrapper.setError(new ErrorResponse("Vehículo no encontrado con matrícula: " + matricula));
+            return responseWrapper;
+        }
+
+        CrearEditarVehiculoResponse dto = vehiculoMapper.vehiculoToCreateEditResponse(vehiculoOpt.get());
+        responseWrapper.setData(dto);
+        return responseWrapper;
+    }
+
+    // Eliminar un vehiculo por ID
+    /*F*/
+    public GenericResponse<String> eliminarVehiculo(Long id) {
+        GenericResponse<String> responseWrapper = new GenericResponse<>();
+
+        Optional<Vehiculo> vehiculoOpt = vehiculoRepository.findById(id);
+        if (vehiculoOpt.isEmpty()) {
+            responseWrapper.setError(new ErrorResponse("No se puede eliminar: vehículo no encontrado con ID: " + id));
+            return responseWrapper;
+        }
+
+        vehiculoRepository.deleteById(id);
+        responseWrapper.setData("Vehículo eliminado correctamente.");
+        return responseWrapper;
+    }
 
 }
 
