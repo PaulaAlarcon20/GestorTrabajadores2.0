@@ -24,7 +24,7 @@
 - Generación de base de datos al ejecutar la app
 - Documentación con **Swagger**
 - Conversor de fechas/horas reutilizable
-- Pantallas de gestión de viajes y vehículos (frontend de compañeros)
+- Pantallas de gestión de viajes y vehículos (en base al resto de frontend de compañeros)
 - Readme con documentación backend.
 
 ---
