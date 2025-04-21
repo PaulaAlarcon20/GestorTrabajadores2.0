@@ -133,7 +133,7 @@ CREATE DATABASE gestionturnos;
 
 ---
 
-### ⚖Funcionalidades Faltantes 
+### Funcionalidades Faltantes 
 
 #### Métodos CRUD
 
@@ -166,8 +166,6 @@ CREATE DATABASE gestionturnos;
 - Sistema de prioridades (urgencias, turnos programados, etc.)
 
 ---
-
-## ℹ️ Notas Importantes
 
 ### Diferencia entre `activo` y `estadoTurno`. Indica si un turno está disponible para ser gestionado o no, independientemente de su progreso
 Es decir, desactivar un turno es un softdelete.
