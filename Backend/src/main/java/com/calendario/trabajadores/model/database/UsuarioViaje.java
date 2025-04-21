@@ -24,4 +24,8 @@ public class UsuarioViaje {
     @ManyToOne
     @JoinColumn(name = "viaje_id",nullable = false)
     private Viaje viaje = new Viaje();
+    // Estado de la solicitud del usuario para unirse al viaje
+    @Enumerated(EnumType.STRING)
+    private EstadoUsuarioViaje estado;
 }
+

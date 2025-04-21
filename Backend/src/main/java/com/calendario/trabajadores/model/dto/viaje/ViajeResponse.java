@@ -1,6 +1,7 @@
 package com.calendario.trabajadores.model.dto.viaje;
 
 import com.calendario.trabajadores.model.common.CamposComunes;
+import com.calendario.trabajadores.model.database.EstadoViaje;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
 import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
@@ -23,20 +24,18 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class ViajeResponse extends CamposComunes {
+public class ViajeResponse {
 
     private Long idViaje;
     private VehiculoDTO vehiculo = new VehiculoDTO();
     private UsuarioResponse conductor = new UsuarioResponse();
     private List<UsuarioResponse> pasajeros = new ArrayList<>();
-
     private String origen;
     private String destino;
     private LocalDate fechaSalida;
-
     private LocalTime horaSalida;
     //Integer y no int para poder ser null
     private Integer plazas;
     private Boolean activo;
-
+    private EstadoViaje estado;
 }

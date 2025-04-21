@@ -1,6 +1,8 @@
 package com.calendario.trabajadores.repository.viaje;
 
 import com.calendario.trabajadores.model.database.EstadoViaje;
+import com.calendario.trabajadores.model.database.Usuario;
+import com.calendario.trabajadores.model.database.UsuarioViaje;
 import com.calendario.trabajadores.model.database.Viaje;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -15,11 +17,7 @@ public class CustomViajeRepositoryImpl implements CustomViajeRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    /**
-     * @param estado
-     * @return
-     */
-    @Override                //TODO: implementar segun Listar vehiculos
+    @Override
     public List<Viaje> findAllViajesByEstado(EstadoViaje estado) {
         String jpql = "SELECT v FROM Viaje v WHERE v.estado = :estado";
         TypedQuery<Viaje> query = entityManager.createQuery(jpql, Viaje.class);
@@ -27,72 +25,71 @@ public class CustomViajeRepositoryImpl implements CustomViajeRepository {
         return query.getResultList();
     }
 
-    @Override              //TODO: implementar segun Listar vehiculos
+    @Override
     public List<Viaje> findViajesByUsuarioAndEstado(Long usuarioId, EstadoViaje estado) {
-        //Creamos la sentencia JPQL
-        String jpql = "SELECT v FROM Viaje v WHERE (v.conductor.id = :usuarioId OR v.usuario.id = :usuarioId) AND v.estado = :estado";
-
-        // Creamos la consulta
+        String jpql = "SELECT DISTINCT v FROM Viaje v " +
+                "LEFT JOIN v.usuarioViajes uv " +
+                "WHERE (v.conductor.id = :usuarioId OR uv.usuario.id = :usuarioId) " +
+                "AND v.estado = :estado";
         TypedQuery<Viaje> query = entityManager.createQuery(jpql, Viaje.class);
-
-        // Establecemos los parámetros
         query.setParameter("usuarioId", usuarioId);
         query.setParameter("estado", estado);
-
-        // Ejecutamos la consulta y devolvemos los resultados
         return query.getResultList();
     }
 
-    /**
-     * @param usuarioId
-     * @return
-     */
     @Override
     public List<Viaje> mostrarViajesConductor(Long usuarioId) {
-        return null;
+        String jpql = "SELECT v FROM Viaje v WHERE v.conductor.id = :usuarioId";
+        return entityManager.createQuery(jpql, Viaje.class)
+                .setParameter("usuarioId", usuarioId)
+                .getResultList();
     }
 
-    /**
-     * @param usuarioId
-     * @return
-     */
     @Override
     public List<Viaje> mostrarMisViajes(Long usuarioId) {
-        return null;
+        String jpql = "SELECT uv.viaje FROM UsuarioViaje uv WHERE uv.usuario.id = :usuarioId";
+        return entityManager.createQuery(jpql, Viaje.class)
+                .setParameter("usuarioId", usuarioId)
+                .getResultList();
     }
 
-    /**
-     * @param viaje
-     * @return
-     */
     @Override
     public Viaje actualizarViaje(Viaje viaje) {
-        return null;
+        return entityManager.merge(viaje);
     }
 
-    /**
-     * @param viajeId
-     */
     @Override
     public void cancelarViaje(Long viajeId) {
-
+        Viaje viaje = entityManager.find(Viaje.class, viajeId);
+        if (viaje != null && viaje.getEstado() == EstadoViaje.DISPONIBLE) {
+            viaje.setEstado(EstadoViaje.CANCELADO);
+            entityManager.merge(viaje);
+        }
     }
 
-    /**
-     * @param viajeId
-     * @param usuarioId
-     */
     @Override
     public void agregarUsuarioViaje(Long viajeId, Long usuarioId) {
+        Viaje viaje = entityManager.find(Viaje.class, viajeId);
+        Usuario usuario = entityManager.find(Usuario.class, usuarioId);
 
+        if (viaje != null && usuario != null) {
+            UsuarioViaje uv = new UsuarioViaje();
+            uv.setViaje(viaje);
+            uv.setUsuario(usuario);
+            entityManager.persist(uv);
+        }
     }
 
-    /**
-     * @param viajeId
-     * @param usuarioId
-     */
     @Override
     public void eliminarUsuarioViaje(Long viajeId, Long usuarioId) {
+        String jpql = "SELECT uv FROM UsuarioViaje uv WHERE uv.viaje.id = :viajeId AND uv.usuario.id = :usuarioId";
+        List<UsuarioViaje> resultado = entityManager.createQuery(jpql, UsuarioViaje.class)
+                .setParameter("viajeId", viajeId)
+                .setParameter("usuarioId", usuarioId)
+                .getResultList();
 
+        for (UsuarioViaje uv : resultado) {
+            entityManager.remove(uv);
+        }
     }
 }

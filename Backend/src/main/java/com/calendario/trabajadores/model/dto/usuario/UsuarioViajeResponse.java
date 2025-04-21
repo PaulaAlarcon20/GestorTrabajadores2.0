@@ -28,6 +28,6 @@ public class UsuarioViajeResponse {
     // Lista de viajes asociados al usuario
     private List<ViajeDTO> viajes;
 
-    // Atributo opcional de estado si se desea
+    // Atributo opcional de estado
     private Boolean activo;
 }

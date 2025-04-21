@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface IViajeRepository extends JpaRepository<Viaje, Long>, CustomViajeRepository {
 
-
+    //buscar todos los viajes de un conductor
     Object findViajeByConductorId(Long idConductor);
 }

@@ -71,9 +71,10 @@ public class ViajeServiceTest {
         vehiculo.setUsuario(conductor);
         vehiculoRepository.save(vehiculo);
     }
-
     @Transactional
     @Test
+    @DisplayName("Crear un viaje correctamente")
+    @Order(1)
     public void testCrearViaje() {
         CrearViajeRequest request = new CrearViajeRequest();
         request.setIdConductor(conductor.getId());
@@ -94,6 +95,8 @@ public class ViajeServiceTest {
 
     @Transactional
     @Test
+    @DisplayName("Editar un viaje correctamente")
+    @Order(2)
     public void testEditarViaje() {
         // Creamos primero un viaje
         CrearViajeRequest request = new CrearViajeRequest();
@@ -116,21 +119,51 @@ public class ViajeServiceTest {
         editRequest.setDestino("Granada");
 
         var response = viajeService.editarViaje(viajeId, editRequest);
-        //ojo viaje optional*
         var result = response.get();
         // Verifica que el resultado sea el esperado
         assertNotNull(result, "El viaje no fue editado correctamente");
         assertEquals("Granada", result.getDestino(), "El destino no se actualizó correctamente");
     }
 
+    @Transactional
+    @Test
+    @DisplayName("Cancelar un viaje correctamente")
+    @Order(3)
+    public void testCancelarViaje() {
+        // Creamos un viaje para cancelar
+        CrearViajeRequest request = new CrearViajeRequest();
+        request.setIdConductor(conductor.getId());
+        request.setIdVehiculo(vehiculo.getId());
+        request.setOrigen("Zaragoza");
+        request.setDestino("Bilbao");
+        request.setFechaSalida(LocalDate.now().plusDays(1));
+        request.setHoraSalida(LocalTime.of(8, 0));
+        request.setPlazas(2);
+
+        var responseCreate = viajeService.crearViaje(request);
+        Long viajeId = responseCreate.getData().getId();
+
+        // Verifica que el viaje fue creado correctamente
+        assertNotNull(viajeId, "El viaje no fue creado correctamente");
+
+        // Cancela el viaje
+        viajeService.cancelarViaje(viajeId);
+
+        // Verifica que el viaje está cancelado
+        Optional<Viaje> viaje = viajeRepository.findById(viajeId);
+        assertTrue(viaje.isPresent());
+        assertEquals(EstadoViaje.CANCELADO, viaje.get().getEstado());
+    }
 
     @Transactional
     @Test
+    @DisplayName("Cambiar estado de viaje a 'confirmar'")
+    @Order(4)
     public void testCambiarEstadoViaje_confirmar() {
         var viaje = new Viaje();
         viaje.setConductor(conductor);
         viaje.setVehiculo(vehiculo);
-        viaje.setEstado(EstadoViaje.DISPONIBLE);
+        viaje.setEstado(EstadoViaje.SIN_EMPEZAR);
         viaje.setOrigen("Zaragoza");
         viaje.setDestino("Bilbao");
         viaje.setFechaSalida(LocalDate.now().plusDays(1));
@@ -146,6 +179,8 @@ public class ViajeServiceTest {
 
     @Transactional
     @Test
+    @DisplayName("Cambiar estado de viaje a 'finalizar'")
+    @Order(5)
     public void testCambiarEstadoViaje_finalizar() {
         var viaje = new Viaje();
         viaje.setConductor(conductor);
@@ -163,13 +198,15 @@ public class ViajeServiceTest {
     }
 
     @Test
+    @DisplayName("Listar datos de un viaje correctamente")
+    @Order(6)
     public void testListarDatosViaje() {
         var viaje = new Viaje();
         viaje.setConductor(conductor);
         viaje.setVehiculo(vehiculo);
         viaje.setOrigen("Málaga");
         viaje.setDestino("Barcelona");
-        viaje.setEstado(EstadoViaje.DISPONIBLE);
+        viaje.setEstado(EstadoViaje.SIN_EMPEZAR);
         viaje.setFechaSalida(LocalDate.now().plusDays(2));
         viaje.setHoraSalida(LocalTime.of(12, 0));
         viaje.setPlazas(5);
@@ -181,5 +218,31 @@ public class ViajeServiceTest {
         assertEquals("Málaga", result.get().getOrigen());
         assertEquals("Barcelona", result.get().getDestino());
     }
+
+    @Transactional
+    @Test
+    @DisplayName("Solicitar unirse a un viaje")
+    @Order(7)
+    public void testSolicitarUnirseViaje() {
+        var viaje = new Viaje();
+        viaje.setConductor(conductor);
+        viaje.setVehiculo(vehiculo);
+        viaje.setEstado(EstadoViaje.SIN_EMPEZAR);
+        viaje.setOrigen("Madrid");
+        viaje.setDestino("Valencia");
+        viaje.setFechaSalida(LocalDate.now().plusDays(1));
+        viaje.setHoraSalida(LocalTime.of(8, 0));
+        viaje.setPlazas(3);
+        viaje = viajeRepository.save(viaje);
+
+        // Realizamos la solicitud de unión
+        viajeService.solicitarUnirseViaje(conductor.getId(), viaje.getId());
+
+        var result = viajeRepository.findById(viaje.getId()).get();
+        // Verifica si la solicitud fue registrada
+        assertTrue(result.getSolicitudes().size() > 0);
+    }
+
+
 
 }

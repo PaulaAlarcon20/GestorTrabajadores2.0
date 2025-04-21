@@ -10,6 +10,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
@@ -36,6 +37,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("1. Crear usuario exitosamente")
+    @Commit
     @Order(1)
     void crearUsuario() {
         var userRequest = new CrearUsuarioRequest();
@@ -226,6 +228,7 @@ class UserServiceTest {
 
     @Test
     @Order(16)
+    @Commit
     @Transactional
     @DisplayName("16. Borrar usuario definitivamente")
     void borrarUsuarioDefinitivamente() {

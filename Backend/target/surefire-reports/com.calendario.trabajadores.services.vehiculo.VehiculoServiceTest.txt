@@ -1,10 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.calendario.trabajadores.services.vehiculo.VehiculoServiceTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.034 s <<< FAILURE! -- in com.calendario.trabajadores.services.vehiculo.VehiculoServiceTest
-com.calendario.trabajadores.services.vehiculo.VehiculoServiceTest -- Time elapsed: 0.034 s <<< ERROR!
-java.lang.NullPointerException: Cannot invoke "com.calendario.trabajadores.model.dto.usuario.UsuarioResponse.getId()" because "result" is null
-	at com.calendario.trabajadores.services.vehiculo.VehiculoServiceTest.setupUsuario(VehiculoServiceTest.java:47)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.178 s -- in com.calendario.trabajadores.services.vehiculo.VehiculoServiceTest

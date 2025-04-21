@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface CustomViajeRepository {
 
-    //Metodo para mostrar los viajes de un conductor
+    //Mostrar los viajes de un conductor
     List<Viaje> mostrarViajesConductor(Long usuarioId);
 
     //Mostrar mis viajes (pasajero)

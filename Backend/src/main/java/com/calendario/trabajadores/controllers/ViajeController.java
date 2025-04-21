@@ -1,5 +1,7 @@
 package com.calendario.trabajadores.controllers;
 
+import com.calendario.trabajadores.model.database.EstadoViaje;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearEditarViajeResponse;
 import com.calendario.trabajadores.model.dto.viaje.CrearViajeRequest;
 import com.calendario.trabajadores.model.dto.viaje.EditarViajeRequest;
@@ -14,166 +16,168 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 
 @RestController
-@Tag(name = "Viaje", description = "Endpoints para viajes")
+@RequestMapping("/viajes")
+@Tag(name = "Viajes", description = "Operaciones relacionadas con los viajes")
 public class ViajeController {
-    //Inyeccion de dependencias
-    @Autowired
-    private ViajeService viajeService;
-    @Autowired
-    private UserService userService;
 
-    //No necesito el constructor porque ya tengo la inyeccion de dependencias con @Autowired ***********
-    public ViajeController(ViajeService viajeService, UserService userService) {
+    private final ViajeService viajeService;
+
+    public ViajeController(ViajeService viajeService) {
         this.viajeService = viajeService;
-        this.userService = userService;
     }
 
-    //Crear un nuevo viaje        *F*
-    @Operation(summary = "Creación de viaje", description = "Endpoint para crear un viaje")
-    @PostMapping("/viaje/crear")
+    @Operation(summary = "Crear un nuevo viaje", description = "Permite al conductor crear un viaje indicando origen, destino, fecha y plazas")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Viaje creado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarViajeResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))}
-    )
-    public ResponseEntity<?> crearViaje(@RequestBody CrearViajeRequest input) {
-        // Llamamos al servicio para crear el viaje
-        GenericResponse<CrearEditarViajeResponse> viajeResponse = viajeService.crearViaje(input);
-
-        // Verificamos si hay error en la respuesta del servicio
-        if (viajeResponse.getError() != null) {
-            // Si ocurrió un error, devolvemos una respuesta con código 400 y el error
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(viajeResponse);
-        }
-
-        // Si la creación fue exitosa, devolvemos la respuesta con los datos del viaje creado
-        return ResponseEntity.ok(viajeResponse);
+            @ApiResponse(responseCode = "200", description = "Viaje creado correctamente",
+                    content = @Content(schema = @Schema(implementation = CrearEditarViajeResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Error en la validación de los datos",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping
+    public ResponseEntity<GenericResponse<CrearEditarViajeResponse>> crearViaje(@RequestBody @Valid CrearViajeRequest request) {
+        return ResponseEntity.ok(viajeService.crearViaje(request));
     }
 
-
-
-    /*@Operation(summary = "Crear un viaje", description = "Endpoint crear viaje")
-    @PostMapping("/viaje/crear")
+    @Operation(summary = "Editar un viaje existente", description = "Permite al conductor editar los detalles de un viaje.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Viaje creado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarViajeResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    }
-    )
-    public ResponseEntity<?> crearViaje(@RequestBody CrearViajeRequest input) {
-        // Llamamos al servicio para crear el viaje
-        GenericResponse<CrearEditarViajeResponse> viajeResponse = viajeService.crearViaje(input);
-
-        // Si no se pudo crear el viaje, devolvemos BAD_REQUEST con el error adecuado
-        if (!viajeResponse.isSuccess()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of(viajeResponse.getError().getStatus(), viajeResponse.getError().getMessage()));
-        }
-
-        // Si el viaje se creó correctamente, devolvemos la respuesta con los datos del viaje creado
-        return ResponseEntity.ok(viajeResponse);
-    }*/
-
-
-    // Cambiar estado de un viaje
-    @Operation(summary = "Cambiar estado de un viaje", description = "Endpoint para cambiar el estado de un viaje")
-    @PatchMapping("/viaje/estado")   //PATCH para actualizar solo el estado NO POST NI GET
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Estado del viaje cambiado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarViajeResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Viaje editado correctamente",
+                    content = @Content(schema = @Schema(implementation = CrearEditarViajeResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Error en la validación de los datos",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "Viaje no encontrado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public ResponseEntity<?> cambiarEstadoViaje(
-            @PathVariable Long idViaje,
-            @RequestParam String action  // Ahora esperamos un String "action" en lugar de "nuevoEstado"
-    ) {
-        // Llamamos al servicio para cambiar el estado del viaje
-        Optional<CrearEditarViajeResponse> viajeResponse = viajeService.cambiarEstadoViaje(idViaje, action);
-
-        // Si no se encuentra el viaje o no se puede cambiar el estado, respondemos con NOT_FOUND
-        if (viajeResponse.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse("Viaje no encontrado o acción no permitida"));
-        }
-
-        // Si va bien, retornamos el viaje actualizado
-        return ResponseEntity.ok(viajeResponse.get());
+    @PutMapping("/{id}")
+    public ResponseEntity<GenericResponse<CrearEditarViajeResponse>> editarViaje(@PathVariable Long id,
+                                                                                 @RequestBody @Valid EditarViajeRequest request) {
+        return ResponseEntity.ok(viajeService.editarViaje(id, request));
     }
 
-
-    //Editar datos de un viaje (no revisado) TODO:añadir validacion de no se peude editar un viaje en curso o finalizado.
-    //(la mayoria de los datos del viaje son editables mientras no tenga pasajero asignado!)**
-    //este endpoint deberia ser solo para viajes sin pasajero asignado !!!**L
-    @Operation(summary = "Editar datos de un viaje", description = "Endpoint para editar datos de un viaje")
-    @PatchMapping("/viaje/editarDatos/{idViaje}")  // Usamos PATCH porque es para editar
+    @Operation(summary = "Cancelar un viaje", description = "Permite al conductor cancelar un viaje.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Datos del viaje modificados",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CrearEditarViajeResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Viaje no encontrado o no editable",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    public ResponseEntity<?> editarViaje(
-            @PathVariable Long idViaje,  // Aquí utilizamos PathVariable para pasar el ID en la URL
-            @RequestBody EditarViajeRequest model  // Recibimos los datos para editar el viaje
-    ) {
-        // Llamamos al servicio para editar el viaje, pasamos el id y el EditarViajeRequest
-        Optional<CrearEditarViajeResponse> viajeEditado = viajeService.editarViaje(idViaje, model);
-
-        // Verificamos si el viaje fue encontrado y editado correctamente
-        if (viajeEditado.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse("Viaje no encontrado o no editable, el viaje no está disponible para su edición."));
-        }
-
-        // Si la edición fue exitosa, devolvemos la respuesta con el viaje editado
-        return ResponseEntity.ok(viajeEditado.get());
-    }
-
-    //Endpoint de prueba
-    @Operation(summary = "Devolver toda la informacion de un viaje", description = "Endpoint para listar toda la informacion de un viaje")
-    @GetMapping("/viaje/listar")  // Usamos PATCH porque es para editar
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Datos del viaje listados",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ViajeResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Viaje cancelado correctamente"),
             @ApiResponse(responseCode = "404", description = "Viaje no encontrado",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public ResponseEntity<?> usuariosViaje(
-            @RequestParam Long idViaje// Aquí utilizamos PathVariable para pasar el ID en la URL
-
-    ) {
-        // Llamamos al servicio para editar el viaje, pasamos el id y el EditarViajeRequest
-        var viajeDatos = viajeService.listarDatosViaje(idViaje);
-
-        // Verificamos si el viaje fue encontrado y editado correctamente
-        if (viajeDatos.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse("Viaje no encontrado"));
-        }
-
-        // Si la edición fue exitosa, devolvemos la respuesta con el viaje editado
-        return ResponseEntity.ok(viajeDatos.get());
+    @DeleteMapping("/{id}")
+    public ResponseEntity<GenericResponse<Void>> cancelarViaje(@PathVariable Long id) {
+        return ResponseEntity.ok(viajeService.cancelarViaje(id));
     }
 
+    @Operation(summary = "Listar todos los viajes", description = "Listar viajes disponibles o creados por un usuario, dependiendo de su rol.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Viajes listados correctamente",
+                    content = @Content(schema = @Schema(implementation = CrearEditarViajeResponse.class))),
+            @ApiResponse(responseCode = "404", description = "No se encontraron viajes",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping
+    public ResponseEntity<GenericResponse<List<CrearEditarViajeResponse>>> listarViajes(@RequestParam Long usuarioId,
+                                                                                        @RequestParam String rol,
+                                                                                        @RequestParam EstadoViaje estado) {
+        return ResponseEntity.ok(viajeService.listarViajes(usuarioId, rol, estado));
+    }
+
+    @Operation(summary = "Obtener datos del viaje", description = "Obtener detalles de un viaje por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Datos del viaje obtenidos correctamente",
+                    content = @Content(schema = @Schema(implementation = ViajeResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Viaje no encontrado",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<GenericResponse<ViajeResponse>> listarDatosViaje(@PathVariable Long id) {
+        return ResponseEntity.ok(viajeService.listarDatosViaje(id));
+    }
+
+    @Operation(summary = "Solicitar unirse a un viaje", description = "Permite a un usuario solicitar unirse a un viaje disponible.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Solicitud enviada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Error en la solicitud",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Usuario o viaje no encontrado",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/{viajeId}/solicitar")
+    public ResponseEntity<GenericResponse<Void>> solicitarUnirseViaje(@RequestParam Long usuarioId,
+                                                                      @PathVariable Long viajeId) {
+        return ResponseEntity.ok(viajeService.solicitarUnirseViaje(usuarioId, viajeId));
+    }
+
+    @Operation(summary = "Aceptar solicitud de viaje", description = "Permite al conductor aceptar una solicitud de un usuario para unirse a un viaje.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Solicitud aceptada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Error al aceptar la solicitud",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Solicitud no encontrada",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/{viajeId}/aceptarSolicitud")
+    public ResponseEntity<GenericResponse<Void>> aceptarSolicitud(@RequestParam Long usuarioViajeId) {
+        return ResponseEntity.ok(viajeService.aceptarSolicitud(usuarioViajeId));
+    }
+
+    @Operation(summary = "Rechazar solicitud de viaje", description = "Permite al conductor rechazar una solicitud de un usuario para unirse a un viaje.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Solicitud rechazada correctamente"),
+            @ApiResponse(responseCode = "404", description = "Solicitud no encontrada o ya procesada",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/{viajeId}/rechazarSolicitud")
+    public ResponseEntity<GenericResponse<Void>> rechazarSolicitud(@RequestParam Long usuarioId,
+                                                                   @PathVariable Long viajeId) {
+        return ResponseEntity.ok(viajeService.rechazarSolicitud(usuarioId, viajeId));
+    }
+
+    @Operation(summary = "Listar los pasajeros de un viaje", description = "Obtener la lista de los pasajeros aceptados en un viaje.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pasajeros listados correctamente",
+                    content = @Content(schema = @Schema(implementation = UsuarioResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Viaje no encontrado",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/{viajeId}/pasajeros")
+    public ResponseEntity<GenericResponse<List<UsuarioResponse>>> listarPasajeros(@PathVariable Long viajeId) {
+        return ResponseEntity.ok(viajeService.listarPasajeros(viajeId));
+    }
+
+    @Operation(summary = "Iniciar un viaje", description = "Permite al conductor cambiar el estado del viaje a EN_CURSO.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Viaje iniciado correctamente"),
+            @ApiResponse(responseCode = "400", description = "El viaje no puede ser iniciado",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Viaje no encontrado",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/{viajeId}/iniciar")
+    public ResponseEntity<GenericResponse<Void>> iniciarViaje(@PathVariable Long viajeId) {
+        return ResponseEntity.ok(viajeService.iniciarViaje(viajeId));
+    }
+
+    @Operation(summary = "Finalizar un viaje", description = "Permite al conductor cambiar el estado del viaje a FINALIZADO.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Viaje finalizado correctamente"),
+            @ApiResponse(responseCode = "400", description = "El viaje no puede ser finalizado",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Viaje no encontrado",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("/{viajeId}/finalizar")
+    public ResponseEntity<GenericResponse<Void>> finalizarViaje(@PathVariable Long viajeId) {
+        return ResponseEntity.ok(viajeService.finalizarViaje(viajeId));
+    }
 
 
     /*//Listar todos los viajes (uso para admin)

@@ -1,5 +1,6 @@
 package com.calendario.trabajadores.model.database;
 
 public enum EstadoViaje {
-    DISPONIBLE, EN_CURSO, FINALIZADO
+    //DISPONIBLE,
+    SIN_EMPEZAR, EN_CURSO, FINALIZADO, CANCELADO, COMPLETO
 }
