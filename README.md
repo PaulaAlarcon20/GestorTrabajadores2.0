@@ -28,10 +28,7 @@
   - Usuarios
 - Finalización de la sección **Viajes**
 - Código inicial para **login** y **logout**
-- Generación de base de datos al ejecutar la app
-- Documentación con **Swagger**
-- Conversor de fechas/horas reutilizable
-- Pantallas de gestión de viajes y vehículos (frontend de compañeros)
+- Generación de base de datos 
 
 ---
 
