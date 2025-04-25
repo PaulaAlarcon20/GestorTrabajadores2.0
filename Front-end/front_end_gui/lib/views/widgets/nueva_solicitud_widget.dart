@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:front_end_gui/views/widgets/DatePickerWidgetTurnos.dart';
-import 'package:front_end_gui/views/widgets/DropDownWidgetTurnos.dart';
+import 'package:front_end_gui/views/widgets/date_picker_widget_turnos.dart';
+import 'package:front_end_gui/views/widgets/drop_down_widget_turnos.dart';
 
 class NuevaSolicitudWidget extends StatelessWidget {
   const NuevaSolicitudWidget({super.key});

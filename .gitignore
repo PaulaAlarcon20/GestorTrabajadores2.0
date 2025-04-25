@@ -22,3 +22,9 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+.vscode/launch.json
+Front-end/front_end_gui/devtools_options.yaml
+Backend/target/generated-sources/annotations/com/calendario/trabajadores/mappings/ITurnoMapperImpl.java
+Backend/target/generated-sources/annotations/com/calendario/trabajadores/mappings/IUserMapperImpl.java
+Backend/target/generated-sources/annotations/com/calendario/trabajadores/mappings/IVehiculoMapperImpl.java
+Backend/target/generated-sources/annotations/com/calendario/trabajadores/mappings/IViajeMapperImpl.java

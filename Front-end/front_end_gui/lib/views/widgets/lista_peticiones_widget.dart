@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../gestionTurnos/Solicitudes.dart';
 
 class ListaPeticionesWidget extends StatefulWidget {
   const ListaPeticionesWidget({super.key});
@@ -8,6 +9,16 @@ class ListaPeticionesWidget extends StatefulWidget {
 }
 
 class _ListaPeticionesWidgetState extends State<ListaPeticionesWidget> {
+  List<ItemSolicitud> lSolicitudes = [
+    ItemSolicitud('Elemento 1', false),
+    ItemSolicitud('Elemento 2', false),
+    ItemSolicitud('Elemento 3', false),
+    ItemSolicitud('Elemento 4', false),
+    ItemSolicitud('Elemento 5', false),
+    ItemSolicitud('Elemento 6', false),
+    ItemSolicitud('Elemento 7', false),
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -32,7 +43,7 @@ class _ListaPeticionesWidgetState extends State<ListaPeticionesWidget> {
                     "Turno $index",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text("Fecha dia-mes-año($index)"),
+                  subtitle: Text("Fecha 23-04-2025"),
                   leading: Icon(
                     Icons.calendar_month,
                     color: Colors.blue,

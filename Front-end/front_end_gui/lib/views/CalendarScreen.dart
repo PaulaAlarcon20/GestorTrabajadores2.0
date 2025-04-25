@@ -9,12 +9,6 @@ class CalendarScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Calendario'),
-        centerTitle: true,
-        backgroundColor: theme.colorScheme.primary,
-        iconTheme: theme.iconTheme,
-      ),
       body: const Padding(
         padding: EdgeInsets.all(16.0),
         child: CalendarWidget(), // Usar el widget del calendario

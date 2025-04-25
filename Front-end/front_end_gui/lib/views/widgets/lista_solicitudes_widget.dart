@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:front_end_gui/views/widgets/NuevaSolicitudWidget.dart';
-import 'package:front_end_gui/views/widgets/checkbox_widget.dart';
+import 'package:front_end_gui/views/widgets/nueva_solicitud_widget.dart';
+import '../gestionTurnos/Solicitudes.dart';
 
 class ListaSolicitudesWidget extends StatefulWidget {
   const ListaSolicitudesWidget({super.key});
@@ -10,6 +10,13 @@ class ListaSolicitudesWidget extends StatefulWidget {
 }
 
 class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
+  List<ItemSolicitud> lSolicitudes = [
+    ItemSolicitud('Elemento 1', false),
+    ItemSolicitud('Elemento 2', false),
+    ItemSolicitud('Elemento 3', false),
+    ItemSolicitud('Elemento 4', false),
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -17,30 +24,32 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
 
   @override
   Widget build(BuildContext context) {
-    //validadores
-    final _formkey = GlobalKey<FormState>();
-
     return Scaffold(
         body: ListView.builder(
-            itemCount: 1,
+            itemCount: lSolicitudes.length,
             itemBuilder: (context, index) {
-              index += 1;
-
               return Container(
                 margin: EdgeInsets.all(8),
                 padding: EdgeInsets.all(4),
                 decoration: BoxDecoration(color: Colors.blue.shade100),
                 child: ListTile(
                   title: Text(
-                    "Turno $index",
+                    lSolicitudes[index].text,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text("Fecha dia-mes-año"),
+                  subtitle: Text("Fecha 23-04-2025"),
                   leading: Icon(
                     Icons.calendar_month,
                     color: Colors.blue,
                   ),
-                  trailing: CheckboxWidget(),
+                  trailing: Checkbox(
+                    value: lSolicitudes[index].isChecked,
+                    onChanged: (bool? newValue) {
+                      setState(() {
+                        lSolicitudes[index].isChecked = newValue ?? false;
+                      });
+                    },
+                  ),
                 ),
               );
             }),
@@ -49,9 +58,9 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
         floatingActionButton: Padding(
           padding: EdgeInsets.only(left: 30),
           child: Row(
-            key: _formkey,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              //Boton de Eliminar
               FloatingActionButton(
                   backgroundColor: Colors.red,
                   child: Icon(
@@ -59,10 +68,19 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    _showDialogEliminar(context);
+                    // Obtener los valores seleccionados
+                    List<ItemSolicitud> selectedItems =
+                        lSolicitudes.where((item) => item.isChecked).toList();
+
+                    if (!selectedItems.isEmpty)
+                      _showDialogEliminar(context);
+                    else
+                      mostrarAlerta(context,
+                          'No se ha seleccionado ninguna solicitud a eliminar');
                   }),
               Expanded(child: Container()),
               Spacer(),
+              //Boton de Adicionar
               FloatingActionButton(
                   backgroundColor: Colors.blue,
                   child: Icon(
@@ -72,8 +90,6 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
                   onPressed: () {
                     _showBottomAdicionar(context);
                   }),
-
-              //Boton para Eliminar
             ],
           ),
         ));
@@ -99,7 +115,7 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
         builder: (BuildContext context) {
           return AlertDialog(
             content: Text(
-              "Desea eliminar la solicitud",
+              "Desea eliminar la(s) solicitud(es)",
               style: TextStyle(fontSize: 20),
             ),
             actions: [
@@ -118,7 +134,7 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
                   ),
                   onPressed: () {
                     Navigator.pop(context);
-                    mostrarAlerta(context, "Solicitud eliminada");
+                    mostrarAlerta(context, "Solicitud(es) eliminada(s)");
                   }),
             ],
             shape:

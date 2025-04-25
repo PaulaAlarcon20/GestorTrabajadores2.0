@@ -1,15 +1,11 @@
-import 'package:flutter/material.dart';
+class Solicitudes {}
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class ItemSolicitud {
+  late String text;
+  late bool isChecked;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: Text('Pantalla Solicitudes'),
-      ),
-    );
+  ItemSolicitud(String lTurno, bool lCheck) {
+    text = lTurno;
+    isChecked = lCheck;
   }
 }

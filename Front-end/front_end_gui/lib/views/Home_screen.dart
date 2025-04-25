@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:front_end_gui/views/CalendarScreen.dart';
 import 'package:front_end_gui/views/PersonalProfile_screen.dart';
 import 'package:front_end_gui/views/Travel_screen.dart';
-import 'package:front_end_gui/views/gestionTurnos/GestionTurnos.dart';
+import 'package:front_end_gui/views/gestion_turnos.dart';
+import 'package:front_end_gui/views/widgets/notificaciones.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -47,6 +48,28 @@ class _HomeScreenGoState extends State<HomeScreenGo> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text(
+          "Gestión turnos",
+          style: TextStyle(color: Colors.white, fontSize: 17),
+        ),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.notification_add),
+            color: Colors.white,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Notificaciones(),
+                ),
+              );
+            },
+          )
+        ],
+      ),
       body: _screen[_position],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _position,
