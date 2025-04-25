@@ -1,14 +1,22 @@
-# Backend - Gestión de Turnos
 
 ## Secciones de la Aplicación
 
-- **Sesión**
-- **Turnos**
-- **Viajes** (✅ Finalizada)
-
----
+- **Sesión** (✅ Front, Proc. Back ??)
+- **Cambio Turnos** (✅ Front, Proc. Back)
+- **Calendario** (✅ Front)
+- **Viajes** (✅ ???? )
 
 ## ✅ Resumen de tareas realizadas
+---
+**Usuario:** `PaulaAlarcon`
+- Cambios sobre estructura de BD y relaciones
+  - cambioturno, jornada, trabajadorsanitario
+  - Eliminación de campos obsoletos y adición de campos para conservar integridad referencial.
+  - adición de datos de prueba para flujo de Cambio de Turno (Solicitudes y Peticiones)
+  - adición de campo para eliminado logido de tabla cambioturno.
+- Actualización de Repositorio a versión 2.0 (Migración de repositorio por cambios internos del equipo de trabajo)
+
+---
 
 **Usuario:** `fganuarve/Fabiola`
 - Creación del repositorio y del esqueleto backend del proyecto (arquitectura MVC).
