@@ -29,7 +29,10 @@ public class TurnoController {
     @Autowired
     private TurnoService turnoService;
 
-    // Crear un turno
+    /*
+     * 
+     * 
+     *    // Crear un turno
     @Operation(summary = "Creación de turno", description = "Endpoint para crear un turno")
     @PostMapping("/turno/crear")
     @ApiResponses(value = {
@@ -138,5 +141,5 @@ public class TurnoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuestaServicio);
         }
         return ResponseEntity.ok(respuestaServicio);
-    }
+    }**/
 }

@@ -1,7 +1,6 @@
 package com.calendario.trabajadores.model.dto.usuario;
 
 import lombok.AllArgsConstructor;
-import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,8 +22,6 @@ public class UsuarioViajeResponse {
     private String telefono;
     private String centroTrabajo;
 
-    // Lista de viajes asociados al usuario
-    private List<ViajeDTO> viajes;
 
     // Atributo opcional de estado si se desea
     private Boolean activo;

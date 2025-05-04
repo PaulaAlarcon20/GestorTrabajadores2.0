@@ -5,7 +5,7 @@ import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
 import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.services.user.UserService;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
-import com.calendario.trabajadores.model.login.LoginRequest;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,7 +28,10 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
-    //Endpoints
+    
+    /**
+     * 
+     *     //Endpoints
     //Login de usuario
     @Operation(summary = "Login de usuario", description = "Endpoint para el login de usuario")
     @PostMapping("/login")
@@ -74,5 +77,6 @@ public class LoginController {
         // Si el logout es exitoso, devolvemos la respuesta con el UsuarioResponse
         return ResponseEntity.ok(logoutResponse);
     }
+     * */
 
 }

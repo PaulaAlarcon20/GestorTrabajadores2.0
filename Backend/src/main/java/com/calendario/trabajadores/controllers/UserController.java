@@ -29,7 +29,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //Endpoints
+    /*
+     * 
+     *     //Endpoints
     //Crear usuario
     @Operation(summary = "Creación de usuario", description = "Endpoint para crear un usuario")
     @PostMapping("/user/create")
@@ -247,6 +249,8 @@ public class UserController {
         GenericResponse<List<UsuarioResponse>> response = userService.listar(activo);  // Cambié listarUsuariosViajes por listar
         return ResponseEntity.ok(response);
     }
+     * 
+     * */
 
 
 

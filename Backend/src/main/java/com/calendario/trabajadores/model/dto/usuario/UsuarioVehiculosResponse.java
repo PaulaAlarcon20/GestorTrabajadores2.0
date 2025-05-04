@@ -1,6 +1,5 @@
 package com.calendario.trabajadores.model.dto.usuario;
 
-import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,6 @@ public class UsuarioVehiculosResponse{
     public String apellido1;
     public String apellido2;
     public String email;
-    public List<VehiculoDTO> vehiculos;
     public Boolean activo;
 
 

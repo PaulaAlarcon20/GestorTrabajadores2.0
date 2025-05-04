@@ -1,6 +1,6 @@
 package com.calendario.trabajadores.services.turno;
 
-import com.calendario.trabajadores.mappings.ITurnoMapper;
+
 import com.calendario.trabajadores.model.database.EstadoTurno;
 import com.calendario.trabajadores.model.database.Turno;
 import com.calendario.trabajadores.model.database.Usuario;
@@ -21,7 +21,9 @@ import java.util.stream.Collectors;
 @Service
 public class TurnoService {
 
-    private final ITurnoRepository turnoRepository;
+/**
+ * 
+ *     private final ITurnoRepository turnoRepository;
     private final ITurnoMapper turnoMapper;
     private final IUsuarioRepository usuarioRepository;
 
@@ -169,4 +171,6 @@ public class TurnoService {
         responseWrapper.setData("Turno eliminado");
         return responseWrapper;
     }
+ * 
+ * */
 }

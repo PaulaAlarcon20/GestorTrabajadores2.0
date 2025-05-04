@@ -1,10 +1,9 @@
 package com.calendario.trabajadores.repository.usuario;
 
-import com.calendario.trabajadores.mappings.IUserMapper;
+
 import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.database.Vehiculo;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
-import com.calendario.trabajadores.model.dto.vehiculo.VehiculoDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,25 @@ import java.util.stream.Collectors;
 
 @Repository
 public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
+
+	@Override
+	public Optional<Usuario> findUsuarioByEmail(String email) {
+		// TODO Auto-generated method stub
+		return Optional.empty();
+	}
+
+	@Override
+	public List<UsuarioVehiculosResponse> findAllUsuariosVehiculos() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<UsuarioVehiculosResponse> findAllUsuariosVehiculosFiltrados(boolean param) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	/*
     @PersistenceContext
     private EntityManager entityManager;
     @Autowired
@@ -72,7 +90,7 @@ public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
     }
 
     //Antiguos metodos de UsuarioVehiculo
-    /*//Listar usuarios con sus vehiculos
+    //Listar usuarios con sus vehiculos
     @Override
     public List<UsuarioVehiculosResponse> findAllUsuariosVehiculos() {
         var resp = entityManager.createQuery("SELECT com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse" +

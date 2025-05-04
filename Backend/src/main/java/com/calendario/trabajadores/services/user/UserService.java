@@ -1,10 +1,8 @@
 package com.calendario.trabajadores.services.user;
 
-import com.calendario.trabajadores.mappings.IUserMapper;
-import com.calendario.trabajadores.mappings.IViajeMapper;
+
 import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.dto.usuario.*;
-import com.calendario.trabajadores.model.dto.viaje.ViajeDTO;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
@@ -18,6 +16,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+	
+/*
     // Inyección de dependencias
     private final IUsuarioRepository userRepository;
     private final IUserMapper userMapper;
@@ -276,7 +276,7 @@ public class UserService {
 
         }
         return wrapperResponse;
-    }*/
+    }
 
 
     //Metodo para listar usuarios con vehiculos
@@ -366,6 +366,12 @@ public class UserService {
 
         return wrapperResponse;
     }
+    
+    /**
+     * 
+     * 
+     * 
+     * */
 
 
 
