@@ -1,48 +1,68 @@
-package com.calendario.trabajadores.model.dto.usuario;
+package com.calendario.trabajadores.entity.usuario;
 
 import com.calendario.trabajadores.model.database.Puesto;
 
-public class UsuarioDTO {
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-	private Integer id;
+@Entity
+@Table(name = "trabajadorsanitario")
+public class EntityUsuario {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID")
+	private int id;
+	
+	@Column(name = "Nombre", nullable=false, unique=false, length=30)
 	private String nombre;
+	
+	@Column(name = "Apellido", nullable=false, unique=false, length=30)
 	private String apellido;
+	
+	@Column(name = "Email", nullable=false, unique=true, length=30)
 	private String email;
+	
+	@Column(name = "Contrasena", nullable=false, unique=false, length=30)
 	private String contrasena;
+	
+	@Column(name = "Telefono", nullable=false, unique=false, length=30)
 	private String telefono;
+	
+	@Column(name = "CentroTrabajo", nullable=false, unique=false, length=30)
 	private String centroTrabajo;
+	
+	@Column(name = "Puesto", nullable=false, unique=false, length=30)
 	private Puesto puesto;
+	
+	@Column(name = "JornadaID", nullable=false, unique=false, length=30)
 	private int jornadaID;
+	
+	@Column(name = "Localidad", nullable=false, unique=false, length=30)
 	private String localidad;
+	
+	@Column(name = "PreferenciasHorarias", nullable = false, unique= false, length = 30)
 	private String preferenciasHorarias;
+	
+	@Column(name = "DisponibilidadHorasExtras", nullable = false, unique= false, length = 30)
 	private Boolean disponibilidadHorasExtras;
+	
+	@Column(name = "inicio_sesion", nullable = false, unique= false, length = 30)
 	private Boolean inicioSesion;
 
-	public UsuarioDTO(Integer id, String nombre, String apellido, String email, String contrasena, String telefono,
-			String centroTrabajo, Puesto puesto, int jornadaID, String localidad, String preferenciasHorarias,
-			Boolean disponibilidadHorasExtras, Boolean inicioSesion) {
-
-		this.id = id;
-		this.nombre = nombre;
-		this.apellido = apellido;
-		this.email = email;
-		this.contrasena = contrasena;
-		this.telefono = telefono;
-		this.centroTrabajo = centroTrabajo;
-		this.puesto = puesto;
-		this.jornadaID = jornadaID;
-		this.localidad = localidad;
-		this.preferenciasHorarias = preferenciasHorarias;
-		this.disponibilidadHorasExtras = disponibilidadHorasExtras;
-		this.inicioSesion = inicioSesion;
-
+	public EntityUsuario() {
+		
 	}
 
 	public int getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -143,4 +163,13 @@ public class UsuarioDTO {
 	}
 	
 	
+	
+	
+	
+	
+	
+	
+	
+
+
 }

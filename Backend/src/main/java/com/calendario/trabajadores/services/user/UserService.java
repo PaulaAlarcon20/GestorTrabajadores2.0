@@ -1,11 +1,14 @@
 package com.calendario.trabajadores.services.user;
 
 
+import com.calendario.trabajadores.entity.usuario.EntityUsuario;
 import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.dto.usuario.*;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,121 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 	
+	@Autowired
+	private IUsuarioRepository usuarioRepository;
+	
+	
+	// CREAR usuario
+	public UsuarioDTO crearUsuario(UsuarioDTO dto) {
+		
+		// 1- Se convierte el DTO en una entity para poder guardarlo
+		EntityUsuario entityUsuario = new EntityUsuario();
+		entityUsuario.setId(dto.getId()); // - VEREMOS QUE HACER CON EL **************
+		entityUsuario.setNombre(dto.getNombre());
+		entityUsuario.setApellido(dto.getApellido());
+		entityUsuario.setEmail(dto.getEmail());
+		entityUsuario.setPassword(dto.getPassword());
+		entityUsuario.setTelefono(dto.getTelefono());
+		entityUsuario.setCentroTrabajo(dto.getCentroTrabajo());
+		entityUsuario.setPuesto(dto.getPuesto());
+		entityUsuario.setJornadaID(dto.getJornadaID());
+		entityUsuario.setLocalidad(dto.getLocalidad());
+		entityUsuario.setPreferenciasHorarias(dto.getPreferenciasHorarias());
+		entityUsuario.setDisponibilidadHorasExtras(dto.getDisponibilidadHorasExtras());
+		entityUsuario.setInicioSesion(dto.getInicioSesion());
+		
+		// 2- Guardamos en la base de datos la entidad rellena (la tabla con los datos)
+		EntityUsuario guardado = usuarioRepository.save(entityUsuario);
+		
+		// 3- Devolvemos un DTO
+		return new UsuarioDTO(
+				guardado.getId(),
+				guardado.getNombre(),
+				guardado.getApellido(),
+				guardado.getEmail(),
+				guardado.getPassword(),
+				guardado.getTelefono(),
+				guardado.getCentroTrabajo(),
+				guardado.getPuesto(),
+				guardado.getJornadaID(),
+				guardado.getLocalidad(),
+				guardado.getPreferenciasHorarias(),
+				guardado.getDisponibilidadHorasExtras(),
+				guardado.getInicioSesion());
+	}
+	
+	// Obtener todos los usuarios
+	public List<UsuarioDTO> obtenerTodosLosUsuarios(){
+		List<EntityUsuario> usuarios = usuarioRepository.findAll();
+		
+		return usuarios.stream()
+				.map(usuario -> new UsuarioDTO(
+						usuario.getId(),
+						usuario.getNombre(),
+						usuario.getApellido(),
+						usuario.getEmail(),
+						usuario.getPassword(),
+						usuario.getTelefono(),
+						usuario.getCentroTrabajo(),
+						usuario.getPuesto(),
+						usuario.getJornadaID(),
+						usuario.getLocalidad(),
+						usuario.getPreferenciasHorarias(),
+						usuario.getDisponibilidadHorasExtras(),
+						usuario.getInicioSesion()
+				))
+				.collect(Collectors.toList());
+	}
+	
+
+	// BUSCAR por ID
+	public Optional<EntityUsuario> buscarPorId(Integer id){
+		return usuarioRepository.findById(id);
+	}
+	
+	// Buscar por GMAIL y CONTRASENA
+	public Optional<LoginResponse> login(String email, String contrasena){
+		Optional<EntityUsuario> user = usuarioRepository.findByEmailAndContrasena(email, contrasena);
+		
+		
+		if(user.isPresent()) {
+			
+			EntityUsuario usuario = user.get();
+			
+			
+			System.out.println("IMPRIMO TODOS LOS DATOS:");
+			System.out.println(usuario.getNombre()+ " * " + usuario.getInicioSesion());
+			
+			usuario.setInicioSesion(true);
+			System.out.println(usuario.getNombre()+ " * " + usuario.getInicioSesion());
+			
+			usuarioRepository.save(usuario);
+			
+			LoginResponse response = new LoginResponse(usuario.getEmail(), usuario.getInicioSesion(), "Usuario existe en la base de datos.");
+			System.out.println("Devuelve -> " + response.getEmail() + " / Estado inicio sesión: " + response.getInicioSesion());
+			
+			return Optional.of(response);
+		} else {
+			
+			return Optional.empty();
+		}
+		
+	}
+	
+	
+	// VERIFICAR conexión de usuario 
+	public boolean existeInicioSesion(Integer id) {
+		return usuarioRepository.existsById(id);
+	}
+	
+	// CONTAR Número total usuarios
+	public long contarUsuarios() {
+		System.out.print("Número de usuarios totales de la tabla trabajadores sanitarios: " + usuarioRepository.count());
+		return usuarioRepository.count();
+	}
+	
+	
+}
 /*
     // Inyección de dependencias
     private final IUsuarioRepository userRepository;
@@ -376,4 +494,4 @@ public class UserService {
 
 
 
-}
+
