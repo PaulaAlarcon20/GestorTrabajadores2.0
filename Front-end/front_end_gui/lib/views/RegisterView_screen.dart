@@ -4,6 +4,8 @@ import 'package:front_end_gui/views/cubit/RegisterCubit.dart';
 import 'package:front_end_gui/views/widgets/Custom_Text_FormField.dart';
 import 'package:front_end_gui/views/SignUp_screen.dart';
 import 'package:front_end_gui/views/Home_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 
 /// Pantalla creada para mostrar al usuario el login a la aplicación
 /// Vista formada por widget con orden en forma de columna, en el cual se le
@@ -18,7 +20,7 @@ class RegisterView extends StatelessWidget {
 
     //double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-
+    
     return  Scaffold(
 
       //appBar: AppBar(title: const Text('Nuevo usuario'),),
@@ -52,7 +54,35 @@ class RegisterView extends StatelessWidget {
                     ),
                   ),
                   //(height: 5),
-                  RegisterForm(),
+                  BlocListener<RegisterCubit, RegisterState>(
+                  listenWhen: (previous, current) => 
+                    previous.formStatus != current.formStatus,
+                  listener: (context, state) {
+                    print("ESTADO BLOCLISTENER -> ${state.formStatus}");
+                    if(state.formStatus == FormStatus.valid){
+
+                      print("ENTRA AQUÍ ARRIBA ---> $state.messageStatus");
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const HomeScreen()),
+                      );
+                      return;
+                    } else if(state.formStatus != FormStatus.valid  && state.formStatus != FormStatus.validating  ) {
+
+                     print("ENTRA AQUÍ ABAJO ---> $state.messageStatus");
+                      Fluttertoast.showToast(
+                        msg: state.messageStatus ?? "Inicio de sesión fallido",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Colors.black87,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                      );
+                    }
+                  },
+                  child: RegisterForm(),
+                ),
                   SizedBox(height: screenHeight * 0.01),
                  
                 ],
@@ -75,8 +105,12 @@ class RegisterForm extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-
+    
+    
     final registerCubit = context.watch<RegisterCubit>(); // Escucha los cambio sy se reconstruye automaticamente
+    String messageStatus = registerCubit.state.messageStatus;
+    bool validInicio = registerCubit.state.inicioSesion;
+
     final email = registerCubit.state.email;
     final password = registerCubit.state.password;
     final isLoading = registerCubit.state.formStatus == FormStatus.validating;
@@ -125,11 +159,9 @@ class RegisterForm extends StatelessWidget {
             child: FilledButton.tonalIcon(
               onPressed: stateForm
                 ? () {
-                  registerCubit.onSubmit();
-                  Navigator.pushReplacement(
-                    context, 
-                    MaterialPageRoute(builder: (context) => HomeScreen()));
-                  }
+                  registerCubit.onSubmit();     
+
+                }                   
                 : null,
 
               //icon:  const Icon(Icons.save),
@@ -145,7 +177,7 @@ class RegisterForm extends StatelessWidget {
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
-                  
+                  // TODO CREAR
                   context,
                   MaterialPageRoute(builder: (context) => SignupForm())
                 );
