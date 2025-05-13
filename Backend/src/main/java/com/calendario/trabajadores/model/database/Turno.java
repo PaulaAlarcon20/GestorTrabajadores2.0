@@ -1,57 +1,50 @@
 package com.calendario.trabajadores.model.database;
 
-import jakarta.persistence.*;
+import java.time.LocalTime;
+import java.util.Date;
+import java.util.List;
+
+import com.calendario.trabajadores.entity.usuario.EntityUsuario;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "turnos")
+@Table(name = "jornada")
 public class Turno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //Identificador de la tabla
-    private Long id;
-    @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false) //Revisar lo de usuario id**
-    public Usuario usuario = new Usuario();
-
-    @Column(nullable = false)
-    private Date horaInicio;
-
-    @Column(nullable = false)
-    private Date horaFin;
-
-    //Estado del turno
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    public EstadoTurno estadoTurno;
-    //Estado de la petición de cambio de turno
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    public PeticionTurno peticionTurno;
-    //Puede ir una nota asociada a la petición de cambio de turno
-    public String notasPeticion;
-    // Constructor para asignar zona horaria por defecto
-    public Boolean activo;
-    @Column(updatable = false)
+    @Column(name = "IdJornada")
+    private int id;
+    @Column(name = "Descripcion")
+    private String descripcion;
+    @Column(name = "FechaCreacion")
     private Date fechaCreacion;
+    @Column(name = "HoraInicio")
+    private LocalTime horaInicio;
+    @Column(name = "HoraFin")
+    private LocalTime horaFin;
+    @Column(name = "Activo")
+    private Boolean activo;
 
-    @UpdateTimestamp
-    private Date fechaModificacion;
+    @OneToMany(mappedBy = "jornadaID")
+    private List<EntityUsuario> lUsuarios;
 
-    private String creadoPor;
-    private String modificadoPor;
-    //Constructor vacio
+    @OneToMany(mappedBy = "jornadaID")
+    private List<CambioTurno> lCambioTurnos;
+
     public Turno() {
-        this.horaInicio = new Date();
-        this.horaFin = new Date();
-    }
+		
+	}
 }
 

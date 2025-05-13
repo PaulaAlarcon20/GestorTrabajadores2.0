@@ -1,6 +1,7 @@
 package com.calendario.trabajadores.model.dto.usuario;
 
 import com.calendario.trabajadores.model.database.Puesto;
+import com.calendario.trabajadores.model.database.Turno;
 
 public class UsuarioDTO {
 
@@ -12,14 +13,14 @@ public class UsuarioDTO {
 	private String telefono;
 	private String centroTrabajo;
 	private Puesto puesto;
-	private int jornadaID;
+	private Turno jornadaID;
 	private String localidad;
 	private String preferenciasHorarias;
 	private Boolean disponibilidadHorasExtras;
 	private Boolean inicioSesion;
 
 	public UsuarioDTO(Integer id, String nombre, String apellido, String email, String contrasena, String telefono,
-			String centroTrabajo, Puesto puesto, int jornadaID, String localidad, String preferenciasHorarias,
+			String centroTrabajo, Puesto puesto, Turno jornadaID, String localidad, String preferenciasHorarias,
 			Boolean disponibilidadHorasExtras, Boolean inicioSesion) {
 
 		this.id = id;
@@ -102,11 +103,11 @@ public class UsuarioDTO {
 		this.puesto = puesto;
 	}
 
-	public int getJornadaID() {
+	public Turno getJornadaID() {
 		return jornadaID;
 	}
 
-	public void setJornadaID(int jornadaID) {
+	public void setJornadaID(Turno jornadaID) {
 		this.jornadaID = jornadaID;
 	}
 

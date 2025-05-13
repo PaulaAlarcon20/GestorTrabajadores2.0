@@ -1,4 +1,4 @@
-package com.calendario.trabajadores.model.dto.turno;
+package com.calendario.trabajadores.model.dto.cambioTurno;
 
 import com.calendario.trabajadores.model.database.EstadoTurno;
 import com.calendario.trabajadores.model.database.PeticionTurno;
@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class TurnoDTO {
+public class CambioTurnoDTO {
     private Integer id;
     private String nombreUsuario;
     private String emailUsuario;

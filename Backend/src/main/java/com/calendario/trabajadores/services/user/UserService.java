@@ -1,21 +1,16 @@
 package com.calendario.trabajadores.services.user;
 
-
-import com.calendario.trabajadores.entity.usuario.EntityUsuario;
-import com.calendario.trabajadores.model.database.Usuario;
-import com.calendario.trabajadores.model.dto.usuario.*;
-import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
-import com.calendario.trabajadores.model.errorresponse.GenericResponse;
-import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.calendario.trabajadores.entity.usuario.EntityUsuario;
+import com.calendario.trabajadores.model.dto.usuario.LoginResponse;
+import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
+import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 
 @Service
 public class UserService {

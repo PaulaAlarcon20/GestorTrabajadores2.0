@@ -1,4 +1,4 @@
-package com.calendario.trabajadores.repository.usuario;
+package com.calendario.trabajadores.repository.CambioTurno;
 
 
 import java.util.List;
@@ -6,14 +6,14 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import com.calendario.trabajadores.model.database.Usuario;
+import com.calendario.trabajadores.entity.usuario.EntityUsuario;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
 
 @Repository
-public class CustomUsuarioRepositoryImpl implements CustomUsuarioRepository {
+public class CustomCambioTurnoRepositoryImpl implements CustomCambioTurnoRepository {
 
 	@Override
-	public Optional<Usuario> findUsuarioByEmail(String email) {
+	public Optional<EntityUsuario> findEntityUsuarioByEmail(String email) {
 		// TODO Auto-generated method stub
 		return Optional.empty();
 	}

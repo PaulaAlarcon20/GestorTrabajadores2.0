@@ -16,12 +16,12 @@ import java.util.List;
 //Utilizo lombok para no tener que escribir los getters y setters
 @Getter
 @Setter
-@Table(name = "usuarios")
+// @Table(name = "usuarios")
 public class Usuario {
     //Es un campo identificador de la tabla y además es identity, es decir, se autoincrementa
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    public Integer id;
     // Campo obligatorio
     @Column(nullable = false)
     public String nombre;
@@ -40,13 +40,13 @@ public class Usuario {
     public Boolean disponibilidadHorasExtras;
     @Column(nullable = false)
     public String rol;
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
-    @JsonManagedReference
-    public List<Vehiculo> vehiculos = new ArrayList();
-    @OneToMany(mappedBy = "conductor", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
-    public List<Viaje> viajes = new ArrayList();
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
-    public List<UsuarioViaje> usuarioViajes = new ArrayList<>();
+    // @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
+    // @JsonManagedReference
+    // public List<Vehiculo> vehiculos = new ArrayList();
+    // @OneToMany(mappedBy = "conductor", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
+    // public List<Viaje> viajes = new ArrayList();
+    // @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
+    // public List<UsuarioViaje> usuarioViajes = new ArrayList<>();
     public Boolean activo;
     @Column(updatable = false)
     private Date fechaCreacion;

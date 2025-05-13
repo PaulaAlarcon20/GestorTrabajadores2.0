@@ -1,12 +1,21 @@
 package com.calendario.trabajadores.entity.usuario;
 
+import java.util.List;
+
+import com.calendario.trabajadores.model.database.CambioTurno;
 import com.calendario.trabajadores.model.database.Puesto;
+import com.calendario.trabajadores.model.database.Turno;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -36,11 +45,13 @@ public class EntityUsuario {
 	@Column(name = "CentroTrabajo", nullable=false, unique=false, length=30)
 	private String centroTrabajo;
 	
+	@Enumerated(value = EnumType.STRING)
 	@Column(name = "Puesto", nullable=false, unique=false, length=30)
 	private Puesto puesto;
 	
-	@Column(name = "JornadaID", nullable=false, unique=false, length=30)
-	private int jornadaID;
+	@ManyToOne
+    @JoinColumn(name = "IdJornada", insertable = false, updatable = false) 
+	private Turno jornadaID;
 	
 	@Column(name = "Localidad", nullable=false, unique=false, length=30)
 	private String localidad;
@@ -53,6 +64,12 @@ public class EntityUsuario {
 	
 	@Column(name = "inicio_sesion", nullable = false, unique= false, length = 30)
 	private Boolean inicioSesion;
+
+	@OneToMany(mappedBy = "TrabajadorSolicitante")
+    private List<CambioTurno> lCambioTurnosSolicitante;
+
+	@OneToMany(mappedBy = "TrabajadorAceptante")
+    private List<CambioTurno> lCambioTurnosAceptante;
 
 	public EntityUsuario() {
 		
@@ -122,12 +139,12 @@ public class EntityUsuario {
 		this.puesto = puesto;
 	}
 
-	public int getJornadaID() {
+	public Turno getJornadaID() {
 		return jornadaID;
 	}
 
-	public void setJornadaID(int jornadaID) {
-		this.jornadaID = jornadaID;
+	public void setJornadaID(Turno jornada) {
+		this.jornadaID = jornada;
 	}
 
 	public String getLocalidad() {

@@ -1,17 +1,15 @@
 package com.calendario.trabajadores.repository.usuario;
 
-import com.calendario.trabajadores.entity.usuario.EntityUsuario;
-import com.calendario.trabajadores.model.database.Usuario;
-import com.calendario.trabajadores.model.dto.usuario.LoginResponse;
-import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
+import com.calendario.trabajadores.entity.usuario.EntityUsuario;
+import com.calendario.trabajadores.model.database.Usuario;
 
 /*
  * JpaRepository hereda todos los métodos necesarios para realizar el CRUD

@@ -7,11 +7,11 @@ import com.calendario.trabajadores.model.database.EstadoTurno;
 import java.util.List;
 
 @Repository
-public interface ITurnoRepository extends JpaRepository<Turno, Long>, CustomTurnoRepository {
+public interface ITurnoRepository extends JpaRepository<Turno, Integer>, CustomTurnoRepository {
 
     // Metodo para obtener turnos por id de usuario y estado
-    List<Turno> findByUsuarioIdAndEstadoTurno(Long usuarioId, EstadoTurno estadoTurno);
+    List<Turno> findByIdAndActivo(Long usuarioId, Boolean estadoTurno);
 
     // Metodo para obtener turnos por id de usuario
-    List<Turno> findByUsuarioId(Long usuarioId);
+    List<Turno> findById(Long usuarioId);
 }

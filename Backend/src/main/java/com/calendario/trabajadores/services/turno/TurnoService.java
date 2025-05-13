@@ -9,8 +9,11 @@ import com.calendario.trabajadores.model.dto.turno.CrearTurnoRequest;
 import com.calendario.trabajadores.model.dto.turno.EditarTurnoRequest;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.model.errorresponse.GenericResponse;
+import com.calendario.trabajadores.repository.CambioTurno.ICambioTurnoRepository;
 import com.calendario.trabajadores.repository.turno.ITurnoRepository;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,9 +24,31 @@ import java.util.stream.Collectors;
 @Service
 public class TurnoService {
 
-/**
- * 
- *     private final ITurnoRepository turnoRepository;
+    // @Autowired
+    // private final ICambioTurnoRepository turnoRepository;
+
+    // // Crear un turno (solo deberia hacerlo un admin)
+    // public GenericResponse<CrearEditarTurnoResponse> crearTurno(CrearTurnoRequest request) {
+    //     GenericResponse<CrearEditarTurnoResponse> responseWrapper = new GenericResponse<>();
+
+    //     // Añadir validaciones
+
+    //     // Crear el objeto turno desde el request
+    //     Turno turno = turnoMapper.crearTurnoRequestToTurno(request);
+
+    //     // Guardamos el turno en la base de datos
+    //     Turno turnoGuardado = turnoRepository.save(turno);
+
+    //     // Mapeamos la respuesta
+    //     CrearEditarTurnoResponse response = turnoMapper.turnoToCrearEditarTurnoResponse(turnoGuardado);
+
+    //     // Devolvemos la respuesta
+    //     responseWrapper.setData(response);
+    //     return responseWrapper;
+    // }
+
+    /*
+    private final ITurnoRepository turnoRepository;
     private final ITurnoMapper turnoMapper;
     private final IUsuarioRepository usuarioRepository;
 
@@ -171,6 +196,5 @@ public class TurnoService {
         responseWrapper.setData("Turno eliminado");
         return responseWrapper;
     }
- * 
- * */
+    */
 }
