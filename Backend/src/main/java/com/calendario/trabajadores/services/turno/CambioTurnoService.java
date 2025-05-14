@@ -1,32 +1,95 @@
 package com.calendario.trabajadores.services.turno;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.calendario.trabajadores.entity.usuario.EntityUsuario;
+import com.calendario.trabajadores.model.database.CambioTurno;
+import com.calendario.trabajadores.model.database.PeticionTurno;
 import com.calendario.trabajadores.model.database.Turno;
-import com.calendario.trabajadores.model.database.Usuario;
-import com.calendario.trabajadores.model.dto.turno.CrearEditarTurnoResponse;
-import com.calendario.trabajadores.model.dto.turno.CrearTurnoRequest;
-import com.calendario.trabajadores.model.dto.turno.EditarTurnoRequest;
+import com.calendario.trabajadores.model.dto.cambioTurno.CambioTurnoResponse;
+import com.calendario.trabajadores.model.dto.cambioTurno.CrearCambioTurnoRequest;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.repository.CambioTurno.ICambioTurnoRepository;
 import com.calendario.trabajadores.repository.turno.ITurnoRepository;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import ch.qos.logback.classic.pattern.DateConverter;
+import jakarta.persistence.Convert;
 
 @Service
-public class TurnoService {
+public class CambioTurnoService {
 
     @Autowired
-    private ITurnoRepository turnoRepository;
-
+    private ICambioTurnoRepository cambioTurnoRepository;
     
+    @Autowired
+    private IUsuarioRepository userRepository;
+
+    @Autowired
+    private ITurnoRepository jornadaRepository;
+
+    // Obtener todos los cambios de turno
+	public List<CambioTurno> obtenerCambioTurnos(){
+        System.out.println("Entra a service lista de cambioTurnos");
+		return cambioTurnoRepository.findAll();
+	}
+
+    public List<CambioTurno> obtenerSolicitudes(int userId) {
+        Optional<EntityUsuario> user = userRepository.findById(userId);
+
+        return cambioTurnoRepository.findCambioTurnoByTrabajadorSolicitante(user);
+    }
+
+    public List<CambioTurno> obtenerPeticiones(int userId) {
+        Optional<EntityUsuario> user = userRepository.findById(userId);
+
+        return cambioTurnoRepository.findCambioTurnoByTrabajadorSolicitanteNotAndEstadoCambio(user, PeticionTurno.PENDIENTE);
+    }
+
+    public GenericResponse<CambioTurnoResponse> guardarSolicitud(CrearCambioTurnoRequest request) {
+        GenericResponse<CambioTurnoResponse> response = new GenericResponse<>();
+        CambioTurno cmTurno = new CambioTurno();
+        SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+        ErrorResponse err;
+        try {
+            EntityUsuario user = userRepository.findEntityUsuarioById(request.getUsuarioId());
+            Turno jornada = jornadaRepository.findById(request.getJornadaId());
+            
+            if (user != null && jornada != null && request.getFechaSolicitada()!=null) {
+                cmTurno.setTrabajadorSolicitante(user);
+                cmTurno.setJornadaID(jornada);
+
+                Date fecha = formato.parse(request.getFechaSolicitada());
+                cmTurno.setFechaSolicitada(fecha);
+        
+                cambioTurnoRepository.save(cmTurno);
+                
+                CambioTurnoResponse cambioTurnoResponse = new CambioTurnoResponse();
+                cambioTurnoResponse.setId(cmTurno.getId());
+                cambioTurnoResponse.setIdUsuario(cmTurno.getTrabajadorSolicitante().getId());
+                cambioTurnoResponse.setPeticionTurno(cmTurno.getEstadoCambio());
+        
+                response.setData(cambioTurnoResponse);
+            }else{
+                err = new ErrorResponse("Validar datos.");
+                response.setError(err);
+            }
+        } catch (Exception e) {
+            err = new ErrorResponse(e);
+            response.setError(err);
+        }
+
+        return response;
+    }
+
 
     // // Crear un turno (solo deberia hacerlo un admin)
     // public GenericResponse<CrearEditarTurnoResponse> crearTurno(CrearTurnoRequest request) {

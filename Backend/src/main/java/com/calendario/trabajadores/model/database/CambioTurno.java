@@ -1,6 +1,8 @@
 package com.calendario.trabajadores.model.database;
 
-import java.sql.Date;
+import java.util.Date;
+
+import org.hibernate.annotations.CurrentTimestamp;
 
 import com.calendario.trabajadores.entity.usuario.EntityUsuario;
 
@@ -25,35 +27,36 @@ public class CambioTurno {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	@Column(name = "IdCambioTurno")
-	private int Id;
+	private int id;
 
 	@ManyToOne
 	@JoinColumn(name = "TrabajadorSolicitanteID", nullable=false, unique=true)
-	private EntityUsuario TrabajadorSolicitante;
+	private EntityUsuario trabajadorSolicitante;
 	
 	@ManyToOne
 	@JoinColumn(name = "TrabajadorAceptanteID", nullable=true, unique=true)
-	private EntityUsuario TrabajadorAceptante;
+	private EntityUsuario trabajadorAceptante;
 
 	@ManyToOne
     @JoinColumn(name = "IdJornada", insertable = false, updatable = false) 
 	private Turno jornadaID;
 
 	@Column(name = "FechaSolicitada", nullable=false, unique=false, length=30)
-	private Date FechaSolicitada;
+	private Date fechaSolicitada;
 
+	@CurrentTimestamp
 	@Column(name = "FechaSolicitud", nullable=false, unique=false, length=30)
-	private Date FechaSolicitud;
+	private Date fechaSolicitud;
 
 	@Column(name = "FechaCambio", nullable=true, unique=false, length=30)
-	private Date FechaCambio;
+	private Date fechaCambio;
 
 	@Enumerated(value = EnumType.STRING)
 	@Column(name = "EstadoCambio", nullable=false, unique=false, length=30)
-	private PeticionTurno EstadoCambio;
+	private PeticionTurno estadoCambio;
 
-	@Column(name = "Activo", nullable=false, unique=false)
-	private Boolean Activo;
+	@Column(name = "Activo")
+	private Boolean activo = true;
 
 
 	public CambioTurno() {

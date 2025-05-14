@@ -1,6 +1,5 @@
 package com.calendario.trabajadores.model.dto.cambioTurno;
 
-import com.calendario.trabajadores.model.database.EstadoTurno;
 import com.calendario.trabajadores.model.database.PeticionTurno;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +14,6 @@ public class CambioTurnoDTO {
     private String emailUsuario;
     private Date horaInicio;
     private Date horaFin;
-    private EstadoTurno estadoTurno;
     private PeticionTurno peticionTurno;
     private Boolean activo;
 }

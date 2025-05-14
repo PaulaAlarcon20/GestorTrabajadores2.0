@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.calendario.trabajadores.entity.usuario.EntityUsuario;
-import com.calendario.trabajadores.model.database.Usuario;
 
 /*
  * JpaRepository hereda todos los métodos necesarios para realizar el CRUD
@@ -17,14 +16,14 @@ import com.calendario.trabajadores.model.database.Usuario;
 @Repository
 public interface IUsuarioRepository extends JpaRepository<EntityUsuario, Integer> {
 	
-	
-	
-
 	// Para realizar consultar personalizadas avanzadas:
     @Query("SELECT u FROM Usuario u WHERE u.activo = :p")
-    List<Usuario> findByActivo(@Param("p")boolean activo);
+    List<EntityUsuario> findByActivo(@Param("p")boolean activo);
     
+    EntityUsuario findEntityUsuarioById(int userId);
+
     Optional<EntityUsuario> findByEmailAndContrasena(String email, String contrasena);
     
     Optional<EntityUsuario> findByEmailAndInicioSesion(String email, boolean inicioSesion);
+
 }

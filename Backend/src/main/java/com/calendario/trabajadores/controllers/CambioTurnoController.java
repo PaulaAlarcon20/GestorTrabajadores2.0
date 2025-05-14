@@ -1,32 +1,58 @@
 package com.calendario.trabajadores.controllers;
 
-import com.calendario.trabajadores.model.dto.turno.CrearEditarTurnoResponse;
-import com.calendario.trabajadores.model.dto.turno.CrearTurnoRequest;
-import com.calendario.trabajadores.model.dto.turno.EditarTurnoRequest;
-import com.calendario.trabajadores.model.errorresponse.GenericResponse;
-import com.calendario.trabajadores.services.turno.TurnoService;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-
 import java.util.List;
-import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.calendario.trabajadores.model.database.CambioTurno;
+import com.calendario.trabajadores.model.dto.cambioTurno.CambioTurnoResponse;
+import com.calendario.trabajadores.model.dto.cambioTurno.CrearCambioTurnoRequest;
+import com.calendario.trabajadores.model.errorresponse.GenericResponse;
+import com.calendario.trabajadores.services.turno.CambioTurnoService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@Tag(name = "Turno", description = "Endpoints para gestión de turnos")
-public class TurnoController {
+@Tag(name = "CambioTurno", description = "Endpoints para gestión de turnos")
+public class CambioTurnoController {
 
     @Autowired
-    private TurnoService turnoService;
+    private CambioTurnoService cambioTurnoService;
+
+    @Operation(summary = "Cambios de turnos", description = "Endpoint para Cambios de turnos")
+    @GetMapping("/api/cambioTurnos")
+	public List<CambioTurno> obtenerCambioTurnos(){
+        System.out.println("Entra a controller obtenerCambioTurnos");
+		return cambioTurnoService.obtenerCambioTurnos();
+	}
+
+    @Operation(summary = "Solicitudes por Usuario", description = "Endpoint para Solicitudes por Usuario")
+    @GetMapping("/api/solicitudes")
+	public List<CambioTurno> obtenerSolicitudes(@RequestParam(required = true) int userId){
+        System.out.println("Entra a controller obtenerSolicitudes");
+		return cambioTurnoService.obtenerSolicitudes(userId);
+	}
+
+    @Operation(summary = "Peticiones por Usuario", description = "Endpoint para Peticiones por Usuario")
+    @GetMapping("/api/peticiones")
+	public List<CambioTurno> obtenerPeticiones(@RequestParam(required = true) int userId){
+        System.out.println("Entra a controller obtenerPeticiones");
+		return cambioTurnoService.obtenerPeticiones(userId);
+	}
+
+    @Operation(summary = "Nueva solicitud", description = "Endpoint para Nueva solicitud")
+    @PostMapping("/api/new_sol")
+	public GenericResponse<CambioTurnoResponse> nuevaSolicitud(@RequestBody CrearCambioTurnoRequest request)
+    {
+        System.out.println("Entra a controller nuevaSolicitud");
+		return cambioTurnoService.guardarSolicitud(request);
+	}
 
     // // Crear un turno
     // @Operation(summary = "Creación de turno", description = "Endpoint para crear un turno")

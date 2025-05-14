@@ -1,10 +1,13 @@
 package com.calendario.trabajadores.model.database;
 
+import java.sql.Date;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
+import org.hibernate.annotations.CurrentTimestamp;
+
 import com.calendario.trabajadores.entity.usuario.EntityUsuario;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,20 +29,28 @@ public class Turno {
     //Identificador de la tabla
     @Column(name = "IdJornada")
     private int id;
+
     @Column(name = "Descripcion")
     private String descripcion;
+
+    @CurrentTimestamp
     @Column(name = "FechaCreacion")
     private Date fechaCreacion;
+
     @Column(name = "HoraInicio")
     private LocalTime horaInicio;
+
     @Column(name = "HoraFin")
     private LocalTime horaFin;
+
     @Column(name = "Activo")
     private Boolean activo;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "jornadaID")
     private List<EntityUsuario> lUsuarios;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "jornadaID")
     private List<CambioTurno> lCambioTurnos;
 

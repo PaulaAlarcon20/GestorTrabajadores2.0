@@ -1,14 +1,19 @@
 package com.calendario.trabajadores.model.dto.cambioTurno;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Date;
 
 @Getter
 @Setter
 public class CrearCambioTurnoRequest {
-    private Long idUsuario;
-    private Date horaInicio;
-    private Date horaFin;
-    private String notasPeticion;
+    @JsonProperty("usuarioId")
+    private int usuarioId;
+    
+    @JsonProperty("jornadaId")
+    private int jornadaId;
+    
+    @JsonProperty("fechaSolicitada")
+    private String fechaSolicitada;
 }

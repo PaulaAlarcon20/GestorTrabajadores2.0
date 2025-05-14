@@ -1,21 +1,16 @@
 package com.calendario.trabajadores.model.dto.turno;
 
-import com.calendario.trabajadores.model.database.EstadoTurno;
-import com.calendario.trabajadores.model.database.PeticionTurno;
+import java.time.LocalTime;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
 
 @Getter
 @Setter
 public class TurnoDTO {
-    private Integer id;
-    private String nombreUsuario;
-    private String emailUsuario;
-    private Date horaInicio;
-    private Date horaFin;
-    private EstadoTurno estadoTurno;
-    private PeticionTurno peticionTurno;
+    private int id;
+    private String descripcion;
+    private LocalTime horaInicio;
+    private LocalTime horaFin;
     private Boolean activo;
 }
