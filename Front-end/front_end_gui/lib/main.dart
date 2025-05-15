@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front_end_gui/config/theme/app_theme.dart';
 import 'package:front_end_gui/views/RegisterView_screen.dart';
-import 'package:front_end_gui/views/cubit/SignUpCubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit2.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -16,7 +15,6 @@ Future<void> main() async {
 runApp(
   MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => SignUpCubit()),
         BlocProvider(create: (context) => SignUpCubit2())
       ],
       

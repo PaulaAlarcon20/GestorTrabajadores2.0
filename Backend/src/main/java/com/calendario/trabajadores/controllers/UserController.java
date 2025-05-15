@@ -42,9 +42,10 @@ public class UserController {
 		return userService.obtenerTodosLosUsuarios();
 	}
 	
-	@PostMapping
+	@PostMapping("/SignUp")
 	public ResponseEntity<UsuarioDTO> crearUsuario(@RequestBody UsuarioDTO usuarioDTO){
 		UsuarioDTO usuarioCreado = userService.crearUsuario(usuarioDTO);
+		System.out.println(usuarioDTO.getNombre() + " " + usuarioDTO.getApellido() + " / " + usuarioDTO.getCentroTrabajo() + " - " + usuarioDTO.getPuesto());
 		return new ResponseEntity<>(usuarioCreado, HttpStatus.CREATED);
 	}
 	

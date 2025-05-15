@@ -2,11 +2,14 @@ package com.calendario.trabajadores.services.user;
 
 
 import com.calendario.trabajadores.entity.usuario.EntityUsuario;
+import java.util.Random;
 import com.calendario.trabajadores.model.database.Usuario;
 import com.calendario.trabajadores.model.dto.usuario.*;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
+
+import ch.qos.logback.core.testUtil.RandomUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,7 +18,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
+
+import javax.management.RuntimeErrorException;
 
 @Service
 public class UserService {
@@ -27,9 +33,16 @@ public class UserService {
 	// CREAR usuario
 	public UsuarioDTO crearUsuario(UsuarioDTO dto) {
 		
+		System.out.println("Ejecución de método crearUsuario");		
+		Random random = new Random();
+		int createIDJornada = random.nextInt(1,3);
+		System.out.println("ID JORNADA -> " + createIDJornada);
+		
+		//TODO TENEMOS QUE LANZAR MENSAJES ERROR SI YA ESTA REGISTRADO CORREO
+		
 		// 1- Se convierte el DTO en una entity para poder guardarlo
 		EntityUsuario entityUsuario = new EntityUsuario();
-		entityUsuario.setId(dto.getId()); // - VEREMOS QUE HACER CON EL **************
+		//entityUsuario.setId(dto.getId()); // - VEREMOS QUE HACER CON EL **************
 		entityUsuario.setNombre(dto.getNombre());
 		entityUsuario.setApellido(dto.getApellido());
 		entityUsuario.setEmail(dto.getEmail());
@@ -37,14 +50,20 @@ public class UserService {
 		entityUsuario.setTelefono(dto.getTelefono());
 		entityUsuario.setCentroTrabajo(dto.getCentroTrabajo());
 		entityUsuario.setPuesto(dto.getPuesto());
-		entityUsuario.setJornadaID(dto.getJornadaID());
+		entityUsuario.setJornadaID(createIDJornada); // ESTA LOGICA SE TIENE QUE CAMBIAR
 		entityUsuario.setLocalidad(dto.getLocalidad());
 		entityUsuario.setPreferenciasHorarias(dto.getPreferenciasHorarias());
 		entityUsuario.setDisponibilidadHorasExtras(dto.getDisponibilidadHorasExtras());
-		entityUsuario.setInicioSesion(dto.getInicioSesion());
+		entityUsuario.setInicioSesion(true);
 		
 		// 2- Guardamos en la base de datos la entidad rellena (la tabla con los datos)
 		EntityUsuario guardado = usuarioRepository.save(entityUsuario);
+		System.out.println("-------------DATOS RECIBIDOS DEL FRONT-END---------");
+		System.out.println(dto.getNombre() + dto.getApellido());
+		System.out.println(dto.getEmail()  + " " + dto.getPassword() + " "  + dto.getTelefono());
+		System.out.println(dto.getCentroTrabajo() + " " + dto.getPuesto() + " "  + " ID JORNADA: " + createIDJornada);
+		System.out.println(dto.getLocalidad() + " "  + dto.getPreferenciasHorarias() + " "  + dto.getDisponibilidadHorasExtras());
+		System.out.println("---------------------------------------------------");
 		
 		// 3- Devolvemos un DTO
 		return new UsuarioDTO(
