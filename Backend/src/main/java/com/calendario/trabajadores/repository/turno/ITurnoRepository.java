@@ -11,8 +11,8 @@ import com.calendario.trabajadores.model.database.Turno;
 public interface ITurnoRepository extends JpaRepository<Turno, Integer>, CustomTurnoRepository {
 
     // Metodo para obtener turnos por id de usuario y estado
-    List<Turno> findByIdAndActivo(int usuarioId, Boolean estadoTurno);
+    List<Turno> findByIdAndActivo(int jornadaID, Boolean estadoTurno);
 
     // Metodo para obtener turnos por id de usuario
-    Turno findById(int usuarioId);
+    Turno findById(int jornadaID);
 }

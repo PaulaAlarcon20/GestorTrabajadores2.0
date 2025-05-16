@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:front_end_gui/views/cubit/SignUpCubit.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit2.dart';
 import 'package:front_end_gui/views/widgets/Custom_Text_FormField.dart';
 import 'package:front_end_gui/views/widgets/TelefonoInputFormatter.dart';
@@ -32,12 +31,12 @@ class _PersonalFirstForm extends State<PersonalFirstForm> {
   @override
   Widget build(BuildContext context) {
 
-    final signUpCubit = context.watch<SignUpCubit>();
+    final signUpCubit2 = context.watch<SignUpCubit2>();
 
-    final nombre = signUpCubit.state.nombre;
-    final apellidos = signUpCubit.state.apellidos;
-    final gmail = signUpCubit.state.gmail;
-    final telefono = signUpCubit.state.telefono;
+    final nombre = signUpCubit2.state.nombre;
+    final apellidos = signUpCubit2.state.apellidos;
+    final gmail = signUpCubit2.state.gmail;
+    final telefono = signUpCubit2.state.telefono;
 
     
 
@@ -62,8 +61,9 @@ class _PersonalFirstForm extends State<PersonalFirstForm> {
                       CustomTextFormfield(
                           hintText: 'Nombre',
                           onChanged: (value) {
-                            signUpCubit.nombreChanged(value);
-                            
+                            signUpCubit2.nombreChanged(value);
+                            context.read<SignUpCubit2>().nombreChanged(value);
+                           
                           },
                           erroreMessage: nombre.errorMessage,
                           obscureText: false
@@ -80,7 +80,8 @@ class _PersonalFirstForm extends State<PersonalFirstForm> {
                       CustomTextFormfield(
                         hintText: 'Apellidos',
                         onChanged: (value){
-                          signUpCubit.apellidosChanged(value);
+                          signUpCubit2.apellidosChanged(value);
+                          print("Apellidos formulario: $value");
                         },
                         erroreMessage: apellidos.errorMessage,
                         obscureText: false),
@@ -94,7 +95,8 @@ class _PersonalFirstForm extends State<PersonalFirstForm> {
                       CustomTextFormfield(
                         hintText: 'Usuario@gmail.com',
                         onChanged: (value){
-                          signUpCubit.gmailChanged(value);
+                          signUpCubit2.gmailChanged(value);
+                          print("Correo formulario: $value");
                         },
                         erroreMessage: gmail.errorMessage,
                         obscureText: false),
@@ -111,7 +113,8 @@ class _PersonalFirstForm extends State<PersonalFirstForm> {
                         hintText: '000 000 000',
                         keyboardType: TextInputType.phone,
                         onChanged: (value){
-                          signUpCubit.telefonoChanged(value);
+                          signUpCubit2.telefonoChanged(value);
+                          print("telefono formulario: $value");
                         },
                         erroreMessage: telefono.errorMessage,
                         inputFormatters:[PhoneFormatter()] ,
@@ -145,7 +148,7 @@ class _ProfesionalFirstForm extends State<ProfesionalFirstForm> {
   String? _seleccionPuesto;
   String? _preferenciaHoraria;
 
-  List<String> _puestoTrabajo = ['TCAE','Enfermero','Médico'];
+  List<String> _puestoTrabajo = ['TCAE','ENFERMERO','MEDICO'];
 
 
   @override

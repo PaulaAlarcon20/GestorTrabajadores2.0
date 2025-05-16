@@ -10,6 +10,8 @@ class ListaSolicitudesWidget extends StatefulWidget {
 }
 
 class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
+  // Hacer llamado a endpoint para obtener lista de Solicitudes
+
   List<ItemSolicitud> lSolicitudes = [
     ItemSolicitud('Elemento 1', false),
     ItemSolicitud('Elemento 2', false),

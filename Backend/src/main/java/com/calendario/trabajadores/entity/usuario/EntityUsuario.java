@@ -11,6 +11,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,9 +48,10 @@ public class EntityUsuario {
 	@Column(name = "CentroTrabajo", nullable=true, unique=false, length=30)
 	private String centroTrabajo;
 	
-	@Enumerated(value = EnumType.STRING)
 	@Column(name = "Puesto", nullable=true, unique=false, length=30)
+	@Enumerated(EnumType.STRING)
 	private Puesto puesto;
+	
 	
 	@ManyToOne
     @JoinColumn(name = "IdJornada", insertable = false, updatable = false) 
@@ -60,7 +63,7 @@ public class EntityUsuario {
 	@Column(name = "PreferenciasHorarias", nullable = true, unique= false, length = 30)
 	private String preferenciasHorarias;
 	
-	@Column(name = "DisponibilidadHorasExtras")
+	@Column(name = "DisponibilidadHorasExtras", nullable = false, unique= false, length = 30, columnDefinition = "TINYINT(1)")
 	private Boolean disponibilidadHorasExtras;
 	
 	@Column(name = "inicio_sesion")

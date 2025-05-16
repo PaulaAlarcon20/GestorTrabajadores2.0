@@ -21,6 +21,9 @@ public interface IUsuarioRepository extends JpaRepository<EntityUsuario, Integer
     List<EntityUsuario> findByActivo(@Param("p")boolean activo);
     
     EntityUsuario findEntityUsuarioById(int userId);
+    
+    boolean findByEmail(String email);
+    
 
     Optional<EntityUsuario> findByEmailAndContrasena(String email, String contrasena);
     

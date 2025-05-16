@@ -11,6 +11,9 @@ class RegisterState extends Equatable {
   final IconData icono;
   final PasswordLoginInput password;
   final bool isValid;
+  final bool inicioSesion;
+  final String messageStatus;
+
 
   // Constructor
   const RegisterState({
@@ -18,7 +21,9 @@ class RegisterState extends Equatable {
     this.email = const GmailInput.pure(),
     this.password = const PasswordLoginInput.pure(),
     this.isValid = false,
-    this.icono = Icons.error
+    this.icono = Icons.error,
+    this.inicioSesion = false,
+    this.messageStatus = ""
   });
 
 
@@ -28,7 +33,9 @@ class RegisterState extends Equatable {
     bool? isValid,
     GmailInput? email,
     PasswordLoginInput? password,
-    IconData? icono
+    IconData? icono,
+    bool? inicioSesion,
+    String? messageStatus
     
   }) {
     return RegisterState(
@@ -36,11 +43,13 @@ class RegisterState extends Equatable {
         isValid: isValid ?? this.isValid,
         email: email ?? this.email,
         password: password ?? this.password,
-        icono: icono ?? this.icono
+        icono: icono ?? this.icono,
+        inicioSesion: inicioSesion ?? this.inicioSesion,
+        messageStatus: messageStatus ?? this.messageStatus
         
     );
   }
   
   @override
-  List<Object> get props => [formStatus, email, password, isValid, icono]; // Este listado sirve para saber que estado anterior tenía
+  List<Object> get props => [formStatus, email, password, isValid, icono, inicioSesion, messageStatus]; // Este listado sirve para saber que estado anterior tenía
 }
