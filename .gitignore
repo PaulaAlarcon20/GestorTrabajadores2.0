@@ -28,3 +28,4 @@ Backend/target/generated-sources/annotations/com/calendario/trabajadores/mapping
 Backend/target/generated-sources/annotations/com/calendario/trabajadores/mappings/IUserMapperImpl.java
 Backend/target/generated-sources/annotations/com/calendario/trabajadores/mappings/IVehiculoMapperImpl.java
 Backend/target/generated-sources/annotations/com/calendario/trabajadores/mappings/IViajeMapperImpl.java
+Backend/.project

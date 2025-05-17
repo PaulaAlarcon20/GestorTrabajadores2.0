@@ -21,9 +21,6 @@ import com.calendario.trabajadores.repository.CambioTurno.ICambioTurnoRepository
 import com.calendario.trabajadores.repository.turno.ITurnoRepository;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 
-import ch.qos.logback.classic.pattern.DateConverter;
-import jakarta.persistence.Convert;
-
 @Service
 public class CambioTurnoService {
 

@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin //Permite peticiones desde cualquier origen
+@CrossOrigin(origins = "*") // Permite solicitudes desde el cliente Flutter
 @Tag(name = "Login", description = "Endpoints para el login de los usuarios")
 public class LoginController {
     @Autowired
