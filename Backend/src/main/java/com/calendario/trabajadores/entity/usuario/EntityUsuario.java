@@ -49,7 +49,7 @@ public class EntityUsuario {
 	@Column(name = "Localidad", nullable=false, unique=false, length=30)
 	private String localidad;
 	
-	@Column(name = "PreferenciasHorarias", nullable = false, unique= false, length = 30)
+	@Column(name = "PreferenciasHorarias", nullable = false, unique= false, length = 1500)
 	private String preferenciasHorarias;
 	
 	@Column(name = "DisponibilidadHorasExtras", nullable = false, unique= false, length = 30, columnDefinition = "TINYINT(1)")

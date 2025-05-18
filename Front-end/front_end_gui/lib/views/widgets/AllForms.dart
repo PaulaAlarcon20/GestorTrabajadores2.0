@@ -360,7 +360,6 @@ class _CreateUserForm extends State<CreateUserForm> {
     // Un watch del contexto del arbol
     final signUpCubit3 = context.watch<SignUpCubit2>();
     final password = signUpCubit3.state.password;
-    //bool stateForm3 = signUpCubit3.state.isValid2 == true; // TODO CAMBIAR LOGICA
     bool stateForm3 = signUpCubit3.state.isValid3 == true ;
     
     return Form(
