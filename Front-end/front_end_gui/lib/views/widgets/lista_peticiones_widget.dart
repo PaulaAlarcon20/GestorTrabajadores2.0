@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
-import '../gestionTurnos/Solicitudes.dart';
+import 'package:intl/intl.dart';
+import '../gestionTurnos/Peticiones.dart';
 
 class ListaPeticionesWidget extends StatefulWidget {
   const ListaPeticionesWidget({super.key});
@@ -12,34 +13,34 @@ class ListaPeticionesWidget extends StatefulWidget {
 }
 
 class _ListaPeticionesWidgetState extends State<ListaPeticionesWidget> {
-  List<ItemSolicitud> lSolicitudes = [];
+  late Future<List<ItemPeticion>> futureSolicitudes;
+  List<ItemPeticion> lPeticiones = [];
 
   @override
   void initState() {
     super.initState();
+    // Hacer llamado a endpoint para obtener lista de peticiones
+    int usuarioId = 1;
+    futureSolicitudes = convertirLista(sendHttpGet(usuarioId));
   }
 
   @override
   Widget build(BuildContext context) {
-    // Hacer llamado a endpoint para obtener lista de peticiones
-    int usuarioId = 1;
-    var petis = sendHttpGet(usuarioId);
-
     return Scaffold(
-      body: FutureBuilder<List<ItemSolicitud>>(
-        future: convertirLista(petis),
-        builder: (context, lSolicitudesConvert) {
-          if (lSolicitudesConvert.connectionState == ConnectionState.waiting) {
+      body: FutureBuilder<List<ItemPeticion>>(
+        future: futureSolicitudes,
+        builder: (context, lPeticionesConvert) {
+          if (lPeticionesConvert.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
-          } else if (lSolicitudesConvert.hasError) {
+          } else if (lPeticionesConvert.hasError) {
             return Center(child: Text("Error al cargar datos"));
-          } else if (!lSolicitudesConvert.hasData ||
-              lSolicitudesConvert.data!.isEmpty) {
+          } else if (!lPeticionesConvert.hasData ||
+              lPeticionesConvert.data!.isEmpty) {
             return Center(child: Text("No hay Peticiones abiertas"));
           } else {
-            lSolicitudes = lSolicitudesConvert.data!;
+            lPeticiones = lPeticionesConvert.data!;
             return ListView.builder(
-              itemCount: lSolicitudes.length,
+              itemCount: lPeticiones.length,
               itemBuilder: (context, index) {
                 return Container(
                   margin: EdgeInsets.all(8),
@@ -47,19 +48,21 @@ class _ListaPeticionesWidgetState extends State<ListaPeticionesWidget> {
                   decoration: BoxDecoration(color: Colors.blue.shade100),
                   child: ListTile(
                     title: Text(
-                      lSolicitudes[index].text,
+                      "Turno: " + lPeticiones[index].turno,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text("Fecha 23-04-2025"),
+                    subtitle: Text("Fecha Solicitada: " +
+                        DateFormat('yyyy-MM-dd').format(DateTime.parse(
+                            lPeticiones[index].fechaSolicitada))),
                     leading: Icon(
                       Icons.calendar_month,
                       color: Colors.blue,
                     ),
                     trailing: Checkbox(
-                      value: lSolicitudes[index].isChecked,
+                      value: lPeticiones[index].isChecked,
                       onChanged: (bool? newValue) {
                         setState(() {
-                          lSolicitudes[index].isChecked = newValue ?? false;
+                          lPeticiones[index].isChecked = newValue ?? false;
                         });
                       },
                     ),
@@ -143,13 +146,27 @@ class _ListaPeticionesWidgetState extends State<ListaPeticionesWidget> {
     }
   }
 
-  Future<List<ItemSolicitud>> convertirLista(
+  Future<List<ItemPeticion>> convertirLista(
       Future<List<dynamic>> futureLista) async {
     List<dynamic> lista = await futureLista;
 
     return lista.map((elemento) {
-      return ItemSolicitud(
-          elemento.toString(), elemento is bool ? elemento : false);
+      if (elemento is Map<String, dynamic>) {
+        // Se accede al objeto 'jornadaID', que se asume es un Map
+        String descripcion = 'N/A';
+        if (elemento['jornadaID'] != null &&
+            elemento['jornadaID'] is Map<String, dynamic>) {
+          descripcion =
+              elemento['jornadaID']['descripcion']?.toString() ?? 'N/A';
+        }
+        return ItemPeticion(
+          descripcion,
+          elemento['fechaSolicitada']?.toString() ?? 'N/A',
+          elemento['isChecked'] is bool ? elemento['isChecked'] : false,
+        );
+      } else {
+        return ItemPeticion(elemento.toString(), '', false);
+      }
     }).toList();
   }
 }

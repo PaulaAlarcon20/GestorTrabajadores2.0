@@ -1,11 +1,11 @@
-class Solicitudes {}
+class Peticiones {}
 
-class ItemSolicitud {
+class ItemPeticion {
   late String turno;
   late String fechaSolicitada;
   late bool isChecked;
 
-  ItemSolicitud(String lTurno, String lfechaSolicitada, bool lCheck) {
+  ItemPeticion(String lTurno, String lfechaSolicitada, bool lCheck) {
     turno = lTurno;
     fechaSolicitada = lfechaSolicitada;
     isChecked = lCheck;

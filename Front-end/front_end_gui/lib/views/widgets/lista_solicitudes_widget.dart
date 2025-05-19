@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front_end_gui/views/widgets/nueva_solicitud_widget.dart';
+import 'package:intl/intl.dart';
 import '../gestionTurnos/Solicitudes.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -12,22 +13,21 @@ class ListaSolicitudesWidget extends StatefulWidget {
 }
 
 class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
+  late Future<List<ItemSolicitud>> futureSolicitudes;
   List<ItemSolicitud> lSolicitudes = [];
 
   @override
   void initState() {
     super.initState();
+    int usuarioId = 1;
+    futureSolicitudes = convertirLista(sendHttpGet(usuarioId));
   }
 
   @override
   Widget build(BuildContext context) {
-    // Hacer llamado a endpoint para obtener lista de Solicitudes
-    int usuarioId = 1;
-    var sols = sendHttpGet(usuarioId);
-
     return Scaffold(
       body: FutureBuilder<List<ItemSolicitud>>(
-        future: convertirLista(sols),
+        future: futureSolicitudes,
         builder: (context, lSolicitudesConvert) {
           if (lSolicitudesConvert.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -47,10 +47,12 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
                   decoration: BoxDecoration(color: Colors.blue.shade100),
                   child: ListTile(
                     title: Text(
-                      lSolicitudes[index].text,
+                      "Turno: " + lSolicitudes[index].turno,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text("Fecha 23-04-2025"),
+                    subtitle: Text("Fecha Solicitada: " +
+                        DateFormat('yyyy-MM-dd').format(DateTime.parse(
+                            lSolicitudes[index].fechaSolicitada))),
                     leading: Icon(
                       Icons.calendar_month,
                       color: Colors.blue,
@@ -194,8 +196,22 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
     List<dynamic> lista = await futureLista;
 
     return lista.map((elemento) {
-      return ItemSolicitud(
-          elemento.toString(), elemento is bool ? elemento : false);
+      if (elemento is Map<String, dynamic>) {
+        // Se accede al objeto 'jornadaID', que se asume es un Map
+        String descripcion = 'N/A';
+        if (elemento['jornadaID'] != null &&
+            elemento['jornadaID'] is Map<String, dynamic>) {
+          descripcion =
+              elemento['jornadaID']['descripcion']?.toString() ?? 'N/A';
+        }
+        return ItemSolicitud(
+          descripcion,
+          elemento['fechaSolicitada']?.toString() ?? 'N/A',
+          elemento['isChecked'] is bool ? elemento['isChecked'] : false,
+        );
+      } else {
+        return ItemSolicitud(elemento.toString(), '', false);
+      }
     }).toList();
   }
 }
