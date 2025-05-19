@@ -10,6 +10,7 @@ import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
+import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -103,6 +104,55 @@ public class UserService {
 						usuario.getInicioSesion()
 				))
 				.collect(Collectors.toList());
+	}
+	
+	//Obtener usuario por email
+	public UsuarioDTO obtenerUsuarioByEmail(String email){
+		
+		Optional<EntityUsuario> usuario = usuarioRepository.findByEmail(email);
+		
+		if(usuario.isPresent()) {
+			return new UsuarioDTO(
+					usuario.get().getId(), 
+					usuario.get().getNombre(), 
+					usuario.get().getApellido(), 
+					usuario.get().getEmail(), 
+					usuario.get().getPassword(), 
+					usuario.get().getTelefono(), 
+					usuario.get().getCentroTrabajo(), 
+					usuario.get().getPuesto(),
+					usuario.get().getJornadaID(), 
+					usuario.get().getLocalidad(), 
+					usuario.get().getPreferenciasHorarias(), 
+					usuario.get().getDisponibilidadHorasExtras(), 
+					usuario.get().getInicioSesion());
+		} else {
+			throw new EntityNotFoundException("Usuario no encontrado");
+		}
+	}
+	
+	//Obtener usuario por ID
+	public UsuarioDTO obtenerUsuarioByID(int id) {
+		Optional<EntityUsuario> usuario = usuarioRepository.findById(id);
+		
+		if(usuario.isPresent()) {
+			return new UsuarioDTO(
+					usuario.get().getId(), 
+					usuario.get().getNombre(), 
+					usuario.get().getApellido(), 
+					usuario.get().getEmail(), 
+					usuario.get().getPassword(), 
+					usuario.get().getTelefono(), 
+					usuario.get().getCentroTrabajo(), 
+					usuario.get().getPuesto(),
+					usuario.get().getJornadaID(), 
+					usuario.get().getLocalidad(), 
+					usuario.get().getPreferenciasHorarias(), 
+					usuario.get().getDisponibilidadHorasExtras(), 
+					usuario.get().getInicioSesion());
+		} else {
+			throw new EntityNotFoundException("Usuario no encontrado");
+		}
 	}
 	
 

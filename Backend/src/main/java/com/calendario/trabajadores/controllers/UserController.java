@@ -76,18 +76,27 @@ public class UserController {
 					.body(errorResponse);
 			
 		}
-		
-		
 	}
 	
-	// Programar un LoginResponse, en donde se le envie al front el valor true verificando el inicio de sesion
-	// Cambiar logica en front para si es true, se pasa a la siguiente pantalla
-	// Si es false se muestra un mensaje al usuario y se deshabilita boton hasta que vuelva a introdcir
-
-	
-	// @PostMapping @GetMapping @PostMapping @PutMapping @DeleteMapping
-
-
+	// Obtener usuario por email
+	@GetMapping("/DataUser")
+	public ResponseEntity<UsuarioDTO> obtenerDatosUsuario (@RequestParam String email){
+			
+		UsuarioDTO usuarioDTO = userService.obtenerUsuarioByEmail(email);
+			
+		return ResponseEntity.ok(usuarioDTO);
+			
+	}
+		
+	// Obtener usuario por email
+	@GetMapping("/DataUser/id")
+	public ResponseEntity<UsuarioDTO> obtenerDatosUsuarioID (@RequestParam int id){
+			
+		UsuarioDTO usuarioDTO = userService.obtenerUsuarioByID(id);
+			
+		return ResponseEntity.ok(usuarioDTO);
+			
+	}
 
 
 }

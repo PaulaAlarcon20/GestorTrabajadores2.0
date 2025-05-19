@@ -207,6 +207,8 @@ class SignUpCubit2 extends Cubit<SignUpState2> {
         log('${data.nombre} - ${data.apellidos} - ${data.puesto} - ${data.telefono} - ');
 
 
+
+
       } else {
         
         final data = jsonDecode(response.body);

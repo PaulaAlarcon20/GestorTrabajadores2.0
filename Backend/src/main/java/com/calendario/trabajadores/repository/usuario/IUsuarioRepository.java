@@ -26,11 +26,14 @@ public interface IUsuarioRepository extends JpaRepository<EntityUsuario, Integer
     @Query("SELECT u FROM Usuario u WHERE u.activo = :p")
     List<Usuario> findByActivo(@Param("p")boolean activo);
     
-    boolean findByEmail(String email);
+    //boolean findByEmail(String email);
     
     
     Optional<EntityUsuario> findByEmailAndContrasena(String email, String contrasena);
     
+    Optional<EntityUsuario> findByEmail(String email);
+    
+    Optional<EntityUsuario> findById(int id);
     
     Optional<EntityUsuario> findByEmailAndInicioSesion(String email, boolean inicioSesion);
 }
