@@ -1,6 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:front_end_gui/views/Home_screen.dart';
 import 'package:front_end_gui/views/cubit/SignUpState2.dart';
 import 'package:front_end_gui/views/infraestructure/inputs/disponibilidadHorasExtras.dart';
 import 'package:front_end_gui/views/infraestructure/inputs/inputs.dart';
@@ -12,13 +15,17 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:developer';
 
-/// Clase RegisterLoginCubit, en donde vamos a desarrollar los métodos de la validación
+/// Clase RegisterLoginCubit, en donde vamos a desarrollar los métodos de la validaciónbool avance;
 class SignUpCubit2 extends Cubit<SignUpState2> {
+
   SignUpCubit2() : super(const SignUpState2(
   isValid: false,
   isValid2: false,
-  isValid3: false
-));
+  isValid3: false,
+  avance: false
+  ));
+
+  
 
   void setValidState0(bool isValid) {
     emit(state.copyWith(isValid: isValid));
@@ -31,6 +38,8 @@ class SignUpCubit2 extends Cubit<SignUpState2> {
   void setValidState3(bool isValid3) {
     emit(state.copyWith(isValid3: isValid3));
   }
+
+  
 
   void onSubmit(int parte) {
      // TODO logica para que se meta a realizar cosas por cada form
@@ -63,11 +72,6 @@ class SignUpCubit2 extends Cubit<SignUpState2> {
             apellidos: MultiInput.dirty(value: state.apellidos.value),
             gmail: GmailInput.dirty(value: state.gmail.value),
             telefono: TelefonoInput.dirty(value: state.telefono.value),
-            //centroDeTrabajo: MultiInput.dirty(value: state.centroDeTrabajo.value),
-            //puesto: DropDownPuesto.dirty(value: state.puesto.value),
-            //localidad: MultiInput.dirty(value: state.localidad.value),
-            //preferenciasHorarias: PreferenciasRadioButton.dirty(value: state.preferenciasHorarias.value),
-            //disponibilidadHorasExtras:  DisponibilidadHorasExtras.dirty(value: state.disponibilidadHorasExtras.value),
    
                   
             isValid: Formz.validate([
@@ -135,11 +139,9 @@ class SignUpCubit2 extends Cubit<SignUpState2> {
         );
 
         sendHttpPost();
+
       }
 
-
-
-      
       log("---- DESPUES EJECUCIÓN OnSubmit-----");
       log("isValid: ${state.isValid}");
       log("isValid2: ${state.isValid2}");
@@ -174,7 +176,8 @@ class SignUpCubit2 extends Cubit<SignUpState2> {
         "localidad" : state.localidad.value,
         "preferenciasHorarias" : state.preferenciasHorarias.value,
         "disponibilidadHorasExtras" : state.disponibilidadHorasExtras.value,
-        "inicio_sesion" : false
+        "inicio_sesion" : false,
+        'mensaje': ""
         // vemos como se comporta las barras bajas
       };
 
@@ -184,18 +187,40 @@ class SignUpCubit2 extends Cubit<SignUpState2> {
         headers: {"Content-Type": "application/json"} ,
         body: jsonEncode(formData) ,
       );
+
+      
       
       log('------ JSON A ENVIAR AL BACK-END ------');
       formData.forEach((clave, valor){ 
         log('* $clave : $valor *');
       });
       log('---------------------------------------');
+      
       //4- Comprobar estado de petición
+      bool avance;
       if( response.statusCode == 200 || response.statusCode == 201){
-        log('Datos enviados correctamente: ${response.statusCode}');
+        avance = false;
+        final data = jsonDecode(response.body);
+
+        log('Datos enviados correctamente: ${response.statusCode}  - valor de avance $avance');
+        emit(state.copyWith(avance: true));
+        log('${data.nombre} - ${data.apellidos} - ${data.puesto} - ${data.telefono} - ');
+
+
       } else {
-        log('statusCode HTTP: ${response.statusCode}');
-        log('statusCode HTTP: ${response.statusCode}');
+        
+        final data = jsonDecode(response.body);
+        final mensaje = data['mensaje'];
+        final error = data['error'];
+        avance = true;
+
+        
+
+        emit(state.copyWith(avance: false));
+
+        log('statusCode HTTP: ${response.statusCode} - valor de avance $avance - mensaje: $mensaje + $error');
+        log('cuerpo HTTP: ${response.statusCode}');
+
       }
       
 

@@ -72,10 +72,10 @@ public class UserService {
 		// 2- Guardamos en la base de datos la entidad rellena (la tabla con los datos)
 		EntityUsuario guardado = usuarioRepository.save(entityUsuario);
 		System.out.println("-------------DATOS RECIBIDOS DEL FRONT-END---------");
-		System.out.println(dto.getNombre() + dto.getApellido());
-		System.out.println(dto.getEmail()  + " " + dto.getPassword() + " "  + dto.getTelefono());
-		System.out.println(dto.getCentroTrabajo() + " " + dto.getPuesto() + " "  + " ID JORNADA: " + createIDJornada);
-		System.out.println(dto.getLocalidad() + " "  + dto.getPreferenciasHorarias() + " "  + dto.getDisponibilidadHorasExtras());
+		System.out.println("Nombre: " + dto.getNombre() +  dto.getApellido());
+		System.out.println(dto.getEmail()  + " / " + dto.getPassword() + " / "  + dto.getTelefono());
+		System.out.println(dto.getCentroTrabajo() + " / " + dto.getPuesto() + " / "  + " ID JORNADA: " + createIDJornada);
+		System.out.println(dto.getLocalidad() + " / "  + dto.getPreferenciasHorarias() + " "  + dto.getDisponibilidadHorasExtras());
 		System.out.println("---------------------------------------------------");
 		
 		// 3- Devolvemos un DTO

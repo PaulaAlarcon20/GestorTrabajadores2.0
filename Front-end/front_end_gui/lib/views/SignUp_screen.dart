@@ -1,16 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:front_end_gui/views/Home_screen.dart';
 import 'package:front_end_gui/views/RegisterView_screen.dart';
 import 'package:front_end_gui/views/cubit/SignUpCubit2.dart';
 import 'package:front_end_gui/views/cubit/SignUpState2.dart';
 import 'package:front_end_gui/views/widgets/AllForms.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignupForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AllProfesionalFormField();
+    return BlocListener<SignUpCubit2, SignUpState2>(
+      listenWhen: (previous, current) => previous.avance != current.avance,
+      listener: (context, state) {
+        if (state.avance == true) {
+
+          Fluttertoast.showToast(
+            msg: "Usuario registrado exisosamente.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.black87,
+            textColor: Colors.white,
+            fontSize: 16.0
+          );
+
+
+          Navigator.pushReplacement(
+            context, 
+            MaterialPageRoute(builder: (_) => const RegisterView()));
+        } else {
+          
+          Fluttertoast.showToast(
+            msg: "Correo electrónico registrado previamente",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.black87,
+            textColor: Colors.white,
+            fontSize: 16.0
+          );
+        }
+      },
+      child: AllProfesionalFormField(),
+    );
   }
 }
 
@@ -21,11 +52,11 @@ class AllProfesionalFormField extends StatefulWidget {
 }
 
 class _AllProfesionalFormField extends State<AllProfesionalFormField> {
-  int _currentStep = 0; // Inicio parada  TODO Vamos a jugar con esta variable 
+  int _currentStep = 0; // Inicio parada  TODO Vamos a jugar con esta variable
   int _pasos = 1;
 
   bool? changedStateSpinner;
-  bool ? isLoading3;
+  bool? isLoading3;
 
   void _nextStep() {
     if (_currentStep < 2) {
@@ -33,12 +64,13 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
         _currentStep++;
         _pasos++;
 
-        if(_pasos == 3){
+        if (_pasos == 3) {
           changedStateSpinner = true;
           isLoading3 = false;
         }
-        
-        print('Estado de _pasos ($_pasos) es -> $changedStateSpinner  y _currentStep $_currentStep');
+
+        print(
+            'Estado de _pasos ($_pasos) es -> $changedStateSpinner  y _currentStep $_currentStep');
       });
     }
   }
@@ -48,33 +80,29 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
       setState(() {
         _currentStep--;
         _pasos--;
-        
-        if(_pasos == 3){
+
+        if (_pasos == 3) {
           changedStateSpinner = false;
         }
-        
+
         print('BACKEstado de _pasos ($_pasos) es -> $changedStateSpinner');
         // Desarrollar lógica para que cuando de atrás en el ultimo paso del spinner cambiar valor a false de is Loading3
       });
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     //double screenHeight = MediaQuery.of(context).size.height;
-    
+
     final signUpCubit2 = context.watch<SignUpCubit2>();
-    
 
     isLoading3 = signUpCubit2.state.formStatus3 == FormStatus3.valid;
-    
-    final bool stateForm1 = signUpCubit2.state.isValid == true; 
+
+    final bool stateForm1 = signUpCubit2.state.isValid == true;
     final bool stateForm2 = signUpCubit2.state.isValid2 == true;
     final bool stateForm3 = signUpCubit2.state.isValid3 == true;
-
-    
-
     final bool statePuesto = signUpCubit2.state.puesto.value.isEmpty;
 
     final sigUpCubitPRUEBA = context.read<SignUpCubit2>();
@@ -110,7 +138,6 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
                   style: TextStyle(
                       fontSize: 17,
                       color: const Color.fromARGB(255, 128, 128, 128)),
-                      
                 )
               ],
             ),
@@ -119,100 +146,109 @@ class _AllProfesionalFormField extends State<AllProfesionalFormField> {
         centerTitle: true,
       ),
       body: Column(
-          children: [
-            // Barra de progreso - Crear widget para ello
-            // TODO Tienes la opción de sustituir el IndexedStack por el PageView
-            Expanded(
-                child: IndexedStack(
-              index: _currentStep,
-              children: [
-                PersonalFirstForm(),
-                ProfesionalFirstForm(),
-                CreateUserForm(),
-              ],
-            )),
+        children: [
+          // Barra de progreso - Crear widget para ello
+          // TODO Tienes la opción de sustituir el IndexedStack por el PageView
+          Expanded(
+              child: IndexedStack(
+            index: _currentStep,
+            children: [
+              PersonalFirstForm(),
+              ProfesionalFirstForm(),
+              CreateUserForm(),
+            ],
+          )),
 
-            Padding(
+          Padding(
             padding: EdgeInsets.all(6.0),
             child: Container(
               decoration: BoxDecoration(
-                //color: Colors.green
-              ),
+                  //color: Colors.green
+                  ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-
-                  if(_currentStep == 0)
-                    Expanded(child: FilledButton(
-                      onPressed: stateForm1 // (iria la validacion formulario 1)
-                      ? (){
-                         signUpCubit2.onSubmit(1);
-                         _nextStep();
-                      }
-                      : null, 
-                      child: Text('Siguiente', style: TextStyle( fontSize: screenWidth * 0.045),))
+                  if (_currentStep == 0)
+                    Expanded(
+                        child: FilledButton(
+                            onPressed:
+                                stateForm1 // (iria la validacion formulario 1)
+                                    ? () {
+                                        signUpCubit2.onSubmit(1);
+                                        _nextStep();
+                                      }
+                                    : null,
+                            child: Text(
+                              'Siguiente',
+                              style: TextStyle(fontSize: screenWidth * 0.045),
+                            )))
+                  else if (_currentStep == 1)
+                    Expanded(
+                      child: FilledButton(
+                          onPressed: stateForm2 &&
+                                  !statePuesto // Si estado true y puesto rellenado
+                              ? () {
+                                  signUpCubit2.onSubmit(2);
+                                  _nextStep();
+                                  isLoading3 = false;
+                                }
+                              : null,
+                          child: Text(
+                            'Siguiente',
+                            style: TextStyle(fontSize: screenWidth * 0.045),
+                          )),
                     )
-                  else if(_currentStep == 1)
-                   Expanded(
-                     child: FilledButton(
-                      onPressed: stateForm2 && !statePuesto // Si estado true y puesto rellenado
-                      ? () {
-                        signUpCubit2.onSubmit(2);
-                        _nextStep();
-                        isLoading3 = false;
-                      }
-                      : null,
-                      child: Text('Siguiente', style: TextStyle( fontSize: screenWidth * 0.045),)
-                    ),
-                   ) 
-                   else if(_currentStep == 2 && !changedStateSpinner!)
-                   Expanded(
-                    child: FilledButton.tonalIcon(
-                      
-                      onPressed: stateForm3 
-                      ? () {
-                        signUpCubit2.onSubmit(3);
+                  else if (_currentStep == 2 && !changedStateSpinner!)
+                    Expanded(
+                      child: FilledButton.tonalIcon(
+                          onPressed: stateForm3
+                              ? () {
+                                  signUpCubit2.onSubmit(3);
 
+                                  final nombre =
+                                      sigUpCubitPRUEBA.state.nombre.value;
+                                  final apellidos =
+                                      sigUpCubitPRUEBA.state.apellidos.value;
+                                  final correo =
+                                      sigUpCubitPRUEBA.state.gmail.value;
+                                  final puesto =
+                                      sigUpCubitPRUEBA.state.puesto.value;
 
-                        final nombre = sigUpCubitPRUEBA.state.nombre.value;
-                        final apellidos = sigUpCubitPRUEBA.state.apellidos.value;
-                        final correo = sigUpCubitPRUEBA.state.gmail.value;
-                        final puesto = sigUpCubitPRUEBA.state.puesto.value;
-
-                        print("IMPRESIÓN DATOS: $nombre $apellidos - $correo - $puesto");
-                      }
-                      : null, 
-                      label: isLoading3!
-                      ? const CircularProgressIndicator() 
-                      : Text('Finalizar', style: TextStyle( fontSize: screenWidth * 0.045),)
-                      ),
-                      
+                                  print(
+                                      "IMPRESIÓN DATOS: $nombre $apellidos - $correo - $puesto");
+                                }
+                              : null,
+                          label: isLoading3!
+                              ? const CircularProgressIndicator()
+                              : Text(
+                                  'Finalizar',
+                                  style:
+                                      TextStyle(fontSize: screenWidth * 0.045),
+                                )),
                     )
-                  else if(_currentStep == 2 && changedStateSpinner!)
-                  Expanded(
-                    child: FilledButton.tonalIcon(
-                      
-                      onPressed: stateForm3 
-                      ? () {
-                        signUpCubit2.onSubmit(3);
-                      }
-                      : null, 
-                      label: isLoading3!
-                      ? const CircularProgressIndicator() 
-                      : Text('Finalizar', style: TextStyle( fontSize: screenWidth * 0.045),)
-                      ),
-                      
+                  else if (_currentStep == 2 && changedStateSpinner!)
+                    Expanded(
+                      child: FilledButton.tonalIcon(
+                          onPressed: stateForm3
+                              ? () {
+                                  // Introducir lógica
+                                  signUpCubit2.onSubmit(3);
+                                }
+                              : null,
+                          label: isLoading3!
+                              ? const CircularProgressIndicator()
+                              : Text(
+                                  'Finalizar',
+                                  style:
+                                      TextStyle(fontSize: screenWidth * 0.045),
+                                )),
                     )
-                  
-                  
-                  
                 ],
               ),
             ),
           )
-      
-          ],
-        ),
+        ],
+      ),
     );
   }
 }

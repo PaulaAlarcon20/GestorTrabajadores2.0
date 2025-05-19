@@ -36,11 +36,19 @@ public class UserController {
 		return userService.obtenerTodosLosUsuarios();
 	}
 	
+	
 	@PostMapping("/SignUp")
-	public ResponseEntity<UsuarioDTO> crearUsuario(@RequestBody UsuarioDTO usuarioDTO){
-		UsuarioDTO usuarioCreado = userService.crearUsuario(usuarioDTO);
-		System.out.println(usuarioDTO.getNombre() + " " + usuarioDTO.getApellido() + " / " + usuarioDTO.getCentroTrabajo() + " - " + usuarioDTO.getPuesto());
-		return new ResponseEntity<>(usuarioCreado, HttpStatus.CREATED);
+	public ResponseEntity<?> crearUsuario(@RequestBody UsuarioDTO usuarioDTO){
+		
+		try {
+			UsuarioDTO usuarioCreado = userService.crearUsuario(usuarioDTO);
+			
+			return ResponseEntity.status(HttpStatus.CREATED).body(usuarioCreado);
+			
+		} catch (IllegalArgumentException e) {
+			
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Correo previamente registrado.");
+		}		
 	}
 	
 	

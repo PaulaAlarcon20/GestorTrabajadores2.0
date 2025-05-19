@@ -32,6 +32,8 @@ class SignUpState2 extends Equatable { // Equatable es una clase qeu ayuda a com
 
   final bool isValid2;
   final bool isValid3;
+
+  final bool avance;
   // ENUM
 
   final DisponibilidadHorasExtras disponibilidadHorasExtras;
@@ -52,7 +54,8 @@ class SignUpState2 extends Equatable { // Equatable es una clase qeu ayuda a com
     this.password = const PasswordInput.pure(),
     this.isValid = false,
     this.isValid2 = false,
-    this.isValid3 = false
+    this.isValid3 = false,
+    this.avance = true
   });
 
   SignUpState2 copyWith({
@@ -71,7 +74,8 @@ class SignUpState2 extends Equatable { // Equatable es una clase qeu ayuda a com
     PasswordInput? password,
     bool? isValid,
     bool? isValid2,
-    bool? isValid3
+    bool? isValid3,
+    bool? avance
   }) {
     return SignUpState2(
 
@@ -89,11 +93,12 @@ class SignUpState2 extends Equatable { // Equatable es una clase qeu ayuda a com
       password: password ?? this.password,
       isValid: isValid ?? this.isValid,
       isValid2: isValid2 ?? this.isValid2,
-      isValid3: isValid3 ?? this.isValid3
+      isValid3: isValid3 ?? this.isValid3,
+      avance: avance ?? this.avance
     );
   }
 
   @override
-  List<Object> get props => [formStatus2, formStatus3, nombre, apellidos, gmail, telefono, centroDeTrabajo, localidad, puesto, preferenciasHorarias, disponibilidadHorasExtras, password ,isValid3, isValid2, isValid]; // Este listado sirve para saber que estado anterior tenía
+  List<Object> get props => [formStatus2, formStatus3, nombre, apellidos, gmail, telefono, centroDeTrabajo, localidad, puesto, preferenciasHorarias, disponibilidadHorasExtras, password ,isValid3, isValid2, isValid, avance]; // Este listado sirve para saber que estado anterior tenía
 
 }
