@@ -48,12 +48,11 @@ class _ListaPeticionesWidgetState extends State<ListaPeticionesWidget> {
                   decoration: BoxDecoration(color: Colors.blue.shade100),
                   child: ListTile(
                     title: Text(
-                      "Turno: " + lPeticiones[index].turno,
+                      "Turno: ${lPeticiones[index].turno}",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text("Fecha Solicitada: " +
-                        DateFormat('yyyy-MM-dd').format(DateTime.parse(
-                            lPeticiones[index].fechaSolicitada))),
+                    subtitle: Text(
+                        "Fecha Solicitada: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(lPeticiones[index].fechaSolicitada))}"),
                     leading: Icon(
                       Icons.calendar_month,
                       color: Colors.blue,

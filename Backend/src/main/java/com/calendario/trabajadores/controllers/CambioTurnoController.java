@@ -1,8 +1,12 @@
 package com.calendario.trabajadores.controllers;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,9 +20,9 @@ import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.services.turno.CambioTurnoService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Component
 @RestController
 @CrossOrigin(origins = "*") // Permite solicitudes desde el cliente Flutter
 @Tag(name = "CambioTurno", description = "Endpoints para gestión de turnos")
@@ -50,10 +54,19 @@ public class CambioTurnoController {
 
     @Operation(summary = "Nueva solicitud", description = "Endpoint para Nueva solicitud")
     @PostMapping("/api/new_sol")
-	public GenericResponse<CambioTurnoResponse> nuevaSolicitud(@RequestBody CrearCambioTurnoRequest request)
+	public ResponseEntity<?> nuevaSolicitud(@RequestParam int usuarioId, int jornadaId, LocalDate fechaSolicitada)
     {
         System.out.println("Entra a controller nuevaSolicitud");
-		return cambioTurnoService.guardarSolicitud(request);
+        System.out.println("Request recibido: " + usuarioId + " - "+ jornadaId + " - "+fechaSolicitada);
+
+        CrearCambioTurnoRequest lNuevoCambio = new CrearCambioTurnoRequest(usuarioId,jornadaId,fechaSolicitada);
+
+        GenericResponse<CambioTurnoResponse> respuestaServicio = cambioTurnoService.guardarSolicitud(lNuevoCambio);
+
+        if (respuestaServicio.getError() != null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuestaServicio);
+        
+        return ResponseEntity.ok(respuestaServicio);
 	}
 
     // // Crear un turno

@@ -2,6 +2,7 @@ package com.calendario.trabajadores.services.turno;
 
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +55,7 @@ public class CambioTurnoService {
     public GenericResponse<CambioTurnoResponse> guardarSolicitud(CrearCambioTurnoRequest request) {
         GenericResponse<CambioTurnoResponse> response = new GenericResponse<>();
         CambioTurno cmTurno = new CambioTurno();
-        SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+        //SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
         ErrorResponse err;
         try {
             EntityUsuario user = userRepository.findEntityUsuarioById(request.getUsuarioId());
@@ -63,10 +64,10 @@ public class CambioTurnoService {
             if (user != null && jornada != null && request.getFechaSolicitada()!=null) {
                 cmTurno.setTrabajadorSolicitante(user);
                 cmTurno.setJornadaID(jornada);
-
-                Date fecha = formato.parse(request.getFechaSolicitada());
-                cmTurno.setFechaSolicitada(fecha);
-        
+                cmTurno.setFechaSolicitada(request.getFechaSolicitada());
+                
+                System.out.println("ID del trabajador solicitante: " + cmTurno.getTrabajadorSolicitante().getId());
+                
                 cambioTurnoRepository.save(cmTurno);
                 
                 CambioTurnoResponse cambioTurnoResponse = new CambioTurnoResponse();

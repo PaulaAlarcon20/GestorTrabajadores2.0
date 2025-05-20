@@ -1,6 +1,6 @@
 package com.calendario.trabajadores.model.database;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.hibernate.annotations.CurrentTimestamp;
 
@@ -25,35 +25,35 @@ import lombok.Setter;
 @Table(name = "cambioturno")
 public class CambioTurno {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) 
-	@Column(name = "IdCambioTurno")
-	private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IdCambioTurno")
+    private int id;
 
 	@ManyToOne
-	@JoinColumn(name = "TrabajadorSolicitanteID", nullable=false, unique=true)
+	@JoinColumn(name = "TrabajadorSolicitanteID", nullable=false)
 	private EntityUsuario trabajadorSolicitante;
 	
 	@ManyToOne
-	@JoinColumn(name = "TrabajadorAceptanteID", nullable=true, unique=true)
+	@JoinColumn(name = "TrabajadorAceptanteID", nullable=true)
 	private EntityUsuario trabajadorAceptante;
 
 	@ManyToOne
-    @JoinColumn(name = "IdJornada", insertable = false, updatable = false) 
+    @JoinColumn(name = "IdJornada", updatable = false) 
 	private Turno jornadaID;
 
-	@Column(name = "FechaSolicitada", nullable=false, unique=false, length=30)
-	private Date fechaSolicitada;
+	@Column(name = "FechaSolicitada", nullable=false, length=30)
+	private LocalDate fechaSolicitada;
 
 	@CurrentTimestamp
-	@Column(name = "FechaSolicitud", nullable=false, unique=false, length=30)
-	private Date fechaSolicitud;
+	@Column(name = "FechaSolicitud", nullable=false, length=30)
+	private LocalDate fechaSolicitud = LocalDate.now();
 
-	@Column(name = "FechaCambio", nullable=true, unique=false, length=30)
-	private Date fechaCambio;
+	@Column(name = "FechaCambio", nullable=true, length=30)
+	private LocalDate fechaCambio;
 
 	@Enumerated(value = EnumType.STRING)
-	@Column(name = "EstadoCambio", nullable=false, unique=false, length=30)
-	private PeticionTurno estadoCambio;
+	@Column(name = "EstadoCambio", nullable=false, length=30)
+	private PeticionTurno estadoCambio = PeticionTurno.PENDIENTE;
 
 	@Column(name = "Activo")
 	private Boolean activo = true;

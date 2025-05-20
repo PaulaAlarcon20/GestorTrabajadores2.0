@@ -6,11 +6,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.calendario.trabajadores.model.dto.usuario.LoginRequest;
@@ -21,6 +23,7 @@ import com.calendario.trabajadores.services.user.UserService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Component
 @RestController
 @CrossOrigin(origins = "*") // Permite solicitudes desde el cliente Flutter
 @Tag(name = "User", description = "Endpoints para modificación y creación de usuarios")
@@ -29,7 +32,7 @@ public class UserController {
     
 	// Con el uso de la anotacion @Autowired se inyecta automaticamente la clase Servicio al controlador
 	@Autowired
-    private UserService userService;
+        private UserService userService;
 	
 	@GetMapping
 	public List<UsuarioDTO> obtenerUsuarios(){

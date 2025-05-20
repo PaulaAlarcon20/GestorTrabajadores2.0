@@ -20,7 +20,7 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
   void initState() {
     super.initState();
     int usuarioId = 1;
-    futureSolicitudes = convertirLista(sendHttpGet(usuarioId));
+    futureSolicitudes = convertirLista(sendHttpGetSolicitudes(usuarioId));
   }
 
   @override
@@ -47,12 +47,11 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
                   decoration: BoxDecoration(color: Colors.blue.shade100),
                   child: ListTile(
                     title: Text(
-                      "Turno: " + lSolicitudes[index].turno,
+                      "Turno: ${lSolicitudes[index].turno}",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text("Fecha Solicitada: " +
-                        DateFormat('yyyy-MM-dd').format(DateTime.parse(
-                            lSolicitudes[index].fechaSolicitada))),
+                    subtitle: Text(
+                        "Fecha Solicitada: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(lSolicitudes[index].fechaSolicitada))}"),
                     leading: Icon(
                       Icons.calendar_month,
                       color: Colors.blue,
@@ -180,9 +179,20 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
         });
   }
 
-  Future<List<dynamic>> sendHttpGet(int userId) async {
+  Future<List<dynamic>> sendHttpGetSolicitudes(int userId) async {
     final response = await http
         .get(Uri.parse('http://localhost:8080/api/solicitudes?userId=$userId'));
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Error al cargar los datos');
+    }
+  }
+
+  Future<List<dynamic>> sendHttpPostSolicitud() async {
+    final response =
+        await http.post(Uri.parse('http://localhost:8080/api/new_sol'));
 
     if (response.statusCode == 200) {
       return json.decode(response.body);
