@@ -10,6 +10,7 @@ import com.calendario.trabajadores.model.errorresponse.GenericResponse;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class UserService {
 	
 	@Autowired
 	private IUsuarioRepository usuarioRepository;
+	
+	
 	
 	
 	// CREAR usuario

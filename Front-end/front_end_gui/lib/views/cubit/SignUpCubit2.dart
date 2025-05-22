@@ -139,7 +139,7 @@ class SignUpCubit2 extends Cubit<SignUpState2> {
         );
 
         sendHttpPost();
-
+        
       }
 
       log("---- DESPUES EJECUCIÓN OnSubmit-----");
@@ -151,11 +151,6 @@ class SignUpCubit2 extends Cubit<SignUpState2> {
     
   }
 
-  void onSubmit3(int partOfForm) {
-
-
-    
-  }
 
   Future<void> sendHttpPost() async{ 
     log('*** Se ejecuta sendHttpPost ***');
@@ -199,24 +194,23 @@ class SignUpCubit2 extends Cubit<SignUpState2> {
       //4- Comprobar estado de petición
       bool avance;
       if( response.statusCode == 200 || response.statusCode == 201){
-        avance = false;
+        avance = true;
         final data = jsonDecode(response.body);
 
         log('Datos enviados correctamente: ${response.statusCode}  - valor de avance $avance');
         emit(state.copyWith(avance: true));
-        log('${data.nombre} - ${data.apellidos} - ${data.puesto} - ${data.telefono} - ');
+        log('${data['nombre']} - ${data['apellido']} - ${data['puesto']} - ${data['telefono']} - ');
 
+        String correoParaEnviar = data['nombre'];
 
-
+        log("Correo a enviar ->  $correoParaEnviar");
 
       } else {
         
         final data = jsonDecode(response.body);
         final mensaje = data['mensaje'];
         final error = data['error'];
-        avance = true;
-
-        
+        avance = false;
 
         emit(state.copyWith(avance: false));
 
@@ -245,10 +239,32 @@ class SignUpCubit2 extends Cubit<SignUpState2> {
     );
   }
 
+  // Petición desarrollada que no se va a utilizar 
+  Future<void> getUsuariosPorCorreo(String email) async {
+    final Uri uri = Uri.parse("http://10.0.2.2:8080/api/usuarios/DataUser?email=$email");
+
+    try {
+
+      final response = await http.get(uri);
+      if(response.statusCode == 200 || response.statusCode == 201){
+
+        final data = jsonDecode(response.body);
+
+        log("------ DATOS DEL USUARIO ------ ");
+        log("Nombre: ${data['nombre']} ${data['apellido']} - ${data['id']}");
+        log("Nombre: ${data['centroTrabajo']} ${data['puesto']}");
+      } else {
+        log("Estado de la petición ${response.statusCode}");
+      }
+    } catch (e) {
+      log("Obtenemos el error: $e");
+    }
+  }
+
   // PARTE 1 DEL FORMULARIO
   void nombreChanged(String  nombre){
       final nombreNewValor = MultiInput.dirty(value: nombre);
-      print("EJECUCION VALOR NOMBRENEWVALOR: $nombreNewValor");
+      log("EJECUCION VALOR NOMBRENEWVALOR: $nombreNewValor");
       emit(
         state.copyWith(
           nombre: nombreNewValor,
