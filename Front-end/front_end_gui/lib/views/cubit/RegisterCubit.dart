@@ -15,7 +15,7 @@ part 'RegisterState.dart';
 class RegisterCubit extends Cubit<RegisterState> {
   RegisterCubit() : super(RegisterState());
 
- 
+  String contenidoMessageError = "";
 
   // Métodos en el cubic de las variables del formulario
   Future<void> onSubmit() async {
@@ -26,14 +26,12 @@ class RegisterCubit extends Cubit<RegisterState> {
         formStatus : FormStatus.validating, // Se indica que el estado de las validaciones es 'validando'
         email : GmailInput.dirty(value : state.email.value),
         password : PasswordLoginInput.dirty( value: state.password.value),
-        //icono: state.isValid ? Icons.check : Icons.error,
         
         isValid: Formz.validate([
           state.email,
           state.password, 
         ])
       ),
-      
     ); 
 
 
@@ -52,18 +50,16 @@ class RegisterCubit extends Cubit<RegisterState> {
         })
       );
 
-      
+
 
       if (response.statusCode == 200){
-        log('Se inicia sesión...');
 
         final data = jsonDecode(response.body);
-        final email = data['email'];
         final inicioSesion = data['inicioSesion'];
-        final mensaje = data['mensaje']; //todo OTRA LOGICA PUEDE SER PONER SI MENAJE ES TAL, SE MUESTRA ---------------------------------------
 
-        log('Login correcto -> $email, inicio de sesión: $inicioSesion  --- mensaje: $mensaje / statusHttp -> ${response.statusCode}' ); 
-
+        log('Se inicia sesión...');
+        log('Inicio de sesión de ${data['nombre']}  ${data['apellido']} / Puesto: ${data['puesto']} - ${data['telefono']}');
+        
         if(inicioSesion == true){
           emit(state.copyWith(
             formStatus: FormStatus.valid,
@@ -73,40 +69,40 @@ class RegisterCubit extends Cubit<RegisterState> {
         }
         
       } else if(response.statusCode == 400){
-        
-        emit(state.copyWith(
-          formStatus: FormStatus.invalid,
-          messageStatus: "Petición mal formulada"
-        ));
+
+        contenidoMessageError = "Petición mal formulada";
         print("Entra en status 400 -> ${response.statusCode}");
         
       } else if(response.statusCode == 401){
-        emit(state.copyWith(
-            formStatus: FormStatus.invalid,
-            messageStatus: "Credenciales incorrectas."
-        ));
+
+        contenidoMessageError = "Credenciales incorrectas.";
         print("Entra en status 401 -> ${response.statusCode}");
 
       } else if(response.statusCode >= 500){
-        emit(state.copyWith(
-          formStatus: FormStatus.invalid,
-          messageStatus: "Error del servidor, intentelo más tarde."
-        ));
+
+        contenidoMessageError = "Error del servidor, intentelo más tarde.";
         print("Entra en status 500 -> ${response.statusCode}");
 
       } else {
         log('Error en la autenticación -> ${response.statusCode} /  ${FormStatus.failHttp}',);
-        emit(state.copyWith(
-          formStatus:  FormStatus.failHttp,
-          inicioSesion: false,
-          messageStatus: "Error"
-        ));
+        contenidoMessageError = "Error durante el proceso de registro";
+
+        
         print("¡Error a revisar!");
       }
+
+      if(response.statusCode != 200 && response.statusCode != 201){
+        emit(state.copyWith(
+          formStatus: FormStatus.invalid,
+          messageStatus: contenidoMessageError
+        ));
+      }
+
+
+
     } catch (e, stackTrace) {
-      log('Error durante petición Http -> $e');
-      log('stackTrace -> $stackTrace');
-      //emit(state.copyWith(formStatus: FormStatus.failHttp));
+      log('1) Error durante petición Http -> $e');
+      log('2) Impresión de error -> $stackTrace');
     }
   }
 
@@ -117,7 +113,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       state.copyWith( // Crea nueva instancia manteniendo el estado anterior y solo cambia el campo email
         email: emailNewValue,
         isValid: Formz.validate([emailNewValue, state.password]), // Se le envía todos los campos porque necesita saber si son todos validos
-        //icono: state.isValid ? Icons.check : Icons.error,
+        
       )
     );
   }
