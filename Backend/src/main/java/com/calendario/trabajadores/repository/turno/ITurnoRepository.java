@@ -13,6 +13,4 @@ public interface ITurnoRepository extends JpaRepository<Turno, Integer>, CustomT
     // Metodo para obtener turnos por id de usuario y estado
     List<Turno> findByIdAndActivo(int jornadaID, Boolean estadoTurno);
 
-    // Metodo para obtener turnos por id de usuario
-    Turno findById(int jornadaID);
 }

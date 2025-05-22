@@ -145,6 +145,18 @@ class _ListaPeticionesWidgetState extends State<ListaPeticionesWidget> {
     }
   }
 
+  Future<List<dynamic>> sendHttpPostAceptarPeticion(
+      int idCambioTurno, int nuevoEstado) async {
+    final response = await http.get(Uri.parse(
+        'http://localhost:8080/api/edit_stat_sol?idCambioTurno=$idCambioTurno&nuevoEstado=1'));
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Error al cargar los datos');
+    }
+  }
+
   Future<List<ItemPeticion>> convertirLista(
       Future<List<dynamic>> futureLista) async {
     List<dynamic> lista = await futureLista;

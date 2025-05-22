@@ -1,9 +1,6 @@
 package com.calendario.trabajadores.services.turno;
 
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,18 +49,18 @@ public class CambioTurnoService {
         return cambioTurnoRepository.findCambioTurnoByTrabajadorSolicitanteNotAndEstadoCambio(user, PeticionTurno.PENDIENTE);
     }
 
+    // Creación de ueva solicitud
     public GenericResponse<CambioTurnoResponse> guardarSolicitud(CrearCambioTurnoRequest request) {
         GenericResponse<CambioTurnoResponse> response = new GenericResponse<>();
         CambioTurno cmTurno = new CambioTurno();
-        //SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
         ErrorResponse err;
         try {
             EntityUsuario user = userRepository.findEntityUsuarioById(request.getUsuarioId());
-            Turno jornada = jornadaRepository.findById(request.getJornadaId());
+            Optional<Turno> jornada = jornadaRepository.findById(request.getJornadaId());
             
             if (user != null && jornada != null && request.getFechaSolicitada()!=null) {
                 cmTurno.setTrabajadorSolicitante(user);
-                cmTurno.setJornadaID(jornada);
+                cmTurno.setJornadaID(jornada.get());
                 cmTurno.setFechaSolicitada(request.getFechaSolicitada());
                 
                 System.out.println("ID del trabajador solicitante: " + cmTurno.getTrabajadorSolicitante().getId());
@@ -88,175 +85,100 @@ public class CambioTurnoService {
         return response;
     }
 
-
-    // // Crear un turno (solo deberia hacerlo un admin)
-    // public GenericResponse<CrearEditarTurnoResponse> crearTurno(CrearTurnoRequest request) {
-    //     GenericResponse<CrearEditarTurnoResponse> responseWrapper = new GenericResponse<>();
-
-    //     // Añadir validaciones
-
-    //     // Crear el objeto turno desde el request
-    //     Turno turno = turnoMapper.crearTurnoRequestToTurno(request);
-
-    //     // Guardamos el turno en la base de datos
-    //     Turno turnoGuardado = turnoRepository.save(turno);
-
-    //     // Mapeamos la respuesta
-    //     CrearEditarTurnoResponse response = turnoMapper.turnoToCrearEditarTurnoResponse(turnoGuardado);
-
-    //     // Devolvemos la respuesta
-    //     responseWrapper.setData(response);
-    //     return responseWrapper;
-    // }
-
-    /*
-    private final ITurnoRepository turnoRepository;
-    private final ITurnoMapper turnoMapper;
-    private final IUsuarioRepository usuarioRepository;
-
-    // Constructor del servicio
-    public TurnoService(ITurnoRepository turnoRepository, ITurnoMapper turnoMapper, IUsuarioRepository usuarioRepository) {
-        this.turnoRepository = turnoRepository;
-        this.turnoMapper = turnoMapper;
-        this.usuarioRepository = usuarioRepository;
-    }
-
-    // Crear un turno (solo deberia hacerlo un admin)
-    public GenericResponse<CrearEditarTurnoResponse> crearTurno(CrearTurnoRequest request) {
-        GenericResponse<CrearEditarTurnoResponse> responseWrapper = new GenericResponse<>();
-
-        // Añadir validaciones
-
-        // Crear el objeto turno desde el request
-        Turno turno = turnoMapper.crearTurnoRequestToTurno(request);
-
-        // Guardamos el turno en la base de datos
-        Turno turnoGuardado = turnoRepository.save(turno);
-
-        // Mapeamos la respuesta
-        CrearEditarTurnoResponse response = turnoMapper.turnoToCrearEditarTurnoResponse(turnoGuardado);
-
-        // Devolvemos la respuesta
-        responseWrapper.setData(response);
-        return responseWrapper;
-    }
-
-    // Modificar un turno
-    public GenericResponse<CrearEditarTurnoResponse> modificarTurno(EditarTurnoRequest request) {
-        GenericResponse<CrearEditarTurnoResponse> responseWrapper = new GenericResponse<>();
+    // Eliminar Cambio de turno
+    public GenericResponse<CambioTurnoResponse> eliminarCambioTurno(int idCambioTurno) {
+        GenericResponse<CambioTurnoResponse> responseWrapper = new GenericResponse<>();
 
         // Buscar el turno por ID
-        Optional<Turno> turnoOptional = turnoRepository.findById(request.getId());
+        Optional<CambioTurno> cambioTurnoOptional = cambioTurnoRepository.findById(idCambioTurno);
 
-        if (turnoOptional.isEmpty()) {
-            responseWrapper.setError(new ErrorResponse("El turno no existe"));
+        if (cambioTurnoOptional.isEmpty()) {
+            responseWrapper.setError(new ErrorResponse("El cambio de turno no existe"));
             return responseWrapper;
         }
 
-        Turno turno = turnoOptional.get();
-
-        // Actualizar solo los campos enviados en la peticion de modificar
-        if (request.getHoraInicio() != null) {
-            turno.setHoraInicio(request.getHoraInicio());
-        }
-        if (request.getHoraFin() != null) {
-            turno.setHoraFin(request.getHoraFin());
-        }
-        if (request.getEstadoTurno() != null) {
-            turno.setEstadoTurno(request.getEstadoTurno());
-        }
-        if (request.getNotasPeticion() != null) {
-            turno.setNotasPeticion(request.getNotasPeticion());
-        }
-        if (request.getActivo() != null) {
-            turno.setActivo(request.getActivo());
-        }
+        CambioTurno cturno = cambioTurnoOptional.get();
+        cturno.setActivo(false); // se cambia estado a false para indicar que esta eliminado
 
         // Guardamos los cambios en la base de datos
-        Turno turnoActualizado = turnoRepository.save(turno);
-
+        CambioTurno turnoActualizado = cambioTurnoRepository.save(cturno);
+        
+        // Creamos respuesta
+        CambioTurnoResponse cambioTurnoResponse = new CambioTurnoResponse();
+        cambioTurnoResponse.setId(turnoActualizado.getId());
+        cambioTurnoResponse.setIdUsuario(turnoActualizado.getTrabajadorSolicitante().getId());
+        cambioTurnoResponse.setPeticionTurno(turnoActualizado.getEstadoCambio());
+        
         // Mapeamos la respuesta y la devolvemos
-        responseWrapper.setData(turnoMapper.turnoToCrearEditarTurnoResponse(turnoActualizado));
+        responseWrapper.setData(cambioTurnoResponse);
         return responseWrapper;
     }
 
-    // Desactivar un turno (cambiar el estado a "inactivo")
-    public GenericResponse<CrearEditarTurnoResponse> toggleTurno(Long id) {
-        GenericResponse<CrearEditarTurnoResponse> responseWrapper = new GenericResponse<>();
+    // Modificar Cambio de turno (Rechazar)
+    public GenericResponse<CambioTurnoResponse> modificarCambioTurno(int idCambioTurno, PeticionTurno estado) {
+        GenericResponse<CambioTurnoResponse> responseWrapper = new GenericResponse<>();
 
         // Buscar el turno por ID
-        Optional<Turno> turnoOpt = turnoRepository.findById(id);
+        Optional<CambioTurno> cambioTurnoOptional = cambioTurnoRepository.findById(idCambioTurno);
 
-        if (turnoOpt.isEmpty()) {
-            responseWrapper.setError(new ErrorResponse("El turno no existe"));
+        if (cambioTurnoOptional.isEmpty()) {
+            responseWrapper.setError(new ErrorResponse("El cambio de turno no existe"));
             return responseWrapper;
         }
 
-        // Cambiar el estado del turno
-        Turno turno = turnoOpt.get();
-        turno.setActivo(!turno.getActivo());
+        CambioTurno cturno = cambioTurnoOptional.get();
+        cturno.setEstadoCambio(estado);
 
-        // Guardar los cambios
-        Turno turnoActualizado = turnoRepository.save(turno);
+        // Guardamos los cambios en la base de datos
+        CambioTurno turnoActualizado = cambioTurnoRepository.save(cturno);
 
-        // Mapeamos y devolvemos la respuesta
-        responseWrapper.setData(turnoMapper.turnoToCrearEditarTurnoResponse(turnoActualizado));
+        // Creamos respuesta
+        CambioTurnoResponse cambioTurnoResponse = new CambioTurnoResponse();
+        cambioTurnoResponse.setId(turnoActualizado.getId());
+        cambioTurnoResponse.setIdUsuario(turnoActualizado.getTrabajadorSolicitante().getId());
+        cambioTurnoResponse.setPeticionTurno(turnoActualizado.getEstadoCambio());
+        
+        // Mapeamos la respuesta y la devolvemos
+        responseWrapper.setData(cambioTurnoResponse);
         return responseWrapper;
     }
 
-    public GenericResponse<List<CrearEditarTurnoResponse>> listarTurnos(Long usuarioId, Optional<EstadoTurno> estado) {
-        // Validar si el usuario existe con el repositorio de usuarios
-        var usuario = usuarioRepository.findById(usuarioId);
-        if (usuario.isEmpty()) {
-            var errorResponse = new GenericResponse<List<CrearEditarTurnoResponse>>();
-            errorResponse.setError(new ErrorResponse("Usuario no encontrado"));
-            return errorResponse;
-        }
+    // modificar Cambio de turno para aceptar cambio turno
+    public GenericResponse<CambioTurnoResponse> aceptarCambioTurno(int idCambioTurno, int usuarioAceptanteId) {
+        GenericResponse<CambioTurnoResponse> responseWrapper = new GenericResponse<>();
 
-        // Obtener lista de turnos, filtrados por el usuario y estado (si nos lo dan)
-        List<Turno> turnos = new ArrayList<>();
+        // Buscar el turno por ID
+        Optional<CambioTurno> cambioTurnoOptional = cambioTurnoRepository.findById(idCambioTurno);
 
-        if (estado.isPresent()) {
-            turnos = turnoRepository.findByUsuarioIdAndEstadoTurno(usuarioId, estado.get());
-        } else {
-            turnos = turnoRepository.findByUsuarioId(usuarioId);
-        }
-
-        // Mapear turnos a respuestas DTO
-        List<CrearEditarTurnoResponse> turnoResponses = turnos.stream()
-                .map(turno -> turnoMapper.turnoToCrearEditarTurnoResponse(turno))
-                .collect(Collectors.toList());
-
-        // Envolver en GenericResponse y devolver
-        var wrapperResponse = new GenericResponse<List<CrearEditarTurnoResponse>>();
-        wrapperResponse.setData(turnoResponses);
-        return wrapperResponse;
-    }
-
-    // Borrar un turno (solo lo puede hacer un usuario admin)
-    public GenericResponse<String> borrarTurno(Long idTurno, Long idUsuario) {
-        GenericResponse<String> responseWrapper = new GenericResponse<>();
-
-        // Verificar si el usuario es admin
-        Optional<Usuario> usuarioOpt = usuarioRepository.findById(idUsuario);
-        if (usuarioOpt.isEmpty() || !usuarioOpt.get().getRol().equals("ADMIN")) {
-            responseWrapper.setError(new ErrorResponse("No tienes permiso para realizar esta acción"));
+        if (cambioTurnoOptional.isEmpty()) {
+            responseWrapper.setError(new ErrorResponse("El cambio de turno no existe"));
             return responseWrapper;
         }
 
         // Buscar el turno por ID
-        Optional<Turno> turnoOpt = turnoRepository.findById(idTurno);
-        if (turnoOpt.isEmpty()) {
-            responseWrapper.setError(new ErrorResponse("El turno no existe"));
+        Optional<EntityUsuario> usuarioAceptanteOpt = userRepository.findById(usuarioAceptanteId);
+
+        if (usuarioAceptanteOpt.isEmpty()) {
+            responseWrapper.setError(new ErrorResponse("El usuario no existe"));
             return responseWrapper;
         }
 
-        // Eliminar el turno de la base de datos
-        turnoRepository.delete(turnoOpt.get());
+        CambioTurno cturno = cambioTurnoOptional.get();
+        cturno.setEstadoCambio(PeticionTurno.ACEPTADA);
+        cturno.setTrabajadorAceptante(usuarioAceptanteOpt.get());;
 
-        // Devolver respuesta exitosa
-        responseWrapper.setData("Turno eliminado");
+        // Guardamos los cambios en la base de datos
+        CambioTurno turnoActualizado = cambioTurnoRepository.save(cturno);
+
+        // Creamos respuesta
+        CambioTurnoResponse cambioTurnoResponse = new CambioTurnoResponse();
+        cambioTurnoResponse.setId(turnoActualizado.getId());
+        cambioTurnoResponse.setIdUsuario(turnoActualizado.getTrabajadorSolicitante().getId());
+        cambioTurnoResponse.setPeticionTurno(turnoActualizado.getEstadoCambio());
+        
+        // Mapeamos la respuesta y la devolvemos
+        responseWrapper.setData(cambioTurnoResponse);
         return responseWrapper;
     }
-    */
+
 }

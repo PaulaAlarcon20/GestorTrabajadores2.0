@@ -190,9 +190,10 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
     }
   }
 
-  Future<List<dynamic>> sendHttpPostSolicitud() async {
-    final response =
-        await http.post(Uri.parse('http://localhost:8080/api/new_sol'));
+  Future<List<dynamic>> sendHttpPostEliminarSolicitudes(
+      int idCambioTurno, int nuevoEstado) async {
+    final response = await http.get(Uri.parse(
+        'http://localhost:8080/api/delete_sol?idCambioTurno=$idCambioTurno'));
 
     if (response.statusCode == 200) {
       return json.decode(response.body);
@@ -211,9 +212,14 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
         String descripcion = 'N/A';
         if (elemento['jornadaID'] != null &&
             elemento['jornadaID'] is Map<String, dynamic>) {
-          descripcion =
-              elemento['jornadaID']['descripcion']?.toString() ?? 'N/A';
+          descripcion = elemento['jornadaID']['descripcion'] != null
+              ? utf8.decode(elemento['jornadaID']['descripcion']
+                  .toString()
+                  .runes
+                  .toList())
+              : 'N/A';
         }
+
         return ItemSolicitud(
           descripcion,
           elemento['fechaSolicitada']?.toString() ?? 'N/A',

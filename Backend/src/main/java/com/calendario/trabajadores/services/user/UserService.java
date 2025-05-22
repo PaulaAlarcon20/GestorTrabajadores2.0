@@ -32,6 +32,8 @@ public class UserService {
 	
 	@Autowired
 	private IUsuarioRepository usuarioRepository;
+
+    @Autowired
     private ITurnoRepository turnoRepository;
 	
 	
@@ -44,14 +46,14 @@ public class UserService {
 		System.out.println("ID JORNADA -> " + createIDJornada);
 
         // Buscar Jornada aleatoria
-        Turno lJornada =  turnoRepository.findById(createIDJornada);
+        Optional<Turno> lJornada =  turnoRepository.findById(createIDJornada);
 
         if(lJornada == null){
             System.out.println("Jornada NO encotrada, revise los datos...");
             return null;
         }
 
-		dto.setJornadaID(lJornada);
+		dto.setJornadaID(lJornada.get());
 		//TODO TENEMOS QUE LANZAR MENSAJES ERROR SI YA ESTA REGISTRADO CORREO
 		
 		// 1- Se convierte el DTO en una entity para poder guardarlo
