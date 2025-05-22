@@ -13,6 +13,7 @@ import com.calendario.trabajadores.repository.turno.ITurnoRepository;
 import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class UserService {
 
     @Autowired
     private ITurnoRepository turnoRepository;
+	
+	
 	
 	
 	// CREAR usuario

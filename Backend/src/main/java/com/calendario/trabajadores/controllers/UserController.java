@@ -22,6 +22,8 @@ import com.calendario.trabajadores.services.user.UserService;
 
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityManager;
+
 
 @Component
 @RestController
@@ -56,12 +58,16 @@ public class UserController {
 	
 	
 	@PostMapping("/login")
-	public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
+	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
 		Optional<LoginResponse> loginResultado = userService.login(loginRequest.getEmail(), loginRequest.getContrasena());
 		
 		if(loginResultado.isPresent()) {
 			System.err.println("Ha sucedido");
-			return ResponseEntity.ok(loginResultado.get());
+			
+			UsuarioDTO usuarioDTO = userService.obtenerUsuarioByEmail(loginRequest.getEmail());
+			
+			return ResponseEntity.ok(usuarioDTO);
+			//return ResponseEntity.ok(loginResultado.get());
 			
 		} else {
 			System.err.println("No ha sucedido -> " + loginRequest.getEmail() + "/" + loginRequest.getContrasena());
