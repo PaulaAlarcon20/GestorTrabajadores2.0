@@ -1,4 +1,5 @@
-class UsuarioDTO {
+class 
+UsuarioDTO {
   final int id;
   final String nombre;
   final String apellido;

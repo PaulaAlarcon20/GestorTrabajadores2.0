@@ -1,6 +1,7 @@
 package com.calendario.trabajadores.controllers;
 
 import com.calendario.trabajadores.entity.usuario.EntityUsuario;
+import com.calendario.trabajadores.model.dto.usuario.CerrarSesionRequest;
 import com.calendario.trabajadores.model.dto.usuario.CrearUsuarioRequest;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioResponse;
 import com.calendario.trabajadores.model.dto.usuario.EditarUsuarioRequest;
@@ -10,6 +11,7 @@ import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioVehiculosResponse;
 import com.calendario.trabajadores.model.errorresponse.ErrorResponse;
 import com.calendario.trabajadores.model.errorresponse.GenericResponse;
+import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 import com.calendario.trabajadores.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -42,6 +44,21 @@ public class UserController {
 	@GetMapping
 	public List<UsuarioDTO> obtenerUsuarios(){
 		return userService.obtenerTodosLosUsuarios();
+	}
+	
+	@PostMapping("/LogOut")
+	public ResponseEntity<?> cerrarSesion(@RequestBody CerrarSesionRequest request){
+		
+		System.out.println("VALORES: " + request.getEmail() + " - " + request.isInicioSesion());
+		
+		try {
+			LoginResponse response = userService.closeSesion(request.getEmail(), request.isInicioSesion());
+			
+			return ResponseEntity.ok(response);
+			
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Problemas con el cierre de sesión");
+		}
 	}
 	
 	

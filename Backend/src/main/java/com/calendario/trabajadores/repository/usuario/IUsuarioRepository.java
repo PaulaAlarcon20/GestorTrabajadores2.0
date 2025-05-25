@@ -31,6 +31,7 @@ public interface IUsuarioRepository extends JpaRepository<EntityUsuario, Integer
     
     Optional<EntityUsuario> findByEmailAndContrasena(String email, String contrasena);
     
+
     Optional<EntityUsuario> findByEmail(String email);
     
     Optional<EntityUsuario> findById(int id);
