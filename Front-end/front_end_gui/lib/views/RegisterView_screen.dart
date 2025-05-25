@@ -24,9 +24,7 @@ class RegisterView extends StatelessWidget {
     return  Scaffold(
 
       //appBar: AppBar(title: const Text('Nuevo usuario'),),
-      body: BlocProvider( // Inyecta el cubic en el árbol de widgets y permite que los hijos accedan
-        create:  (context) => RegisterCubit(),
-        child: Padding(
+      body: Padding(
           padding: const EdgeInsets.symmetric(horizontal:10),
           child: SingleChildScrollView( // Define que hijos pueden acceder al cubit
             child: SizedBox(
@@ -90,8 +88,8 @@ class RegisterView extends StatelessWidget {
             ),
           ),
         ),
-      )
-    );
+      );
+  
   }
 
 

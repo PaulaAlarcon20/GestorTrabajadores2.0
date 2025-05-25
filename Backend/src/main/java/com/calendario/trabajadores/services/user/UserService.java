@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -33,12 +34,29 @@ public class UserService {
 	
 	@Autowired
 	private IUsuarioRepository usuarioRepository;
-
-    @Autowired
+	@Autowired
     private ITurnoRepository turnoRepository;
 	
-	
-	
+	public LoginResponse closeSesion(String email, boolean inicioSesion) {
+		
+		Optional<EntityUsuario> entityUsuario = usuarioRepository.findByEmail(email);
+		
+
+		
+		if(entityUsuario.isPresent()) {
+			EntityUsuario entiry = entityUsuario.get();
+			System.out.println("Inicio de sesión actualizado: " + entiry.getInicioSesion());
+			entiry.setInicioSesion(inicioSesion);
+			usuarioRepository.save(entiry);
+			return new LoginResponse(email, inicioSesion, "Sesión cerrada");
+		} else {
+			return new LoginResponse(email, inicioSesion, "No se pudo cerrar la sesión");
+		}
+		
+
+		
+
+	}
 	
 	// CREAR usuario
 	public UsuarioDTO crearUsuario(UsuarioDTO dto) {
@@ -57,7 +75,6 @@ public class UserService {
         }
 
 		dto.setJornadaID(lJornada.get());
-		//TODO TENEMOS QUE LANZAR MENSAJES ERROR SI YA ESTA REGISTRADO CORREO
 		
 		// 1- Se convierte el DTO en una entity para poder guardarlo
 		EntityUsuario entityUsuario = new EntityUsuario();
@@ -124,6 +141,8 @@ public class UserService {
 				.collect(Collectors.toList());
 	}
 	
+	
+	
 	//Obtener usuario por email
 	public UsuarioDTO obtenerUsuarioByEmail(String email){
 		
@@ -178,6 +197,9 @@ public class UserService {
 	public Optional<EntityUsuario> buscarPorId(Integer id){
 		return usuarioRepository.findById(id);
 	}
+	
+	
+	
 	
 	// Buscar por GMAIL y CONTRASENA
 	public Optional<LoginResponse> login(String email, String contrasena){

@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:front_end_gui/services/UsuarioDTO.dart';
 import 'package:front_end_gui/views/infraestructure/inputs/inputs.dart';
 import 'package:front_end_gui/views/infraestructure/inputs/passwordLogin.dart';
 import 'package:http/http.dart' as http;
@@ -49,16 +50,22 @@ class RegisterCubit extends Cubit<RegisterState> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+
         final inicioSesion = data['inicioSesion'];
 
         log('Se inicia sesión...');
         log('Inicio de sesión de ${data['nombre']}  ${data['apellido']} / Puesto: ${data['puesto']} - ${data['telefono']}');
 
         if (inicioSesion == true) {
+          final usuario = UsuarioDTO.fromJson(data);
           emit(state.copyWith(
               formStatus: FormStatus.valid,
               inicioSesion: inicioSesion,
-              messageStatus: "Solicitud exitosa."));
+              messageStatus: "Solicitud exitosa.",
+              usuarioDTO: UsuarioDTO.fromJson(data)));
+
+          log('DATOS ALMACENADOS EN USUARIO DTO:');
+          log('${usuario.nombre} - ${usuario.apellido} - ${usuario.puesto} - ${usuario.telefono} - ');
         }
       } else if (response.statusCode == 400) {
         contenidoMessageError = "Petición mal formulada";

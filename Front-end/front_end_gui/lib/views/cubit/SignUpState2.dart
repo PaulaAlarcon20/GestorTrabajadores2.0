@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:front_end_gui/services/UsuarioDTO.dart';
 import 'package:front_end_gui/views/infraestructure/inputs/inputs.dart';
 import 'package:front_end_gui/views/infraestructure/inputs/multiInput.dart';
 import 'package:front_end_gui/views/infraestructure/inputs/disponibilidadHorasExtras.dart';
@@ -39,6 +40,8 @@ class SignUpState2 extends Equatable { // Equatable es una clase qeu ayuda a com
   final DisponibilidadHorasExtras disponibilidadHorasExtras;
 
 
+
+
   const SignUpState2({
     this.formStatus2 = FormStatus.invalid,
     this.formStatus3 = FormStatus3.invalid,
@@ -55,7 +58,8 @@ class SignUpState2 extends Equatable { // Equatable es una clase qeu ayuda a com
     this.isValid = false,
     this.isValid2 = false,
     this.isValid3 = false,
-    this.avance = true
+    this.avance = true,
+
   });
 
   SignUpState2 copyWith({
@@ -75,7 +79,8 @@ class SignUpState2 extends Equatable { // Equatable es una clase qeu ayuda a com
     bool? isValid,
     bool? isValid2,
     bool? isValid3,
-    bool? avance
+    bool? avance,
+
   }) {
     return SignUpState2(
 
@@ -94,11 +99,30 @@ class SignUpState2 extends Equatable { // Equatable es una clase qeu ayuda a com
       isValid: isValid ?? this.isValid,
       isValid2: isValid2 ?? this.isValid2,
       isValid3: isValid3 ?? this.isValid3,
-      avance: avance ?? this.avance
+      avance: avance ?? this.avance,
+      
     );
   }
 
   @override
-  List<Object> get props => [formStatus2, formStatus3, nombre, apellidos, gmail, telefono, centroDeTrabajo, localidad, puesto, preferenciasHorarias, disponibilidadHorasExtras, password ,isValid3, isValid2, isValid, avance]; // Este listado sirve para saber que estado anterior tenía
+  List<Object> get props => [
+    formStatus2, 
+    formStatus3, 
+    nombre, 
+    apellidos, 
+    gmail, 
+    telefono, 
+    centroDeTrabajo, 
+    localidad, 
+    puesto, 
+    preferenciasHorarias, 
+    disponibilidadHorasExtras, 
+    password ,
+    isValid3, 
+    isValid2, 
+    isValid, 
+    avance, 
+
+    ]; // Este listado sirve para saber que estado anterior tenía
 
 }

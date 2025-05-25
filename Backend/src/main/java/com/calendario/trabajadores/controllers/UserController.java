@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import com.calendario.trabajadores.model.dto.usuario.CerrarSesionRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.calendario.trabajadores.model.dto.usuario.LoginRequest;
 import com.calendario.trabajadores.model.dto.usuario.LoginResponse;
 import com.calendario.trabajadores.model.dto.usuario.UsuarioDTO;
+import com.calendario.trabajadores.repository.usuario.IUsuarioRepository;
 import com.calendario.trabajadores.services.user.UserService;
 
 
@@ -39,6 +41,21 @@ public class UserController {
 	@GetMapping
 	public List<UsuarioDTO> obtenerUsuarios(){
 		return userService.obtenerTodosLosUsuarios();
+	}
+	
+	@PostMapping("/LogOut")
+	public ResponseEntity<?> cerrarSesion(@RequestBody CerrarSesionRequest request){
+		
+		System.out.println("VALORES: " + request.getEmail() + " - " + request.isInicioSesion());
+		
+		try {
+			LoginResponse response = userService.closeSesion(request.getEmail(), request.isInicioSesion());
+			
+			return ResponseEntity.ok(response);
+			
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Problemas con el cierre de sesión");
+		}
 	}
 	
 	
