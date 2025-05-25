@@ -1,5 +1,7 @@
 //import 'package:front_end_gui/views/infraestructure/inputs/inputs.dart';
+
 part of 'RegisterCubit.dart';
+
 
 enum FormStatus {invalid, valid, validating, posting, failHttp} // Estados diferentes de validación
 
@@ -13,6 +15,7 @@ class RegisterState extends Equatable {
   final bool isValid;
   final bool inicioSesion;
   final String messageStatus;
+  final UsuarioDTO? usuarioDTO;
 
 
   // Constructor
@@ -23,7 +26,8 @@ class RegisterState extends Equatable {
     this.isValid = false,
     this.icono = Icons.error,
     this.inicioSesion = false,
-    this.messageStatus = ""
+    this.messageStatus = "",
+    this.usuarioDTO
   });
 
 
@@ -35,7 +39,8 @@ class RegisterState extends Equatable {
     PasswordLoginInput? password,
     IconData? icono,
     bool? inicioSesion,
-    String? messageStatus
+    String? messageStatus,
+    UsuarioDTO? usuarioDTO
     
   }) {
     return RegisterState(
@@ -45,11 +50,12 @@ class RegisterState extends Equatable {
         password: password ?? this.password,
         icono: icono ?? this.icono,
         inicioSesion: inicioSesion ?? this.inicioSesion,
-        messageStatus: messageStatus ?? this.messageStatus
+        messageStatus: messageStatus ?? this.messageStatus,
+        usuarioDTO: usuarioDTO ?? this.usuarioDTO
         
     );
   }
   
   @override
-  List<Object> get props => [formStatus, email, password, isValid, icono, inicioSesion, messageStatus]; // Este listado sirve para saber que estado anterior tenía
+  List<Object?> get props => [formStatus, email, password, isValid, icono, inicioSesion, messageStatus, usuarioDTO]; // Este listado sirve para saber que estado anterior tenía
 }

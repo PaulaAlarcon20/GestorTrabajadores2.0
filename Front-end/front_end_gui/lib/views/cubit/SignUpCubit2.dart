@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:front_end_gui/services/UsuarioDTO.dart';
 import 'package:front_end_gui/views/Home_screen.dart';
 import 'package:front_end_gui/views/cubit/SignUpState2.dart';
 import 'package:front_end_gui/views/infraestructure/inputs/disponibilidadHorasExtras.dart';
@@ -196,14 +197,16 @@ class SignUpCubit2 extends Cubit<SignUpState2> {
       if( response.statusCode == 200 || response.statusCode == 201){
         avance = true;
         final data = jsonDecode(response.body);
+        
 
         log('Datos enviados correctamente: ${response.statusCode}  - valor de avance $avance');
         emit(state.copyWith(avance: true));
         log('${data['nombre']} - ${data['apellido']} - ${data['puesto']} - ${data['telefono']} - ');
+        
 
         String correoParaEnviar = data['nombre'];
-
         log("Correo a enviar ->  $correoParaEnviar");
+
 
       } else {
         
