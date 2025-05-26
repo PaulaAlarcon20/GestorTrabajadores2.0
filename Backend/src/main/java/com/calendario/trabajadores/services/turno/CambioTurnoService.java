@@ -40,7 +40,7 @@ public class CambioTurnoService {
     public List<CambioTurno> obtenerSolicitudes(int userId) {
         Optional<EntityUsuario> user = userRepository.findById(userId);
 
-        return cambioTurnoRepository.findCambioTurnoByTrabajadorSolicitante(user);
+        return cambioTurnoRepository.findCambioTurnoByTrabajadorSolicitanteAndEstadoCambioAndActivo(user, PeticionTurno.PENDIENTE, true);
     }
 
     public List<CambioTurno> obtenerPeticiones(int userId) {
@@ -181,4 +181,10 @@ public class CambioTurnoService {
         return responseWrapper;
     }
 
+    // Obtener cambios de turno por usuario aceptante
+    public List<CambioTurno> obtenerSolicitudesAceptadas(int userId) {
+        Optional<EntityUsuario> user = userRepository.findById(userId);
+
+        return cambioTurnoRepository.findCambioTurnoByTrabajadorAceptanteAndEstadoCambio(user, PeticionTurno.ACEPTADA);
+    }
 }

@@ -115,4 +115,11 @@ public class CambioTurnoController {
         return ResponseEntity.ok(respuestaServicio);
 	}
 
+    @Operation(summary = "Solicitudes aceptadas por Usuario", description = "Endpoint para Solicitudes aceptadas por Usuario")
+    @GetMapping("/api/solicitudesAceptadas")
+	public List<CambioTurno> obtenerSolicitudesAceptadasPorUsuario(@RequestParam(required = true) int userId){
+        System.out.println("Entra a controller obtenerSolicitudesAceptadasPorUsuario");
+		return cambioTurnoService.obtenerSolicitudesAceptadas(userId);
+	}
+
 }

@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end_gui/services/UsuarioDTO.dart';
+import 'package:front_end_gui/views/cubit/RegisterCubit.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
@@ -13,15 +16,23 @@ class ListaPeticionesWidget extends StatefulWidget {
 }
 
 class _ListaPeticionesWidgetState extends State<ListaPeticionesWidget> {
-  late Future<List<ItemPeticion>> futureSolicitudes;
+  late Future<List<ItemPeticion>> futureSolicitudes = Future.value([]);
   List<ItemPeticion> lPeticiones = [];
+  late UsuarioDTO usuario;
 
   @override
   void initState() {
     super.initState();
-    // Hacer llamado a endpoint para obtener lista de peticiones
-    int usuarioId = 1;
-    futureSolicitudes = convertirLista(sendHttpGet(usuarioId));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Hacer llamado a endpoint para obtener lista de peticiones
+      usuario = context.read<RegisterCubit>().state.usuarioDTO!;
+
+      if (usuario != null) {
+        setState(() {
+          futureSolicitudes = convertirLista(sendHttpGetPeticiones(usuario.id));
+        });
+      }
+    });
   }
 
   @override
@@ -60,9 +71,12 @@ class _ListaPeticionesWidgetState extends State<ListaPeticionesWidget> {
                     trailing: Checkbox(
                       value: lPeticiones[index].isChecked,
                       onChanged: (bool? newValue) {
-                        setState(() {
-                          lPeticiones[index].isChecked = newValue ?? false;
-                        });
+                        lPeticiones[index].isChecked = newValue ?? false;
+
+                        if (lPeticiones[index].isChecked) {
+                          aceptarPeticion(
+                              context, lPeticiones[index].cambioTurnoId);
+                        }
                       },
                     ),
                   ),
@@ -76,36 +90,37 @@ class _ListaPeticionesWidgetState extends State<ListaPeticionesWidget> {
   }
 
   // Alerta Peticion Aceptada
-  void aceptarPeticion(BuildContext context) async {
+  void aceptarPeticion(BuildContext context, int cambioTurnoId) async {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Text(
-              "¿Esta segur@ de aceptar la petición?",
-              style: TextStyle(fontSize: 20),
-            ),
-            actions: [
-              TextButton(
-                  child: Text(
-                    "Cancelar",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }),
-              TextButton(
-                  child: Text(
-                    "Confirmar",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text(
+            "¿Está segur@ de aceptar la petición?",
+            style: TextStyle(fontSize: 20),
+          ),
+          actions: [
+            TextButton(
+                child: Text("Cancelar", style: TextStyle(fontSize: 20)),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+            TextButton(
+                child: Text("Confirmar", style: TextStyle(fontSize: 20)),
+                onPressed: () async {
+                  await sendHttpPostAceptarPeticion(cambioTurnoId);
+                  setState(() {
+                    futureSolicitudes =
+                        convertirLista(sendHttpGetPeticiones(usuario.id));
+
                     Navigator.pop(context);
                     mostrarAlerta(context, "Petición aceptada");
-                  })
-            ],
-          );
-        });
+                  });
+                }),
+          ],
+        );
+      },
+    );
   }
 
   // Mostrar Alerta genérica
@@ -134,7 +149,7 @@ class _ListaPeticionesWidgetState extends State<ListaPeticionesWidget> {
         });
   }
 
-  Future<List<dynamic>> sendHttpGet(int userId) async {
+  Future<List<dynamic>> sendHttpGetPeticiones(int userId) async {
     final response = await http
         .get(Uri.parse('http://localhost:8080/api/peticiones?userId=$userId'));
 
@@ -145,15 +160,15 @@ class _ListaPeticionesWidgetState extends State<ListaPeticionesWidget> {
     }
   }
 
-  Future<List<dynamic>> sendHttpPostAceptarPeticion(
-      int idCambioTurno, int nuevoEstado) async {
-    final response = await http.get(Uri.parse(
-        'http://localhost:8080/api/edit_stat_sol?idCambioTurno=$idCambioTurno&nuevoEstado=1'));
+  Future<void> sendHttpPostAceptarPeticion(int idCambioTurno) async {
+    int userId = usuario.id;
+    final response = await http.post(Uri.parse(
+        'http://localhost:8080/api/aceptar_sol?idCambioTurno=$idCambioTurno&usuarioAceptanteId=$userId'));
 
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      print("Solicitud enviada exitosamente: ${response.body}");
     } else {
-      throw Exception('Error al cargar los datos');
+      throw Exception('Error al enviar la solicitud: ${response.statusCode}');
     }
   }
 
@@ -167,16 +182,26 @@ class _ListaPeticionesWidgetState extends State<ListaPeticionesWidget> {
         String descripcion = 'N/A';
         if (elemento['jornadaID'] != null &&
             elemento['jornadaID'] is Map<String, dynamic>) {
-          descripcion =
-              elemento['jornadaID']['descripcion']?.toString() ?? 'N/A';
+          descripcion = elemento['jornadaID']['descripcion'] != null
+              ? utf8.decode(elemento['jornadaID']['descripcion']
+                  .toString()
+                  .runes
+                  .toList())
+              : 'N/A';
         }
+
+        int cambioTurnoId = elemento['id'] is int
+            ? elemento['id']
+            : int.tryParse(elemento['id'].toString()) ?? 0;
+
         return ItemPeticion(
           descripcion,
           elemento['fechaSolicitada']?.toString() ?? 'N/A',
           elemento['isChecked'] is bool ? elemento['isChecked'] : false,
+          cambioTurnoId,
         );
       } else {
-        return ItemPeticion(elemento.toString(), '', false);
+        return ItemPeticion(elemento.toString(), '', false, 0);
       }
     }).toList();
   }

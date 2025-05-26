@@ -20,7 +20,7 @@ class _TravelScreenState extends State<TravelScreen> {
               'En esta sección voy a desarrollar como crear un viaje, listar viajes, actualizar viajes y borrar viajes.',
               style: TextStyle(color: const Color.fromARGB(255, 94, 94, 94)),
             ),
-            MapaScreen()
+            //MapaScreen()
           ],
         ),
       ),

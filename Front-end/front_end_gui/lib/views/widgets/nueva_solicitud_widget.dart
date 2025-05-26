@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end_gui/services/UsuarioDTO.dart';
+import 'package:front_end_gui/views/cubit/RegisterCubit.dart';
 import 'package:front_end_gui/views/widgets/date_picker_widget_turnos.dart';
 import 'package:front_end_gui/views/widgets/drop_down_widget_turnos.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class NuevaSolicitudWidget extends StatelessWidget {
-  const NuevaSolicitudWidget({super.key});
+class NuevaSolicitudWidget extends StatefulWidget {
+  final UsuarioDTO usuario; // Variable que pasaremos
 
-//formulario crear nueva solicitud
+  const NuevaSolicitudWidget({super.key, required this.usuario});
+
+  @override
+  State<NuevaSolicitudWidget> createState() => _NuevaSolicitudWidgetState();
+}
+
+class _NuevaSolicitudWidgetState extends State<NuevaSolicitudWidget> {
+  //formulario crear nueva solicitud
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
@@ -69,7 +79,8 @@ class NuevaSolicitudWidget extends StatelessWidget {
   }
 
   Future<void> sendHttpPostSolicitud(int jornadaId, String fecha) async {
-    final usuarioId = 1; //Obtener el Valor de Usuario de Sesión
+    final usuarioId =
+        widget.usuario.id; //1; //Obtener el Valor de Usuario de Sesión
     DateTime fechaDT = DateFormat("dd/MM/yyyy").parse(fecha);
     String fechaISO = DateFormat("yyyy-MM-dd")
         .format(fechaDT); // Formatear la fecha en "yyyy-MM-dd"

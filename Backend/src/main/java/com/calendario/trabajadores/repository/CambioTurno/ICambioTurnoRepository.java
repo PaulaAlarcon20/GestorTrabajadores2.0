@@ -24,8 +24,10 @@ public interface ICambioTurnoRepository extends JpaRepository<CambioTurno, Integ
 
     List<CambioTurno> findCambioTurnoByTrabajadorSolicitanteAndEstadoCambio(EntityUsuario trabajador, PeticionTurno estado);
     List<CambioTurno> findCambioTurnoByTrabajadorSolicitanteAndEstadoCambio(Optional<EntityUsuario> trabajador, PeticionTurno estado);
+    List<CambioTurno> findCambioTurnoByTrabajadorSolicitanteAndEstadoCambioAndActivo(Optional<EntityUsuario> trabajador, PeticionTurno estado, boolean activo);
+
 
     List<CambioTurno> findCambioTurnoByTrabajadorSolicitanteNotAndEstadoCambio(Optional<EntityUsuario> trabajador, PeticionTurno estado);
 
-    List<CambioTurno> findCambioTurnoByTrabajadorAceptanteAndEstadoCambio(EntityUsuario trabajador, PeticionTurno estado);
+    List<CambioTurno> findCambioTurnoByTrabajadorAceptanteAndEstadoCambio(Optional<EntityUsuario> user, PeticionTurno estado);
 }

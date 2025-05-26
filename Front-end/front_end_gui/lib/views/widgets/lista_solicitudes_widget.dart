@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end_gui/services/UsuarioDTO.dart';
+import 'package:front_end_gui/views/cubit/RegisterCubit.dart';
 import 'package:front_end_gui/views/widgets/nueva_solicitud_widget.dart';
 import 'package:intl/intl.dart';
 import '../gestionTurnos/Solicitudes.dart';
@@ -13,18 +16,28 @@ class ListaSolicitudesWidget extends StatefulWidget {
 }
 
 class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
-  late Future<List<ItemSolicitud>> futureSolicitudes;
+  late Future<List<ItemSolicitud>> futureSolicitudes = Future.value([]);
   List<ItemSolicitud> lSolicitudes = [];
+  late UsuarioDTO usuario;
 
   @override
   void initState() {
     super.initState();
-    int usuarioId = 1;
-    futureSolicitudes = convertirLista(sendHttpGetSolicitudes(usuarioId));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (usuario != null) {
+        setState(() {
+          futureSolicitudes =
+              convertirLista(sendHttpGetSolicitudes(usuario.id));
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    // Hacer llamado a endpoint para obtener lista de peticiones
+    usuario = context.read<RegisterCubit>().state.usuarioDTO!;
+
     return Scaffold(
       body: FutureBuilder<List<ItemSolicitud>>(
         future: futureSolicitudes,
@@ -80,23 +93,28 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
               backgroundColor: Colors.red,
               child: Icon(Icons.delete, color: Colors.white),
               onPressed: () {
-                List<ItemSolicitud> selectedItems =
-                    lSolicitudes.where((item) => item.isChecked).toList();
-
-                if (selectedItems.isEmpty) {
-                  mostrarAlerta(context,
-                      'No se ha seleccionado ninguna solicitud a eliminar');
-                } else {
-                  _showDialogEliminar(context);
-                }
+                setState(() {
+                  List<ItemSolicitud> selectedItems =
+                      lSolicitudes.where((item) => item.isChecked).toList();
+                  if (selectedItems.isEmpty) {
+                    mostrarAlerta(context,
+                        'No se ha seleccionado ninguna solicitud a eliminar');
+                  } else {
+                    _showDialogEliminar(context, lSolicitudes);
+                  }
+                });
               },
             ),
             Spacer(),
             FloatingActionButton(
               backgroundColor: Colors.blue,
               child: Icon(Icons.add, color: Colors.white),
-              onPressed: () {
-                _showBottomAdicionar(context);
+              onPressed: () async {
+                await _showBottomAdicionar(context);
+                setState(() {
+                  futureSolicitudes =
+                      convertirLista(sendHttpGetSolicitudes(usuario.id));
+                });
               },
             ),
           ],
@@ -114,12 +132,13 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
               width: MediaQuery.of(context).size.width,
               height: 500,
               color: Colors.white,
-              child: NuevaSolicitudWidget(),
+              child: NuevaSolicitudWidget(usuario: usuario),
             ));
   }
 
   // boton alerta Eliminar
-  Future<dynamic> _showDialogEliminar(BuildContext context) async {
+  Future<dynamic> _showDialogEliminar(
+      BuildContext context, List<ItemSolicitud> lSolicitudes) async {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -142,9 +161,21 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
                     "Confirmar",
                     style: TextStyle(fontSize: 15),
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    mostrarAlerta(context, "Solicitud(es) eliminada(s)");
+                  onPressed: () async {
+                    for (var i = 0; i < lSolicitudes.length; i++) {
+                      if (lSolicitudes[i].isChecked) {
+                        await sendHttpPostEliminarSolicitudes(
+                            lSolicitudes[i].cambioTurnoId);
+                      }
+                    }
+
+                    setState(() {
+                      futureSolicitudes =
+                          convertirLista(sendHttpGetSolicitudes(usuario.id));
+
+                      Navigator.pop(context);
+                      mostrarAlerta(context, "Solicitud(es) eliminada(s)");
+                    });
                   }),
             ],
             shape:
@@ -190,15 +221,14 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
     }
   }
 
-  Future<List<dynamic>> sendHttpPostEliminarSolicitudes(
-      int idCambioTurno, int nuevoEstado) async {
-    final response = await http.get(Uri.parse(
+  Future<void> sendHttpPostEliminarSolicitudes(int idCambioTurno) async {
+    final response = await http.post(Uri.parse(
         'http://localhost:8080/api/delete_sol?idCambioTurno=$idCambioTurno'));
 
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      print("Solicitud enviada exitosamente: ${response.body}");
     } else {
-      throw Exception('Error al cargar los datos');
+      throw Exception('Error al enviar la solicitud: ${response.statusCode}');
     }
   }
 
@@ -208,7 +238,6 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
 
     return lista.map((elemento) {
       if (elemento is Map<String, dynamic>) {
-        // Se accede al objeto 'jornadaID', que se asume es un Map
         String descripcion = 'N/A';
         if (elemento['jornadaID'] != null &&
             elemento['jornadaID'] is Map<String, dynamic>) {
@@ -220,13 +249,18 @@ class _ListaSolicitudesWidgetState extends State<ListaSolicitudesWidget> {
               : 'N/A';
         }
 
+        int cambioTurnoId = elemento['id'] is int
+            ? elemento['id']
+            : int.tryParse(elemento['cambioTurnoId'].toString()) ?? 0;
+
         return ItemSolicitud(
           descripcion,
           elemento['fechaSolicitada']?.toString() ?? 'N/A',
           elemento['isChecked'] is bool ? elemento['isChecked'] : false,
+          cambioTurnoId,
         );
       } else {
-        return ItemSolicitud(elemento.toString(), '', false);
+        return ItemSolicitud(elemento.toString(), '', false, 0);
       }
     }).toList();
   }

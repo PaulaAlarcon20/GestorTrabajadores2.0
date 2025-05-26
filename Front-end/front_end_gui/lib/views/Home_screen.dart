@@ -22,28 +22,6 @@ class HomeScreenGo extends StatefulWidget {
 class _HomeScreenGoState extends State<HomeScreenGo> {
   int _position = 0;
 
-  final List<Widget> _screen = [
-    Center(
-      child: Text('PÁGINA INICIO'),
-    ),
-    Center(
-      child: CalendarScreen(),
-    ),
-    Center(
-      child: GestionTurnos(),
-    ),
-    Center(
-      child: TravelScreen(),
-    ),
-    Center(child: PersonalprofileScreen())
-  ]; // TODO VAMOS A CAMBIARLO POR WIDGETS O LOGICA DE NAVEGACIÓN
-
-  void _itemTapped(int index) {
-    setState(() {
-      _position = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -70,7 +48,7 @@ class _HomeScreenGoState extends State<HomeScreenGo> {
           )
         ],
       ),
-      body: _screen[_position],
+      body: getScreen(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _position,
         onTap: _itemTapped,
@@ -81,13 +59,65 @@ class _HomeScreenGoState extends State<HomeScreenGo> {
           BottomNavigationBarItem(
               icon: Icon(Icons.app_registration_rounded),
               label: 'Gestión Turnos'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.car_crash_outlined), label: 'Viajes'),
+          /*BottomNavigationBarItem(
+              icon: Icon(Icons.car_crash_outlined), label: 'Viajes'),*/
           BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
               label: 'Perfil'), //Colors.lightBlueAccent
         ],
       ),
     );
+  }
+
+  void _itemTapped(int index) {
+    setState(() {
+      _position = index;
+    });
+  }
+
+  Widget getTextHomeWidget() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          'Bienvenid@',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.blue,
+          ),
+        ),
+        SizedBox(height: 15),
+        Text(
+          'Facilitamos la gestión de turnos para trabajadores sanitarios, permitiéndote coordinar horarios de manera eficiente y sin complicaciones.',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18, color: Colors.black87),
+        ),
+        SizedBox(height: 10),
+        Text(
+          'Consulta tus asignaciones, solicita cambios y mantente organizado con nuestra plataforma intuitiva.',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 16, color: Colors.black54),
+        ),
+        SizedBox(height: 20),
+      ],
+    );
+  } // TODO VAMOS A CAMBIARLO POR WIDGETS O LOGICA DE NAVEGACIÓN
+
+  Widget getScreen() {
+    switch (_position) {
+      case 0:
+        return Center(child: getTextHomeWidget());
+      case 1:
+        return CalendarScreen();
+      case 2:
+        return GestionTurnos();
+      case 3:
+        return PersonalprofileScreen();
+      default:
+        return Center(child: Text("Pantalla no encontrada"));
+    }
   }
 }
