@@ -1,9 +1,9 @@
 
 ## Secciones de la Aplicación
 
-- **Sesión** (✅ Front, Proc. Back ??)
-- **Cambio Turnos** (✅ Front, Proc. Back)
-- **Calendario** (✅ Front)
+- **Sesión** (✅ Front, Back)
+- **Cambio Turnos** (✅ Front, Back)
+- **Calendario** (✅ Front, - Back)
 - **Viajes** (✅ ???? )
 
 ## ✅ Resumen de tareas realizadas
